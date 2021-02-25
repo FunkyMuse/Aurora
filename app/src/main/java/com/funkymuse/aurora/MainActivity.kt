@@ -1,11 +1,8 @@
 package com.funkymuse.aurora
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -14,9 +11,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,7 +18,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bottomNav.BottomNavScreen
 import com.funkymuse.aurora.bottomNav.favorites.Favorites
 import com.funkymuse.aurora.bottomNav.latestBooks.LatestBooks
@@ -87,6 +80,7 @@ fun BottomNav() {
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 bottomNavList.forEach { entry ->
+
                     addBottomNavDestinations(navController, entry)
                 }
                 addSearchResult(navController)
@@ -94,6 +88,7 @@ fun BottomNav() {
         )
     }
 }
+
 
 private fun NavGraphBuilder.addBottomNavDestinations(
     navController: NavHostController,
@@ -133,7 +128,12 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
                     }
                 },
                 label = { Text(text = stringResource(id = bottomEntry.screen.resourceID)) },
-                icon = { Icon(imageVector = bottomEntry.icon, contentDescription = stringResource(id = bottomEntry.screen.resourceID)) }
+                icon = {
+                    Icon(
+                        imageVector = bottomEntry.icon,
+                        contentDescription = stringResource(id = bottomEntry.screen.resourceID)
+                    )
+                }
             )
         }
     }

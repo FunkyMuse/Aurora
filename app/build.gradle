@@ -8,7 +8,6 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.funkymuse.aurora"
@@ -85,6 +84,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:1.0.0-alpha08"
     implementation 'androidx.activity:activity-compose:1.3.0-alpha03'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02'
 
     //dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
@@ -97,6 +97,7 @@ dependencies {
     //hilt jetpack
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltJetpackVersion"
     implementation "androidx.hilt:hilt-work:$hiltJetpackVersion"
+    implementation "androidx.hilt:hilt-navigation:$hiltJetpackVersion"
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //lifecycle

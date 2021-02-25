@@ -21,7 +21,7 @@ data class Book(private val element: Element) {
 
     var isInFavorites: Boolean = false
 
-    val authors: String?
+    val author: String?
         get() = tryOrNull {
             (element.childNodes()[2].childNodes()[0].childNodes()[0] as TextNode).wholeText
         }
@@ -82,7 +82,7 @@ data class Book(private val element: Element) {
 
 
     override fun toString(): String {
-        return "$id $authors $title $publisher $year $language favorite links $mirrors"
+        return "$id $author $title $publisher $year $language favorite links $mirrors"
     }
 
     /*

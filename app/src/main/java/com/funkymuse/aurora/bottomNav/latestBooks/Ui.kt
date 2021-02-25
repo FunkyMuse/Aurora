@@ -11,28 +11,33 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.log.debug
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.bottomNav.book.Book
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.ui.theme.Shapes
-import org.jsoup.nodes.Element
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
 @Composable
-fun LatestBooks(navController: NavHostController, viewModel: LatestBooksVM = viewModel()) {
+fun LatestBooks(navController: NavHostController) {
+
+    val viewModel = viewModel<LatestBooksVM>(
+        factory = HiltViewModelFactory(LocalContext.current, navController.backStack.last)
+    )
+
     val list = viewModel.booksData.collectAsState()
 
     list.value.handle(
@@ -47,7 +52,7 @@ fun LatestBooks(navController: NavHostController, viewModel: LatestBooksVM = vie
             ShowServerErrorData()
         },
         apiError = { errorBody, responseCode ->
-            list.debug { "ERROR $errorBody $responseCode"}
+            list.debug { "ERROR $errorBody $responseCode" }
             ShowServerErrorData()
         },
         success = {
@@ -64,40 +69,9 @@ fun ShowBooks(list: List<Book>, navController: NavHostController) {
             .padding(bottom = 56.dp)
     ) {
         items(list) { item ->
-            ShowBook(item)
-        }
-    }
-}
+            Book(item){
 
-
-@Composable
-fun ShowBook(item: Book) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-    ) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentWidth()
-        ) {
-            Text(
-                text = item.title.toString(), modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            )
-            Text(
-                text = item.year.toString(), modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            )
-            Text(
-                text = item.extension.toString(), modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-            )
+            }
         }
     }
 }

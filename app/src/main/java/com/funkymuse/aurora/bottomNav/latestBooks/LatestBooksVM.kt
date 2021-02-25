@@ -5,11 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.repositories.LatestBooksRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class LatestBooksVM : ViewModel() {
-    private val latestBooksRepo = LatestBooksRepo()
+@HiltViewModel
+class LatestBooksVM @Inject constructor(private val latestBooksRepo: LatestBooksRepo) :
+    ViewModel() {
+
     private val latestBooksData: MutableStateFlow<RetrofitResult<List<Book>>> =
         MutableStateFlow(RetrofitResult.EmptyData)
     val booksData = latestBooksData.asStateFlow()
