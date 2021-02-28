@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.ui.theme.Shapes
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -34,11 +35,12 @@ fun NavigateBackButton(navController: NavController) {
 }
 
 @Composable
-fun BackButton(onClick: () -> Unit = {}) {
+fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}, ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = LightGray),
-        modifier = Modifier.wrapContentWidth()
+        modifier = modifier,
+        shape = Shapes.large
     ) {
         Icon(
             imageVector = Icons.Default.ArrowBack,

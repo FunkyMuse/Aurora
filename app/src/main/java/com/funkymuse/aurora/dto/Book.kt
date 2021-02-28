@@ -1,6 +1,9 @@
 package com.funkymuse.aurora.dto
 
+import android.os.Parcelable
 import com.crazylegend.kotlinextensions.tryOrNull
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
@@ -9,8 +12,8 @@ import org.jsoup.nodes.TextNode
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
-
-data class Book(private val element: Element) {
+@Parcelize
+class Book(private val element: @RawValue Element) : Parcelable {
 
     val generateFavoriteBook get() = FavoriteBook(id.toString(), title, year, pages, extension, mirrors)
 
@@ -18,8 +21,6 @@ data class Book(private val element: Element) {
         get() = tryOrNull {
             (element.childNodes()[0].childNodes()[0] as TextNode).wholeText
         }
-
-    var isInFavorites: Boolean = false
 
     val author: String?
         get() = tryOrNull {
@@ -80,6 +81,10 @@ data class Book(private val element: Element) {
             }
         }
 
+    override fun equals(other: Any?): Boolean {
+        if (other !is Book) return false
+        return other.id == id
+    }
 
     override fun toString(): String {
         return "$id $author $title $publisher $year $language favorite links $mirrors"
@@ -96,5 +101,20 @@ data class Book(private val element: Element) {
         } else {
             (elements[2].childNodes()[0] as TextNode).wholeText
         }
+    }
+
+    override fun hashCode(): Int {
+        var result = generateFavoriteBook.hashCode()
+        result = 31 * result + (id?.hashCode() ?: 0)
+        result = 31 * result + (author?.hashCode() ?: 0)
+        result = 31 * result + (title?.hashCode() ?: 0)
+        result = 31 * result + (publisher?.hashCode() ?: 0)
+        result = 31 * result + (year?.hashCode() ?: 0)
+        result = 31 * result + (pages?.hashCode() ?: 0)
+        result = 31 * result + (language?.hashCode() ?: 0)
+        result = 31 * result + (size?.hashCode() ?: 0)
+        result = 31 * result + (extension?.hashCode() ?: 0)
+        result = 31 * result + (mirrors?.hashCode() ?: 0)
+        return result
     }
 }

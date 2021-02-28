@@ -1,22 +1,21 @@
-package com.funkymuse.aurora.bottomNav.book
+package com.funkymuse.aurora.book
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
@@ -31,6 +30,8 @@ import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.ui.theme.Shapes
 import org.jsoup.nodes.Element
+import org.jsoup.parser.Tag
+import kotlin.math.roundToInt
 
 /**
  * Created by FunkyMuse, date 2/25/21
@@ -38,7 +39,7 @@ import org.jsoup.nodes.Element
 
 @Composable
 @Preview(showSystemUi = true, showBackground = true, device = Devices.PIXEL_4)
-fun Book(book: Book = Book(Element("")), onClick: () -> Unit = {}) {
+fun Book(book: Book = Book(Element(Tag.valueOf("div"), "test")), onClick: () -> Unit = {}) {
     Card(
         shape = Shapes.large,
         modifier = Modifier
@@ -48,6 +49,46 @@ fun Book(book: Book = Book(Element("")), onClick: () -> Unit = {}) {
         backgroundColor = Color.LightGray
     ) {
         ConstraintLayout(modifier = Modifier.clickable { onClick() }) {
+            val image = addStaticImage()
+            val title = addTitle(image, book.title)
+            val author = addAuthor(title, image, book.author)
+            AddYearNumberOfPagesAndFileFormat(author, book.year, book.pages, book.extension)
+        }
+    }
+}
+
+@Composable
+@Preview(
+    showSystemUi = true,
+    showBackground = true,
+    device = Devices.PIXEL_4,
+    name = "loading book"
+)
+fun LoadingBook(book: Book = Book(Element(Tag.valueOf("div"), "test"))) {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 300
+                0.7f at 500
+            },
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    Card(
+        shape = Shapes.large,
+        modifier = Modifier
+            .padding(16.dp, 8.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .alpha(alpha),
+        backgroundColor = Color.LightGray
+    ) {
+        ConstraintLayout {
             val image = addStaticImage()
             val title = addTitle(image, book.title)
             val author = addAuthor(title, image, book.author)
@@ -170,6 +211,7 @@ private fun ConstraintLayoutScope.addTitle(
             },
         overflow = TextOverflow.Ellipsis,
         maxLines = 3,
+        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
     )
     return title
 }

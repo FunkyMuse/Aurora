@@ -5,10 +5,11 @@ buildscript {
         room = '2.2.6'
         KAHelpers = '2.2.9'
         moshi = "1.11.0"
-        daggerVersion = '2.32'
-        hilt_version = '2.32-alpha'
+        daggerVersion = '2.33'
+        hilt_version = '2.33-beta'
         hiltJetpackVersion = '1.0.0-alpha03'
         retrofit = "2.9.0"
+        glide = "4.12.0"
     }
     repositories {
         google()
@@ -21,7 +22,7 @@ buildscript {
 
     }
 }
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

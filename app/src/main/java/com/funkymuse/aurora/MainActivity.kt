@@ -3,41 +3,52 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
+import com.crazylegend.kotlinextensions.log.debug
+import com.funkymuse.aurora.bookDetails.*
 import com.funkymuse.aurora.bottomNav.BottomNavScreen
 import com.funkymuse.aurora.bottomNav.favorites.Favorites
 import com.funkymuse.aurora.bottomNav.latestBooks.LatestBooks
 import com.funkymuse.aurora.bottomNav.search.Search
 import com.funkymuse.aurora.bottomNav.settings.Settings
+import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.aurora.searchResult.SEARCH_PARAM
 import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
+import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
 import com.funkymuse.aurora.searchResult.SearchResult
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AuroraTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    BottomNav()
+                    AuroraScaffold(bookDetailsViewModelFactory)
                 }
             }
         }
@@ -46,9 +57,9 @@ class MainActivity : ComponentActivity() {
 
 data class BottomEntry(val screen: BottomNavScreen, val icon: ImageVector)
 
-@Preview(showSystemUi = true)
 @Composable
-fun BottomNav() {
+fun AuroraScaffold(bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF) {
+
     val navController = rememberNavController()
     val bottomNavList =
         listOf(
@@ -79,48 +90,68 @@ fun BottomNav() {
             navController = navController,
             startDestination = BottomNavScreen.Search.route,
             builder = {
-                bottomNavList.forEach { entry ->
-
-                    addBottomNavDestinations(navController, entry)
+                composable(BottomNavScreen.Search.route) {
+                    Search(navController)
+                }
+                composable(BottomNavScreen.Favorites.route) {
+                    Favorites(navController)
+                }
+                composable(BottomNavScreen.LatestBooks.route) {
+                    LatestBooks(navController)
+                }
+                composable(BottomNavScreen.Settings.route) {
+                    Settings(navController)
                 }
                 addSearchResult(navController)
+                addBookDetails(navController, bookDetailsViewModelFactory)
             }
         )
     }
 }
 
-
-private fun NavGraphBuilder.addBottomNavDestinations(
-    navController: NavHostController,
-    entry: BottomEntry
-) {
-    composable(entry.screen.route) {
-        when (entry.screen) {
-            BottomNavScreen.Favorites -> Favorites(navController)
-            BottomNavScreen.LatestBooks -> LatestBooks(navController)
-            BottomNavScreen.Search -> Search(navController)
-            BottomNavScreen.Settings -> Settings(navController)
-        }
-    }
-}
-
 private fun NavGraphBuilder.addSearchResult(navController: NavHostController) {
     composable(
-        "$SEARCH_RESULT_ROUTE/{$SEARCH_PARAM}",
+        SEARCH_ROUTE_BOTTOM_NAV,
         arguments = listOf(navArgument(SEARCH_PARAM) { type = NavType.StringType })
     ) {
         SearchResult(navController, it.arguments?.getString(SEARCH_PARAM))
     }
 }
 
+private fun NavGraphBuilder.addBookDetails(
+    navController: NavHostController,
+    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
+) {
+    composable(
+        BOOK_DETAILS_BOTTOM_NAV_ROUTE,
+        arguments = listOf(navArgument(BOOK_PARAM) {
+            type = NavType.IntType
+        })
+    ) {
+        it.arguments?.getInt(BOOK_PARAM)
+            ?.let { bookID -> ShowDetailedBook(bookID, navController, bookDetailsViewModelFactory) }
+    }
+}
+
+val hideBottomNavList = listOf(BOOK_DETAILS_BOTTOM_NAV_ROUTE, SEARCH_ROUTE_BOTTOM_NAV)
+
 @Composable
 fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
-    BottomNavigation() {
+    var hideBottomNav by rememberBooleanSaveableDefaultFalse()
+    val alpha = if (hideBottomNav) {
+        animateFloatAsState(targetValue = 0f)
+    } else {
+        animateFloatAsState(targetValue = 1f)
+    }
+    BottomNavigation(modifier = Modifier.alpha(alpha.value)) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+        debug { "CURRENT ROUTE $currentRoute" }
+        hideBottomNav = currentRoute in hideBottomNavList
         bottomNavList.forEach { bottomEntry ->
             BottomNavigationItem(
                 selected = currentRoute == bottomEntry.screen.route,
+                alwaysShowLabel = false,
                 onClick = {
                     navController.navigate(bottomEntry.screen.route) {
                         popUpTo = navController.graph.startDestination
@@ -138,3 +169,4 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         }
     }
 }
+

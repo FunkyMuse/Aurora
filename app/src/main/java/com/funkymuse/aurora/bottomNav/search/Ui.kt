@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.extensions.rememberStringSaveableDefaultEmpty
 import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -61,7 +62,7 @@ fun SearchInputExplained() {
 @Composable
 fun SearchInput(navController: NavHostController = rememberNavController()) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var inputText by rememberSaveable { mutableStateOf("") }
+    var inputText by rememberStringSaveableDefaultEmpty()
     val invalidInput = inputText.isEmpty()
 
     OutlinedTextField(
