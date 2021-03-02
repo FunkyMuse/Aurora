@@ -116,7 +116,7 @@ fun ShowBooks(
             .padding(bottom = 56.dp)
 
     ) {
-        items(list) { item ->
+        items(list, key = { it.id.toString() }) { item ->
             Book(item) {
                 navController.navigate("$BOOK_DETAILS_ROUTE/${item.id}") { launchSingleTop = true }
             }
