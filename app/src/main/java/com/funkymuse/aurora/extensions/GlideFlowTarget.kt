@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Created by Hristijan, date 2/28/21
+ * Created by FunkyMuse, date 2/28/21
  */
  class GlideFlowTarget : CustomTarget<Bitmap>() {
 

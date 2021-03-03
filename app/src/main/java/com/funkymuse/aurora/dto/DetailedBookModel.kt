@@ -2,6 +2,7 @@ package com.funkymuse.aurora.dto
 
 
 import android.os.Parcelable
+import com.crazylegend.kotlinextensions.randomUUIDstring
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
@@ -127,4 +128,66 @@ data class DetailedBookModel(
         val volumeinfo: String? = null,
         @Json(name = "year")
         val year: String? = null
-) : Parcelable
+) : Parcelable{
+        companion object{
+                val testBook = DetailedBookModel(
+                        aich = randomUUIDstring,
+                        asin = randomUUIDstring,
+                        author = randomUUIDstring,
+                        bookmarked = randomUUIDstring,
+                        btih = randomUUIDstring,
+                        city = randomUUIDstring,
+                        cleaned = randomUUIDstring,
+                        color = randomUUIDstring,
+                        commentary = randomUUIDstring,
+                        coverurl = randomUUIDstring,
+                        crc32 = randomUUIDstring,
+                        ddc = randomUUIDstring,
+                        descr = randomUUIDstring,
+                        doi = randomUUIDstring,
+                        dpi = randomUUIDstring,
+                        edition = randomUUIDstring,
+                        edonkey = randomUUIDstring,
+                        extension = randomUUIDstring,
+                        filesize = randomUUIDstring,
+                        generic = randomUUIDstring,
+                        googlebookid = randomUUIDstring,
+                        id = randomUUIDstring,
+                        identifier = randomUUIDstring,
+                        identifierwodash = randomUUIDstring,
+                        issn = randomUUIDstring,
+                        issue = randomUUIDstring,
+                        language = randomUUIDstring,
+                        lbc = randomUUIDstring,
+                        lcc = randomUUIDstring,
+                        library = randomUUIDstring,
+                        local = randomUUIDstring,
+                        locator = randomUUIDstring,
+                        md5 = randomUUIDstring,
+                        openlibraryid = randomUUIDstring,
+                        orientation = randomUUIDstring,
+                        pages = randomUUIDstring,
+                        pagesinfile = randomUUIDstring,
+                        paginated = randomUUIDstring,
+                        periodical = randomUUIDstring,
+                        publisher = randomUUIDstring,
+                        scanned = randomUUIDstring,
+                        searchable = randomUUIDstring,
+                        series = randomUUIDstring,
+                        sha1 = randomUUIDstring,
+                        sha256 = randomUUIDstring,
+                        tags = randomUUIDstring,
+                        timeadded = randomUUIDstring,
+                        timelastmodified = randomUUIDstring,
+                        title = randomUUIDstring,
+                        toc = randomUUIDstring,
+                        topic = randomUUIDstring,
+                        torrent = randomUUIDstring,
+                        tth = randomUUIDstring,
+                        udc = randomUUIDstring,
+                        visible = randomUUIDstring,
+                        volumeinfo = randomUUIDstring,
+                        year = randomUUIDstring
+                )
+        }
+}

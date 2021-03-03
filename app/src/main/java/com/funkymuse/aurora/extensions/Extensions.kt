@@ -248,6 +248,8 @@ inline fun <reified T : ViewModel> assistedViewModel(
 
 @Composable
 fun rememberBooleanSaveableDefaultFalse() = rememberSaveable { mutableStateOf(false) }
+@Composable
+fun rememberBooleanSaveableDefaultTrue() = rememberSaveable { mutableStateOf(true) }
 
 @Composable
 fun rememberStringSaveableDefaultEmpty() = rememberSaveable { mutableStateOf("") }

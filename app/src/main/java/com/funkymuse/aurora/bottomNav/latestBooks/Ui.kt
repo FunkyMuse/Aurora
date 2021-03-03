@@ -118,6 +118,7 @@ fun ShowBooks(
     ) {
         items(list, key = { it.id.toString() }) { item ->
             Book(item) {
+                val mirrors : Array<String> = item.mirrors?.toTypedArray()?: emptyArray()
                 navController.navigate("$BOOK_DETAILS_ROUTE/${item.id}") { launchSingleTop = true }
             }
         }

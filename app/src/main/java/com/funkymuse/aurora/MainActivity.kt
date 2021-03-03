@@ -3,19 +3,22 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -29,7 +32,6 @@ import com.funkymuse.aurora.bottomNav.search.Search
 import com.funkymuse.aurora.bottomNav.settings.Settings
 import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.aurora.searchResult.SEARCH_PARAM
-import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
 import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
 import com.funkymuse.aurora.searchResult.SearchResult
 import com.funkymuse.aurora.ui.theme.AuroraTheme
@@ -124,12 +126,18 @@ private fun NavGraphBuilder.addBookDetails(
 ) {
     composable(
         BOOK_DETAILS_BOTTOM_NAV_ROUTE,
-        arguments = listOf(navArgument(BOOK_PARAM) {
+        arguments = listOf(navArgument(BOOK_ID_PARAM) {
             type = NavType.IntType
         })
     ) {
-        it.arguments?.getInt(BOOK_PARAM)
-            ?.let { bookID -> ShowDetailedBook(bookID, navController, bookDetailsViewModelFactory) }
+        it.arguments?.apply {
+            ShowDetailedBook(
+                getInt(BOOK_ID_PARAM),
+                getStringArray(DL_MIRRORS_PARAM)?.toList(),
+                navController,
+                bookDetailsViewModelFactory
+            )
+        }
     }
 }
 
@@ -138,12 +146,13 @@ val hideBottomNavList = listOf(BOOK_DETAILS_BOTTOM_NAV_ROUTE, SEARCH_ROUTE_BOTTO
 @Composable
 fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
     var hideBottomNav by rememberBooleanSaveableDefaultFalse()
-    val alpha = if (hideBottomNav) {
-        animateFloatAsState(targetValue = 0f)
+    val size = if (hideBottomNav) {
+        Modifier.size(animateDpAsState(targetValue = 0.dp, animationSpec = tween()).value)
     } else {
-        animateFloatAsState(targetValue = 1f)
+        Modifier
     }
-    BottomNavigation(modifier = Modifier.alpha(alpha.value)) {
+
+    BottomNavigation(modifier = size) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         debug { "CURRENT ROUTE $currentRoute" }

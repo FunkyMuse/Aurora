@@ -9,7 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.funkymuse.aurora.R
 
 /**
- * Created by Hristijan, date 2/28/21
+ * Created by FunkyMuse, date 2/28/21
  */
 @GlideModule
 class AuroraGlideModule : AppGlideModule() {

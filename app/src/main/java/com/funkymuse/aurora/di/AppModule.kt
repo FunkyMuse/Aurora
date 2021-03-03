@@ -17,7 +17,7 @@ import retrofit2.create
 import javax.inject.Singleton
 
 /**
- * Created by Hristijan, date 2/28/21
+ * Created by FunkyMuse, date 2/28/21
  */
 @Module
 @InstallIn(SingletonComponent::class)

@@ -5,37 +5,36 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.crazylegend.kotlinextensions.log.debug
+import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
+import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
 import com.crazylegend.kotlinextensions.string.isNotNullOrEmpty
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.backButton.BackButton
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
+import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
-import com.funkymuse.aurora.extensions.CardShimmer
-import com.funkymuse.aurora.extensions.GlideImageState
-import com.funkymuse.aurora.extensions.assistedViewModel
-import com.funkymuse.aurora.extensions.loadPicture
+import com.funkymuse.aurora.extensions.*
 import com.funkymuse.aurora.ui.theme.Shapes
 import java.util.*
 
@@ -44,13 +43,15 @@ import java.util.*
  */
 
 const val BOOK_DETAILS_ROUTE = "book_details"
-const val BOOK_PARAM = "book"
-const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_PARAM}"
+const val BOOK_ID_PARAM = "book"
+const val DL_MIRRORS_PARAM = "dl-mirrors"
+const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 
 @SuppressLint("RestrictedApi")
 @Composable
 fun ShowDetailedBook(
     id: Int?,
+    dlMirrors: List<String>? = null,
     navController: NavHostController,
     bookDetailsViewModel: BookDetailsViewModel.BookDetailsVMF,
 ) {
@@ -80,7 +81,7 @@ fun ShowDetailedBook(
             val detailedBook = firstOrNull()
             if (detailedBook == null)
                 navController.navigateUp()
-            DetailedBook(detailedBook) {
+            DetailedBook(detailedBook, dlMirrors) {
                 navController.navigateUp()
             }
         }
@@ -89,9 +90,15 @@ fun ShowDetailedBook(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun DetailedBook(book: DetailedBookModel? = null, onBackClicked: () -> Unit = {}) {
+fun DetailedBook(
+    book: DetailedBookModel? = null ?: DetailedBookModel.testBook,
+    dlMirrors: List<String>? = null,
+    onBackClicked: () -> Unit = {}
+) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book?.coverurl
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,10 +110,12 @@ fun DetailedBook(book: DetailedBookModel? = null, onBackClicked: () -> Unit = {}
         val imageModifier = Modifier
             .padding(top = 16.dp)
 
-        BackButton(modifier = alignment
-            .padding(start = 16.dp, top= 8.dp), onClick = onBackClicked)
+        BackButton(
+            modifier = alignment
+                .padding(start = 16.dp, top = 8.dp), onClick = onBackClicked
+        )
 
-        when(val res = loadPicture(url = imageUrl).collectAsState().value){
+        when (val res = loadPicture(url = imageUrl).collectAsState().value) {
             is GlideImageState.Failure -> {
                 res.errorDrawable?.let {
                     Image(
@@ -261,6 +270,51 @@ fun DetailedBook(book: DetailedBookModel? = null, onBackClicked: () -> Unit = {}
                     this
                 )
         }
+
+        if (dlMirrors.isNotNullOrEmpty) {
+            var menuExpanded by remember { mutableStateOf(false) }
+
+            OutlinedButton(onClick = {
+                menuExpanded = true
+            }, Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.download_mirrors),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            DropdownMenu(expanded = menuExpanded,
+                modifier = Modifier.padding(16.dp),
+                offset = DpOffset(32.dp, 16.dp),
+                onDismissRequest = { menuExpanded = false }) {
+                dlMirrors?.forEachIndexed { index, it ->
+                    DropdownMenuItem(onClick = {
+                        context.openWebPage(it)
+                        menuExpanded = false
+                    }) {
+                        Text(
+                            text = stringResource(id = R.string.mirror_placeholder, index),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        if (book?.md5.isNotNullOrEmpty()) {
+            OutlinedButton(onClick = {
+                context.openWebPage(torrentDownloadURL(book?.md5.toString()))
+            }, Modifier.padding(16.dp)) {
+                Text(
+                    text = stringResource(id = R.string.torrent_download),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.padding(16.dp))
+        } else {
+            Spacer(modifier = Modifier.padding(16.dp))
+        }
+
     }
 }
 

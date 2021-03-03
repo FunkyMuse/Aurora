@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by Hristijan, date 2/28/21
+ * Created by FunkyMuse, date 2/28/21
  */
 class BookDetailsViewModel @AssistedInject constructor(
     @Assisted private val id: Int,
