@@ -1,11 +1,13 @@
 package com.funkymuse.aurora.bottomNav.latestBooks
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +30,8 @@ import com.funkymuse.aurora.extensions.CardListShimmer
 import com.funkymuse.aurora.ui.theme.Shapes
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.navigate
-import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
+import com.funkymuse.aurora.components.ShowErrorDataWithRetry
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -64,14 +66,21 @@ fun LatestBooks(
             if (it is NoConnectionException) {
                 NoConnectionError()
             } else {
-                ShowServerErrorData()
+                ShowErrorDataWithRetry(stringResource(id = R.string.no_latest_books)){
+                    viewModel.refresh()
+                }
             }
         },
         apiError = { _, _ ->
-            ShowServerErrorData()
+            ShowErrorDataWithRetry(stringResource(id = R.string.no_latest_books)){
+                viewModel.refresh()
+            }
         },
         success = {
-            ShowBooks(this, navController)
+            ShowBooks(this) { item ->
+                viewModel.saveMirrorsForBookId(item.id, item.mirrors)
+                navController.navigate("$BOOK_DETAILS_ROUTE/${item.id}") { launchSingleTop = true }
+            }
         }
     )
 }
@@ -79,7 +88,8 @@ fun LatestBooks(
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ShowEmptyData() {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+    Card(shape = Shapes.large,
+        modifier = Modifier.padding(20.dp).wrapContentHeight()) {
         Text(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(16.dp),
@@ -93,21 +103,22 @@ fun ShowEmptyData() {
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun NoConnectionError() {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-        Text(
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(16.dp),
-            text = stringResource(id = R.string.no_books_loaded_no_connect),
-            style = MaterialTheme.typography.body1
-        )
-    }
+   Card(shape = Shapes.large,
+       modifier = Modifier.padding(20.dp).wrapContentHeight()) {
+           Text(
+               textAlign = TextAlign.Center,
+               modifier = Modifier.padding(16.dp),
+               text = stringResource(id = R.string.no_books_loaded_no_connect),
+               style = MaterialTheme.typography.body1
+           )
+   }
 }
 
 
 @Composable
 fun ShowBooks(
     list: List<Book>,
-    navController: NavHostController,
+    onBookClicked: (Book) -> Unit,
 ) {
 
     LazyColumn(
@@ -118,31 +129,11 @@ fun ShowBooks(
     ) {
         items(list, key = { it.id.toString() }) { item ->
             Book(item) {
-                val mirrors : Array<String> = item.mirrors?.toTypedArray()?: emptyArray()
-                navController.navigate("$BOOK_DETAILS_ROUTE/${item.id}") { launchSingleTop = true }
+                onBookClicked(item)
             }
         }
     }
 
-}
-
-
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun ShowServerErrorData() {
-    Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.Center) {
-        Card(
-            shape = Shapes.large,
-            modifier = Modifier.padding(20.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.no_latest_books),
-                modifier = Modifier
-                    .padding(16.dp),
-                fontSize = 24.sp
-            )
-        }
-    }
 }
 
 @Composable

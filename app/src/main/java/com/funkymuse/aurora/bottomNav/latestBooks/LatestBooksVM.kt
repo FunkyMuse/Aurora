@@ -12,6 +12,8 @@ import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
+import com.funkymuse.aurora.mirrorsDB.MirrorDao
+import com.funkymuse.aurora.mirrorsDB.MirrorModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,10 +23,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.util.ArrayList
 import javax.inject.Inject
 
 @HiltViewModel
-class LatestBooksVM @Inject constructor (application: Application) : AndroidViewModel(application) {
+class LatestBooksVM @Inject constructor (
+    private val mirrorDao: MirrorDao,
+    application: Application) : AndroidViewModel(application) {
 
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
         MutableStateFlow(RetrofitResult.EmptyData)
@@ -162,6 +167,13 @@ class LatestBooksVM @Inject constructor (application: Application) : AndroidView
     fun refresh() {
         resetOnSort()
         searchForBook()
+    }
+
+    fun saveMirrorsForBookId(id: String?, mirrors: ArrayList<String>?) {
+        if (id?.toIntOrNull() == null || mirrors.isNullOrEmpty()) return
+        viewModelScope.launch {
+            mirrorDao.insertMirrorModel(MirrorModel(id.toInt(), mirrors))
+        }
     }
 
 }

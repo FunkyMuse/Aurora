@@ -2,7 +2,12 @@ package com.funkymuse.aurora.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+
+
+val LavanderBlue = Color(0xFFcec2ff)
+val MaximumBluePurple = Color(0xFFb3b3f1)
+val LavanderBlueDark = Color(0xFF9c92cc)
+val Puce = Color(0xFFcf8ba9)
+val PinkLavander = Color(0xFFdcb6d5)
+val AeroBlue = Color(0xFFC2FFCE)
+val BabyPink = Color(0xFFD9A89C)

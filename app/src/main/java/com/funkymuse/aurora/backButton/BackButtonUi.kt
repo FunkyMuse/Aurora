@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -38,7 +39,7 @@ fun NavigateBackButton(navController: NavController) {
 fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}, ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = LightGray),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
         modifier = modifier,
         shape = Shapes.large
     ) {

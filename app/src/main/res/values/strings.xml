@@ -19,8 +19,8 @@
     <string name="server_error">An error has occurred on the server side, try again ?</string>
     <string name="cancel">Cancel</string>
     <string name="no_book_loaded">Couldn\'t fetch details for this book, try again later !</string>
-    <string name="no_book_loaded_no_connect">Couldn\'t fetch details for this book, establish an active internet connection and it will automatically reload ! !</string>
-    <string name="no_books_loaded_no_connect">Couldn\'t fetch books, establish active internet connection and it will automatically reload ! !</string>
+    <string name="no_book_loaded_no_connect">Couldn\'t fetch details for this book, establish an active internet connection and reloading will start automatically ! !</string>
+    <string name="no_books_loaded_no_connect">Couldn\'t fetch books, establish active internet connection and reloading will start automatically ! !</string>
     <string name="author_detail">Author/s:</string>
     <string name="language_detail">Language</string>
     <string name="title_detail">Title</string>
@@ -40,7 +40,7 @@
     <string name="no_download_mirrors_available">No download links available.</string>
     <string name="year_asc">Year ASC</string>
     <string name="year_desc">Year DESC</string>
-    <string name="mirror_placeholder">Mirror: %1$d</string>
+    <string name="mirror_placeholder">Mirror %1$d</string>
     <string name="data_saver">Data saver</string>
     <string name="data_saver_expl">Enable this option to save data, images will not be loaded</string>
     <string name="torrent_download">Torrent download</string>
@@ -92,4 +92,5 @@
     <string name="no_books_loaded">Couldn\'t load books, seems like they\'re unavailable at the moment, please come back later!</string>
     <string name="share">Share</string>
     <string name="download_mirrors">Download mirrors</string>
+    <string name="retry">Retry?</string>
 </resources>

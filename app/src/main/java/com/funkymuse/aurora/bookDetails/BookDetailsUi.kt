@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -21,7 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -35,7 +38,11 @@ import com.funkymuse.aurora.backButton.BackButton
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
+import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.extensions.*
+import com.funkymuse.aurora.ui.theme.BabyPink
+import com.funkymuse.aurora.ui.theme.LavanderBlue
+import com.funkymuse.aurora.ui.theme.LavanderBlueDark
 import com.funkymuse.aurora.ui.theme.Shapes
 import java.util.*
 
@@ -45,14 +52,12 @@ import java.util.*
 
 const val BOOK_DETAILS_ROUTE = "book_details"
 const val BOOK_ID_PARAM = "book"
-const val DL_MIRRORS_PARAM = "dl-mirrors"
 const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 
 @SuppressLint("RestrictedApi")
 @Composable
 fun ShowDetailedBook(
     id: Int?,
-    dlMirrors: List<String>? = null,
     navController: NavHostController,
     bookDetailsViewModel: BookDetailsViewModel.BookDetailsVMF,
 ) {
@@ -65,6 +70,8 @@ fun ShowDetailedBook(
         bookDetailsViewModel.create(id)
     })
     val book = viewModel.book.collectAsState().value
+    val mirrors = viewModel.bookMirrors.collectAsState().value
+    val favoritesBook = viewModel.favoriteBook.collectAsState().value
     book.handle(
         loading = {
 
@@ -85,11 +92,32 @@ fun ShowDetailedBook(
                 return
             }
 
-            DetailedBook(detailedBook, dlMirrors) {
+            DetailedBook(detailedBook, mirrors?.mirrors, favoritesBook, onFavoritesClicked = {
+                if (favoritesBook == null) {
+                    viewModel.addToFavorites(
+                        FavoriteBook(
+                            detailedBook.id.toString().toInt(),
+                            detailedBook.title,
+                            detailedBook.year,
+                            detailedBook.pages,
+                            detailedBook.extension,
+                            detailedBook.author,
+                            mirrors?.mirrors
+                        )
+                    )
+                } else {
+                    viewModel.removeFromFavorites(favoritesBook.id)
+                }
+            }) {
                 navController.navigateUp()
             }
         }
     )
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            viewModel.deleteBookMirrors()
+        }
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
@@ -105,6 +133,8 @@ fun BookPreview() {
 fun DetailedBook(
     book: DetailedBookModel,
     dlMirrors: List<String>? = null,
+    favoritesBook: FavoriteBook? = null,
+    onFavoritesClicked: () -> Unit = {},
     onBackClicked: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
@@ -113,10 +143,9 @@ fun DetailedBook(
 
     Scaffold(
         topBar = {
-            BackButton(
-                modifier = Modifier
-                    .padding(8.dp), onClick = onBackClicked
-            )
+            TopAppBarBookDetails(onBackClicked, favoritesBook != null) {
+                onFavoritesClicked()
+            }
         }
     ) {
         Column(
@@ -129,8 +158,6 @@ fun DetailedBook(
             val alignment = Modifier.align(Alignment.Start)
             val imageModifier = Modifier
                 .padding(top = 16.dp)
-
-
 
             when (val res = loadPicture(url = imageUrl).collectAsState().value) {
                 is GlideImageState.Failure -> {
@@ -291,11 +318,11 @@ fun DetailedBook(
             if (dlMirrors.isNotNullOrEmpty) {
                 var menuExpanded by remember { mutableStateOf(false) }
 
-                DetailedButton(stringResource(id = R.string.download_mirrors)){
+                DetailedButton(stringResource(id = R.string.download_mirrors)) {
                     menuExpanded = true
                 }
                 DropdownMenu(expanded = menuExpanded,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     offset = DpOffset(32.dp, 16.dp),
                     onDismissRequest = { menuExpanded = false }) {
                     dlMirrors?.forEachIndexed { index, it ->
@@ -303,8 +330,13 @@ fun DetailedBook(
                             context.openWebPage(it)
                             menuExpanded = false
                         }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_download),
+                                contentDescription = stringResource(id = R.string.download)
+                            )
+
                             Text(
-                                text = stringResource(id = R.string.mirror_placeholder, index),
+                                text = stringResource(id = R.string.mirror_placeholder, index + 1),
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
@@ -313,7 +345,7 @@ fun DetailedBook(
             }
 
             if (book.md5.isNotNullOrEmpty()) {
-                DetailedButton(stringResource(id = R.string.torrent_download)){
+                DetailedButton(stringResource(id = R.string.torrent_download)) {
                     context.openWebPage(torrentDownloadURL(book.md5.toString()))
                 }
                 Spacer(modifier = Modifier.padding(16.dp))
@@ -322,6 +354,47 @@ fun DetailedBook(
             }
 
         }
+    }
+}
+
+@Composable
+fun TopAppBarBookDetails(
+    onBackClicked: () -> Unit, isInFavorites: Boolean,
+    onFavoritesClicked: () -> Unit
+) {
+    TopAppBar(backgroundColor = LavanderBlueDark) {
+        BackButton(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp), onClick = onBackClicked
+        )
+        AddToFavorites(
+            Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp), isInFavorites, onFavoritesClicked
+        )
+    }
+}
+
+@Composable
+@Preview
+fun AddToFavorites(
+    modifier: Modifier = Modifier,
+    isInFavorites: Boolean = false,
+    onClicked: () -> Unit = {}
+) {
+    val favoritesIndicator =
+        if (isInFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
+    Button(
+        onClick = onClicked,
+        shape = Shapes.large,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = favoritesIndicator,
+            contentDescription = stringResource(id = R.string.title_favorites)
+        )
     }
 }
 
@@ -351,7 +424,7 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = Shapes.large,
-        backgroundColor = Color(0xFF7F7F7F7)
+        backgroundColor = BabyPink
     ) {
         Column {
             Text(
@@ -367,9 +440,11 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
 
 @Composable
 @Preview
-fun DetailedButton(text:String = "Some button text", onClicked: () -> Unit = {}) {
-    Button(shape = Shapes.large, onClick = onClicked,
-        modifier = Modifier.padding(top = 16.dp)) {
+fun DetailedButton(text: String = "Some button text", onClicked: () -> Unit = {}) {
+    Button(
+        shape = Shapes.large, onClick = onClicked,
+        modifier = Modifier.padding(top = 16.dp)
+    ) {
         Text(text = text)
     }
 }

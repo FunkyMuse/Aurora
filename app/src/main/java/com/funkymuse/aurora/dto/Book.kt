@@ -15,7 +15,7 @@ import org.jsoup.nodes.TextNode
 @Parcelize
 class Book(private val element: @RawValue Element) : Parcelable {
 
-    val generateFavoriteBook get() = FavoriteBook(id.toString(), title, year, pages, extension, mirrors)
+    val generateFavoriteBook get() = FavoriteBook(id.toString().toInt(), title, year, pages, extension, author, mirrors)
 
     val id: String?
         get() = tryOrNull {

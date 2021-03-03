@@ -28,10 +28,10 @@ import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
+import com.funkymuse.aurora.ui.theme.BabyPink
 import com.funkymuse.aurora.ui.theme.Shapes
 import org.jsoup.nodes.Element
 import org.jsoup.parser.Tag
-import kotlin.math.roundToInt
 
 /**
  * Created by FunkyMuse, date 2/25/21
@@ -46,7 +46,7 @@ fun Book(book: Book = Book(Element(Tag.valueOf("div"), "test")), onClick: () -> 
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
-        backgroundColor = Color.LightGray
+        backgroundColor = BabyPink
     ) {
         ConstraintLayout(modifier = Modifier.clickable { onClick() }) {
             val image = addStaticImage()

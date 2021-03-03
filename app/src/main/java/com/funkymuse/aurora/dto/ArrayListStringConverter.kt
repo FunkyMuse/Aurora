@@ -1,9 +1,8 @@
 package com.funkymuse.aurora.dto
 
 import androidx.room.TypeConverter
-import com.crazylegend.moshi.fromJson
 import com.crazylegend.moshi.toJson
-import com.crazylegend.moshi.toJsonObjectArrayList
+import com.crazylegend.moshi.toJsonObjectList
 
 
 /**
@@ -12,12 +11,12 @@ import com.crazylegend.moshi.toJsonObjectArrayList
 
 class ArrayListStringConverter {
     @TypeConverter
-    fun toString(list: ArrayList<String>?): String? =
-         list?.toJson()
+    fun toString(list: List<String>?): String? =
+        list?.toJson()
 
 
     @TypeConverter
-    fun toList(json: String?): ArrayList<String>? =
-         json?.toJsonObjectArrayList()
+    fun toList(json: String?): List<String>? =
+        json?.toJsonObjectList()
 
 }

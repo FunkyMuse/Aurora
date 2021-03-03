@@ -3,7 +3,7 @@ buildscript {
         compose_version = '1.0.0-beta01'
         kotlin_version = '1.4.30'
         room = '2.2.6'
-        KAHelpers = '2.2.9'
+        KAHelpers = '2.2.10'
         moshi = "1.11.0"
         daggerVersion = '2.33'
         hilt_version = '2.33-beta'

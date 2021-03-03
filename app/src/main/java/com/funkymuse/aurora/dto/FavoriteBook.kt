@@ -13,23 +13,26 @@ import androidx.room.TypeConverters
 @Entity(tableName = "favoriteBooks")
 data class FavoriteBook(
 
-        @PrimaryKey
-        @ColumnInfo(name = "id")
-        var id: String = "",
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    var id: Int = 0,
 
-        @ColumnInfo(name = "title")
-        var title: String? = null,
+    @ColumnInfo(name = "title")
+    var title: String? = null,
 
-        @ColumnInfo(name = "year")
-        var year: String? = null,
+    @ColumnInfo(name = "year")
+    var year: String? = null,
 
-        @ColumnInfo(name = "pages")
-        var pages: String? = null,
+    @ColumnInfo(name = "pages")
+    var pages: String? = null,
 
-        @ColumnInfo(name = "extension")
-        var extension: String? = null,
+    @ColumnInfo(name = "extension")
+    var extension: String? = null,
 
-        @ColumnInfo(name = "mirrors")
-        @TypeConverters(ArrayListStringConverter::class)
-        val mirrors: ArrayList<String>?
+    @ColumnInfo(name = "author")
+    var author: String? = null,
+
+    @ColumnInfo(name = "mirrors")
+    @TypeConverters(ArrayListStringConverter::class)
+    val mirrors: List<String>?
 )

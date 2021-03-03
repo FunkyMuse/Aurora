@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,8 @@ import com.funkymuse.aurora.searchResult.SEARCH_PARAM
 import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
 import com.funkymuse.aurora.searchResult.SearchResult
 import com.funkymuse.aurora.ui.theme.AuroraTheme
+import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.funkymuse.aurora.ui.theme.Shapes
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -133,7 +136,6 @@ private fun NavGraphBuilder.addBookDetails(
         it.arguments?.apply {
             ShowDetailedBook(
                 getInt(BOOK_ID_PARAM),
-                getStringArray(DL_MIRRORS_PARAM)?.toList(),
                 navController,
                 bookDetailsViewModelFactory
             )
@@ -152,7 +154,7 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         Modifier
     }
 
-    BottomNavigation(modifier = size) {
+    BottomNavigation(modifier = size.clip(BottomSheetShapes.large)) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         debug { "CURRENT ROUTE $currentRoute" }
