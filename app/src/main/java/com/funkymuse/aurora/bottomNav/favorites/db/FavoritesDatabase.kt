@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bottomNav.favorites
+package com.funkymuse.aurora.bottomNav.favorites.db
 
 import android.content.Context
 import androidx.room.Database

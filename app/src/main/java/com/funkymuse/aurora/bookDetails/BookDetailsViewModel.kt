@@ -2,13 +2,11 @@ package com.funkymuse.aurora.bookDetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crazylegend.kotlinextensions.log.debug
-import com.crazylegend.retrofit.apiCall
+import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.crazylegend.retrofit.retrofitResult.loading
 import com.crazylegend.retrofit.retrofitResult.retrofitLoading
 import com.funkymuse.aurora.api.LibgenAPI
-import com.funkymuse.aurora.bottomNav.favorites.FavoritesDAO
+import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.mirrorsDB.MirrorDao
@@ -27,7 +25,8 @@ class BookDetailsViewModel @AssistedInject constructor(
     @Assisted private val id: Int,
     private val libgenAPI: LibgenAPI,
     private val mirrorDao: MirrorDao,
-    private val favoritesDAO: FavoritesDAO
+    private val favoritesDAO: FavoritesDAO,
+    private val internetDetector: InternetDetector
 ) : ViewModel() {
 
     @AssistedFactory
@@ -45,12 +44,16 @@ class BookDetailsViewModel @AssistedInject constructor(
      private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)
     val favoriteBook = favoriteBookData.asStateFlow()
 
-
+    val internetConnection = internetDetector.state
 
     init {
+       loadBook()
+    }
+
+    private fun loadBook() {
+        booksData.value = retrofitLoading
         viewModelScope.launch {
             val books = async {
-                booksData.value = retrofitLoading
                 libgenAPI.getDetailedBook(id)
             }
             val mirrors = async { mirrorDao.getMirrorModelForBookId(id) }
@@ -75,5 +78,9 @@ class BookDetailsViewModel @AssistedInject constructor(
 
     fun removeFromFavorites(favoriteBookID: Int) {
         viewModelScope.launch { favoritesDAO.deleteFromFavoritesByID(favoriteBookID) }
+    }
+
+    fun retry() {
+        loadBook()
     }
 }

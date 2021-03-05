@@ -92,5 +92,7 @@
     <string name="no_books_loaded">Couldn\'t load books, seems like they\'re unavailable at the moment, please come back later!</string>
     <string name="share">Share</string>
     <string name="download_mirrors">Download mirrors</string>
-    <string name="retry">Retry?</string>
+    <string name="retry">Retry</string>
+    <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
+    <string name="remove">Remove</string>
 </resources>

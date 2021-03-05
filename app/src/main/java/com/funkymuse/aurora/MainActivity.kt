@@ -33,6 +33,7 @@ import com.funkymuse.aurora.bottomNav.search.Search
 import com.funkymuse.aurora.bottomNav.settings.Settings
 import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.aurora.searchResult.SEARCH_PARAM
+import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
 import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
 import com.funkymuse.aurora.searchResult.SearchResult
 import com.funkymuse.aurora.ui.theme.AuroraTheme
@@ -96,7 +97,11 @@ fun AuroraScaffold(bookDetailsViewModelFactory: BookDetailsViewModel.BookDetails
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search(navController)
+                    Search { inputText ->
+                        navController.navigate("$SEARCH_RESULT_ROUTE/$inputText") {
+                            launchSingleTop = true
+                        }
+                    }
                 }
                 composable(BottomNavScreen.Favorites.route) {
                     Favorites(navController)

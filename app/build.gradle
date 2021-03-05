@@ -74,6 +74,7 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:database:$KAHelpers"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
 
     //compose
@@ -86,6 +87,9 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.3.0-alpha03'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02'
+
+    //lottie
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
 
     //dagger
     implementation "com.google.dagger:dagger:$daggerVersion"

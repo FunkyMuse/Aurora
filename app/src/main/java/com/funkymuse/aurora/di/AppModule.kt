@@ -1,14 +1,14 @@
 package com.funkymuse.aurora.di
 
 import android.content.Context
-import androidx.room.RoomDatabase
+import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.RetrofitClient
 import com.crazylegend.retrofit.adapter.RetrofitResultAdapterFactory
 import com.crazylegend.retrofit.interceptors.ConnectivityInterceptor
 import com.funkymuse.aurora.BuildConfig
 import com.funkymuse.aurora.api.LibgenAPI
-import com.funkymuse.aurora.bottomNav.favorites.FavoritesDAO
-import com.funkymuse.aurora.bottomNav.favorites.FavoritesDatabase
+import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDatabase
 import com.funkymuse.aurora.consts.LIBGEN_BASE_URL
 import com.funkymuse.aurora.mirrorsDB.MirrorDao
 import com.funkymuse.aurora.mirrorsDB.MirrorsDatabase
@@ -58,4 +58,8 @@ object AppModule {
     @Singleton
     fun mirrorsDBDao(@ApplicationContext context: Context): MirrorDao =
         MirrorsDatabase.getInstance(context).dao()
+
+    @Provides
+    @Singleton
+    fun internetDetector(@ApplicationContext context: Context) = InternetDetector(context)
 }

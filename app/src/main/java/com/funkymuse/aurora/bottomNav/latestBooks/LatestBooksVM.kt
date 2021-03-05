@@ -2,21 +2,21 @@ package com.funkymuse.aurora.bottomNav.latestBooks
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.context.isOnline
+import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.kotlinextensions.livedata.context
 import com.crazylegend.kotlinextensions.log.debug
 import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
-import com.funkymuse.aurora.mirrorsDB.MirrorDao
-import com.funkymuse.aurora.mirrorsDB.MirrorModel
+import com.funkymuse.aurora.mirrorsDB.MirrorsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,9 +28,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor (
-    private val mirrorDao: MirrorDao,
+    private val mirrorsRepository: MirrorsRepository,
+    private val internetDetector: InternetDetector,
     application: Application) : AndroidViewModel(application) {
 
+    val internetConnection = internetDetector.state
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
         MutableStateFlow(RetrofitResult.EmptyData)
     val booksData = booksDataHolder.asStateFlow()
@@ -169,10 +171,10 @@ class LatestBooksVM @Inject constructor (
         searchForBook()
     }
 
+
     fun saveMirrorsForBookId(id: String?, mirrors: ArrayList<String>?) {
-        if (id?.toIntOrNull() == null || mirrors.isNullOrEmpty()) return
         viewModelScope.launch {
-            mirrorDao.insertMirrorModel(MirrorModel(id.toInt(), mirrors))
+           mirrorsRepository.saveMirrorsForBookId(id, mirrors)
         }
     }
 

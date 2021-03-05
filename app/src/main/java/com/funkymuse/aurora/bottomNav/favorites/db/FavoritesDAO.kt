@@ -1,5 +1,6 @@
-package com.funkymuse.aurora.bottomNav.favorites
+package com.funkymuse.aurora.bottomNav.favorites.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -17,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 interface FavoritesDAO {
 
     @Query("select * from favoriteBooks")
-    fun getAllFavorites(): Flow<FavoriteBook>
+    fun getAllFavorites(): PagingSource<Int, FavoriteBook>
 
     @Delete
     suspend fun deleteFromFavorites(favoriteBook: FavoriteBook)

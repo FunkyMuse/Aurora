@@ -2,14 +2,15 @@ buildscript {
     ext {
         compose_version = '1.0.0-beta01'
         kotlin_version = '1.4.30'
-        room = '2.2.6'
-        KAHelpers = '2.2.10'
+        room = "2.3.0-beta02"
+        KAHelpers = '2.2.12'
         moshi = "1.11.0"
         daggerVersion = '2.33'
         hilt_version = '2.33-beta'
         hiltJetpackVersion = '1.0.0-alpha03'
         retrofit = "2.9.0"
         glide = "4.12.0"
+        lottieVersion = "1.0.0-alpha07-SNAPSHOT"
     }
     repositories {
         google()

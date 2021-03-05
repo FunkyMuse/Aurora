@@ -1,7 +1,9 @@
 package com.funkymuse.aurora.bookDetails
 
 import android.annotation.SuppressLint
+import androidx.annotation.RawRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -9,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,26 +25,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieAnimationSpec
+import com.airbnb.lottie.compose.rememberLottieAnimationState
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
 import com.crazylegend.kotlinextensions.string.isNotNullOrEmpty
 import com.crazylegend.retrofit.retrofitResult.handle
+import com.crazylegend.retrofit.retryOnConnectedToInternet
+import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.backButton.BackButton
+import com.funkymuse.aurora.components.LottieAnim
+import com.funkymuse.aurora.components.ScaffoldLottieWithBack
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.extensions.*
 import com.funkymuse.aurora.ui.theme.BabyPink
-import com.funkymuse.aurora.ui.theme.LavanderBlue
 import com.funkymuse.aurora.ui.theme.LavanderBlueDark
 import com.funkymuse.aurora.ui.theme.Shapes
 import java.util.*
@@ -69,21 +79,44 @@ fun ShowDetailedBook(
     ) {
         bookDetailsViewModel.create(id)
     })
+    val scope = rememberCoroutineScope()
     val book = viewModel.book.collectAsState().value
     val mirrors = viewModel.bookMirrors.collectAsState().value
     val favoritesBook = viewModel.favoriteBook.collectAsState().value
     book.handle(
         loading = {
-
+            LottieAnim(modifier = Modifier.fillMaxSize(), anim = R.raw.book_loader)
         },
         emptyData = {
-
+            ScaffoldLottieWithBack(R.raw.book_loader) {
+                navController.navigateUp()
+            }
         },
         callError = { throwable ->
+            if (throwable is NoConnectionException){
+                retryOnConnectedToInternet(viewModel.internetConnection,
+                scope){
+                    viewModel.retry()
+                }
+                ScaffoldLottieWithBack(R.raw.no_connection) {
+                    navController.navigateUp()
+                }
+            } else {
+                ScaffoldLottieWithBack(R.raw.server_error,
+                    true, onRetryClicked = {
+                    viewModel.retry()
+                }) {
+                    navController.navigateUp()
+                }
+            }
 
         },
-        apiError = { errorBody, responseCode ->
-
+        apiError = { _, _ ->
+            ScaffoldLottieWithBack(R.raw.server_error, true, onRetryClicked = {
+                viewModel.retry()
+            }) {
+                navController.navigateUp()
+            }
         },
         success = {
             val detailedBook = firstOrNull()
@@ -119,6 +152,8 @@ fun ShowDetailedBook(
         }
     }
 }
+
+
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
@@ -372,6 +407,19 @@ fun TopAppBarBookDetails(
             Modifier
                 .align(Alignment.CenterVertically)
                 .padding(8.dp), isInFavorites, onFavoritesClicked
+        )
+    }
+}
+
+@Composable
+fun TopAppBarBackOnly(
+    onBackClicked: () -> Unit
+) {
+    TopAppBar(backgroundColor = LavanderBlueDark) {
+        BackButton(
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .padding(8.dp), onClick = onBackClicked
         )
     }
 }

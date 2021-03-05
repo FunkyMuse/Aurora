@@ -6,11 +6,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -29,19 +26,20 @@ import androidx.navigation.compose.rememberNavController
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.extensions.rememberStringSaveableDefaultEmpty
 import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
+
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
-fun Search(navController: NavHostController = rememberNavController()) {
+fun Search(onInputText: (inputText: String) -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SearchInput(navController)
+        SearchInput(onInputText)
         SearchInputExplained()
     }
 }
@@ -60,10 +58,13 @@ fun SearchInputExplained() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchInput(navController: NavHostController = rememberNavController()) {
+fun SearchInput(onInputText: (inputText: String) -> Unit = {}) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var inputText by rememberStringSaveableDefaultEmpty()
-    val invalidInput = inputText.isEmpty()
+    /*migrate to rememberSavable when
+    https://issuetracker.google.com/issues/180042685
+    beta02 is released*/
+    var inputText by remember { mutableStateOf("") }
+    val invalidInput = inputText.isBlank()
 
     OutlinedTextField(
         modifier = Modifier
@@ -79,7 +80,7 @@ fun SearchInput(navController: NavHostController = rememberNavController()) {
         ),
         keyboardActions = KeyboardActions(onSearch = {
             keyboardController?.hideSoftwareKeyboard()
-            navController.navigate("$SEARCH_RESULT_ROUTE/$inputText") { launchSingleTop = true }
+            onInputText(inputText)
         })
     )
 }
