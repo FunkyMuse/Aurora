@@ -44,7 +44,6 @@ fun Favorites(
 ) {
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
-
     if (longClickedBook.value != null) {
         DeleteBook(it = longClickedBook.value!!,
             onConfirm = { viewModel.removeFromFavorites(it) },
