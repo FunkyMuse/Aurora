@@ -27,19 +27,10 @@ fun PreviewBackButton() {
 }
 
 @Composable
-fun NavigateBackButton(navController: NavController) {
-    if (navController.previousBackStackEntry != null) {
-        BackButton {
-            navController.popBackStack()
-        }
-    }
-}
-
-@Composable
 fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}, ) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
         modifier = modifier,
         shape = Shapes.large
     ) {

@@ -31,7 +31,8 @@ import androidx.constraintlayout.compose.Dimension
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.FavoriteBook
-import com.funkymuse.aurora.ui.theme.BabyPink
+import com.funkymuse.aurora.ui.theme.BackgroundLight
+import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.Shapes
 import org.jsoup.nodes.Element
 import org.jsoup.parser.Tag
@@ -49,7 +50,7 @@ fun Book(book: Book = Book(Element(Tag.valueOf("div"), "test")), onClick: () -> 
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
-        backgroundColor = BabyPink
+        backgroundColor = CardBackground
     ) {
         ConstraintLayout(modifier = Modifier.clickable { onClick() }) {
             val image = addStaticImage()
@@ -64,7 +65,6 @@ fun Book(book: Book = Book(Element(Tag.valueOf("div"), "test")), onClick: () -> 
 @Composable
 @Preview(showSystemUi = true, showBackground = true, device = Devices.PIXEL_4)
 fun FavoriteBook(
-
     book: FavoriteBook = FavoriteBook(
         1, "Test", "1999", "999",
         "EPUB", "TEST", null
@@ -76,7 +76,7 @@ fun FavoriteBook(
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
-        backgroundColor = BabyPink
+        backgroundColor = CardBackground
     ) {
         ConstraintLayout(
             modifier = Modifier

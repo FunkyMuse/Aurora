@@ -88,9 +88,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha02'
 
-    //lottie
-    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
-
     //dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"

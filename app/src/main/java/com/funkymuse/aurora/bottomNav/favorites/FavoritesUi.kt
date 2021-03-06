@@ -27,7 +27,6 @@ import com.funkymuse.aurora.book.FavoriteBook
 import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
 import com.funkymuse.aurora.bottomNav.latestBooks.ShowEmptyData
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
-import com.funkymuse.aurora.components.LottieAnim
 import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.dto.FavoriteBook
 
@@ -53,7 +52,7 @@ fun Favorites(
     }
     if (favorites.itemCount == 0){
         FullSizeBoxCenteredContent {
-            LottieAnim(anim = R.raw.no_latest_books)
+            //LottieAnim(anim = R.raw.no_latest_books)
         }
     } else {
         LazyColumn(

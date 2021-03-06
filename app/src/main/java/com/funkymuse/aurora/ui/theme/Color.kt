@@ -4,9 +4,8 @@ import androidx.compose.ui.graphics.Color
 
 
 
-val LavanderBlue = Color(0xFFcec2ff)
-val MaximumBluePurple = Color(0xFFb3b3f1)
-val LavanderBlueDark = Color(0xFF9c92cc)
-val Puce = Color(0xFFcf8ba9)
-val PinkLavander = Color(0xFFdcb6d5)
-val BabyPink = Color(0xFFD9A89C)
+val Primary = Color(0xFFC97C5D)
+val PrimaryVariant = Color(0xFFB36A5E)
+val Secondary = Color(0xFFC89F9C)
+val Surface = Color(0xFFEED7C5)
+val CardBackground = Color(0xFFDDB38F)

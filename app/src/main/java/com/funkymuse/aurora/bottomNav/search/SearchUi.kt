@@ -1,6 +1,8 @@
 package com.funkymuse.aurora.bottomNav.search
 
+import android.graphics.LinearGradient
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -11,6 +13,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -33,6 +37,7 @@ import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun Search(onInputText: (inputText: String) -> Unit = {}) {
+    val color = Color(0xFFE2F4FF)
     Column(
         modifier = Modifier
             .fillMaxSize(),

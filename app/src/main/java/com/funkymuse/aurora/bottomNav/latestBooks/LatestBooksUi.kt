@@ -33,7 +33,6 @@ import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
-import com.funkymuse.aurora.components.LottieAnim
 import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.components.ScaffoldLottieWithBack
 import com.funkymuse.aurora.dto.Book
@@ -81,7 +80,7 @@ fun LatestBooks(
                     viewModel.refresh()
                 }
                 FullSizeBoxCenteredContent {
-                    LottieAnim(anim = R.raw.no_connection, size = 50.dp)
+                    //LottieAnim(anim = R.raw.no_connection, size = 50.dp)
                 }
             } else {
                 FullSizeBoxCenteredContent {
