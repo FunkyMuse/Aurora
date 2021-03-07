@@ -22,7 +22,7 @@ import com.funkymuse.aurora.bookDetails.TopAppBarBackOnly
  */
 
 @Composable
-fun ScaffoldLottieWithBack(
+fun ScaffoldWithBack(
     showRetry: Boolean = false,
     onRetryClicked: () -> Unit = {},
     onBackClicked: () -> Unit

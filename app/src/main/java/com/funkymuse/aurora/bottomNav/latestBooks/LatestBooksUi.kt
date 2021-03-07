@@ -1,7 +1,6 @@
 package com.funkymuse.aurora.bottomNav.latestBooks
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -13,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,7 +32,6 @@ import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.components.LottieWithRetry
-import com.funkymuse.aurora.components.ScaffoldLottieWithBack
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.extensions.CardListShimmer
 import com.funkymuse.aurora.ui.theme.Shapes

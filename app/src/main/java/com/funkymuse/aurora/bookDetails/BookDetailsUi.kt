@@ -37,7 +37,7 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.backButton.BackButton
-import com.funkymuse.aurora.components.ScaffoldLottieWithBack
+import com.funkymuse.aurora.components.ScaffoldWithBack
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
@@ -77,10 +77,10 @@ fun ShowDetailedBook(
     val favoritesBook = viewModel.favoriteBook.collectAsState().value
     book.handle(
         loading = {
-            //LottieAnim(modifier = Modifier.fillMaxSize(), anim = R.raw.book_loader)
+            Loading()
         },
         emptyData = {
-            ScaffoldLottieWithBack() {
+            ScaffoldWithBack() {
                 navController.navigateUp()
             }
         },
@@ -90,11 +90,11 @@ fun ShowDetailedBook(
                 scope){
                     viewModel.retry()
                 }
-                ScaffoldLottieWithBack() {
+                ScaffoldWithBack() {
                     navController.navigateUp()
                 }
             } else {
-                ScaffoldLottieWithBack(true,
+                ScaffoldWithBack(true,
                     onRetryClicked = {
                     viewModel.retry()
                 }) {
@@ -104,7 +104,7 @@ fun ShowDetailedBook(
 
         },
         apiError = { _, _ ->
-            ScaffoldLottieWithBack(true, onRetryClicked = {
+            ScaffoldWithBack(true, onRetryClicked = {
                 viewModel.retry()
             }) {
                 navController.navigateUp()

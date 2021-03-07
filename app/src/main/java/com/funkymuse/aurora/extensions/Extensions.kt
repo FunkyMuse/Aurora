@@ -1,29 +1,39 @@
 package com.funkymuse.aurora.extensions
 
 import android.os.Bundle
+import androidx.annotation.StringRes
+import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.funkymuse.aurora.R
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -248,6 +258,7 @@ inline fun <reified T : ViewModel> assistedViewModel(
 
 @Composable
 fun rememberBooleanSaveableDefaultFalse() = rememberSaveable { mutableStateOf(false) }
+
 @Composable
 fun rememberBooleanSaveableDefaultTrue() = rememberSaveable { mutableStateOf(true) }
 
@@ -267,4 +278,64 @@ inline fun loadPicture(
         .into(target)
 
     return target.imageState
+}
+
+@Composable
+fun Loading(
+    @StringRes text: Int = R.string.loading,
+    colorDurationTransition: Int = 3000,
+    scaleDuration: Int = 2000
+) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val color by infiniteTransition.animateColor(
+        initialValue = MaterialTheme.colors.secondary,
+        targetValue = MaterialTheme.colors.primary,
+        animationSpec = infiniteRepeatable(
+            animation = tween(colorDurationTransition, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.1f,
+        targetValue = 1.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(scaleDuration),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val (width, height) = size
+
+        val radius = size.minDimension * scale / 6f
+
+        drawCircle(color, radius = radius)
+        //bottom right
+        translate(left = width / 2, height / 2f) {
+            drawCircle(color, radius = radius)
+        }
+
+        //bottom left
+        translate(left = -width / 2, height / 2f) {
+            drawCircle(color, radius = radius)
+        }
+
+        //top left
+        translate(left = -width / 2, -height / 2f) {
+            drawCircle(color, radius = radius)
+        }
+
+        //top right
+        translate(left = width / 2, -height / 2f) {
+            drawCircle(color, radius = radius)
+        }
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = stringResource(id = text), Modifier.graphicsLayer(scale, scale))
+    }
 }
