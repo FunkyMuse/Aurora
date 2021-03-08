@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
@@ -66,11 +64,7 @@ fun ShowDetailedBook(
     if (id == null) {
         return
     }
-    val viewModel = viewModel<BookDetailsViewModel>(factory = assistedViewModel(
-        owner = LocalSavedStateRegistryOwner.current
-    ) {
-        bookDetailsViewModel.create(id)
-    })
+    val viewModel = assistedViewModel { bookDetailsViewModel.create(id) }
     val scope = rememberCoroutineScope()
     val book = viewModel.book.collectAsState().value
     val mirrors = viewModel.bookMirrors.collectAsState().value

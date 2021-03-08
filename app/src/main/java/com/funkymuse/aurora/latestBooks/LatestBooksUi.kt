@@ -1,6 +1,5 @@
-package com.funkymuse.aurora.bottomNav.latestBooks
+package com.funkymuse.aurora.latestBooks
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -18,10 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
+import androidx.navigation.NavBackStackEntry
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
@@ -29,11 +25,11 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
-import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.extensions.CardListShimmer
+import com.funkymuse.aurora.extensions.hiltViewModel
 import com.funkymuse.aurora.ui.theme.Shapes
 
 /**
@@ -42,14 +38,10 @@ import com.funkymuse.aurora.ui.theme.Shapes
 
 @Composable
 fun LatestBooks(
-    navController: NavHostController,
-    @SuppressLint("RestrictedApi") viewModel: LatestBooksVM = viewModel(
-        factory = HiltViewModelFactory(
-            LocalContext.current,
-            navController.backStack.last
-        )
-    ),
+    navBackStackEntry: NavBackStackEntry,
+    onBookClicked: (id: Int) -> Unit
 ) {
+    val viewModel: LatestBooksVM = hiltViewModel(navBackStackEntry)
     val scope = rememberCoroutineScope()
     val internetDetector = InternetDetector(LocalContext.current)
     val list = viewModel.booksData.collectAsState()
@@ -99,8 +91,9 @@ fun LatestBooks(
         },
         success = {
             ShowBooks(this) { item ->
+                val bookID = item.id?.toInt() ?: return@ShowBooks
                 viewModel.saveMirrorsForBookId(item.id, item.mirrors)
-                navController.navigate("$BOOK_DETAILS_ROUTE/${item.id}") { launchSingleTop = true }
+                onBookClicked(bookID)
             }
         }
     )

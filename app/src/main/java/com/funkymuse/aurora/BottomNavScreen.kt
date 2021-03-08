@@ -1,7 +1,7 @@
-package com.funkymuse.aurora.bottomNav
+package com.funkymuse.aurora
 
 import androidx.annotation.StringRes
-import com.funkymuse.aurora.R
+
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */

@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bottomNav.latestBooks
+package com.funkymuse.aurora.latestBooks
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
@@ -14,23 +14,22 @@ import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.mirrorsDB.MirrorsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class LatestBooksVM @Inject constructor (
+class LatestBooksVM @Inject constructor(
     private val mirrorsRepository: MirrorsRepository,
-    private val internetDetector: InternetDetector,
-    application: Application) : AndroidViewModel(application) {
+    internetDetector: InternetDetector,
+    application: Application
+) : AndroidViewModel(application) {
 
     val internetConnection = internetDetector.state
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
@@ -78,6 +77,7 @@ class LatestBooksVM @Inject constructor (
 
     private fun getData(): Document? {
         val jsoup = Jsoup.connect(SEARCH_BASE_URL)
+            //.data(REQ_CONST, searchQuery)
             .timeout(DEFAULT_API_TIMEOUT)
             .data(SORT_QUERY, sortQuery)
             .data(VIEW_QUERY, VIEW_QUERY_PARAM)
@@ -118,48 +118,33 @@ class LatestBooksVM @Inject constructor (
         canLoadMore = true
     }
 
-    fun sortByYearDESC(
-        scope: CoroutineScope,
-        retrofitResult: MutableStateFlow<RetrofitResult<List<Book>>>
-    ) {
+    fun sortByYearDESC() {
         resetOnSort()
         sortType = SORT_YEAR_CONST
         sortQuery = SORT_TYPE_DESC
         searchForBook()
     }
 
-    fun sortByYearASC(
-        scope: CoroutineScope,
-        retrofitResult: MutableStateFlow<RetrofitResult<List<Book>>>
-    ) {
+    fun sortByYearASC() {
         resetOnSort()
         sortType = SORT_YEAR_CONST
         sortQuery = SORT_TYPE_ASC
         searchForBook()
     }
 
-    fun sortByDefault(
-        scope: CoroutineScope,
-        retrofitResult: MutableStateFlow<RetrofitResult<List<Book>>>
-    ) {
+    fun sortByDefault() {
         resetOnSort()
         searchForBook()
     }
 
-    fun sortBySizeDESC(
-        scope: CoroutineScope,
-        retrofitResult: MutableStateFlow<RetrofitResult<List<Book>>>
-    ) {
+    fun sortBySizeDESC() {
         resetOnSort()
         sortType = SORT_SIZE
         sortQuery = SORT_TYPE_DESC
         searchForBook()
     }
 
-    fun sortBySizeASC(
-        scope: CoroutineScope,
-        retrofitResult: MutableStateFlow<RetrofitResult<List<Book>>>
-    ) {
+    fun sortBySizeASC() {
         resetOnSort()
         sortType = SORT_SIZE
         sortQuery = SORT_TYPE_ASC

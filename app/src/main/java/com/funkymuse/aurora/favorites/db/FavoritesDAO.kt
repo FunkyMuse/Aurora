@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bottomNav.favorites.db
+package com.funkymuse.aurora.favorites.db
 
 import androidx.paging.PagingSource
 import androidx.room.Dao

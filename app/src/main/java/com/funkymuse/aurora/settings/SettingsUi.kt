@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bottomNav.settings
+package com.funkymuse.aurora.settings
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

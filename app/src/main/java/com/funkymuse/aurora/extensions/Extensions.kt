@@ -24,14 +24,17 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.funkymuse.aurora.R
 import kotlinx.coroutines.flow.StateFlow
@@ -241,8 +244,8 @@ private fun ShimmerCardItem(
     }
 }
 
-
-inline fun <reified T : ViewModel> assistedViewModel(
+@PublishedApi
+internal inline fun <reified T : ViewModel> createAssistedViewModel(
     arguments: Bundle? = null,
     owner: SavedStateRegistryOwner,
     crossinline viewModelProducer: (SavedStateHandle) -> T,
@@ -255,6 +258,27 @@ inline fun <reified T : ViewModel> assistedViewModel(
         ) =
             viewModelProducer(handle) as T
     }
+
+
+@Composable
+inline fun <reified T : ViewModel> assistedViewModel(
+    arguments: Bundle? = null,
+    crossinline viewModelProducer: (SavedStateHandle) -> T,
+): T =
+    viewModel(factory = createAssistedViewModel(
+        arguments = arguments,
+        owner = LocalSavedStateRegistryOwner.current
+    ) {
+        viewModelProducer(it)
+    })
+
+@Composable
+inline fun <reified T : ViewModel> hiltViewModel(navBackStackEntry: NavBackStackEntry): T =
+    viewModel(
+        factory =
+        HiltViewModelFactory(LocalContext.current, navBackStackEntry)
+    )
+
 
 @Composable
 fun rememberBooleanSaveableDefaultFalse() = rememberSaveable { mutableStateOf(false) }

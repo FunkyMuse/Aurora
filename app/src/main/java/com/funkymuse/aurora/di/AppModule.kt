@@ -2,14 +2,15 @@ package com.funkymuse.aurora.di
 
 import android.content.Context
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
+import com.crazylegend.kotlinextensions.toaster.Toaster
 import com.crazylegend.retrofit.RetrofitClient
 import com.crazylegend.retrofit.adapter.RetrofitResultAdapterFactory
 import com.crazylegend.retrofit.interceptors.ConnectivityInterceptor
 import com.funkymuse.aurora.BuildConfig
 import com.funkymuse.aurora.api.LibgenAPI
-import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDAO
-import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDatabase
 import com.funkymuse.aurora.consts.LIBGEN_BASE_URL
+import com.funkymuse.aurora.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.favorites.db.FavoritesDatabase
 import com.funkymuse.aurora.mirrorsDB.MirrorDao
 import com.funkymuse.aurora.mirrorsDB.MirrorsDatabase
 import dagger.Module
@@ -62,4 +63,8 @@ object AppModule {
     @Provides
     @Singleton
     fun internetDetector(@ApplicationContext context: Context) = InternetDetector(context)
+
+    @Provides
+    @Singleton
+    fun toaster(@ApplicationContext context: Context) = Toaster(context)
 }

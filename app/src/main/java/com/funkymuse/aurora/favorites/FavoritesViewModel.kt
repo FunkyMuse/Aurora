@@ -1,9 +1,8 @@
-package com.funkymuse.aurora.bottomNav.favorites
+package com.funkymuse.aurora.favorites
 
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.funkymuse.aurora.abstracts.AbstractPagingViewModel
-import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.mirrorsDB.MirrorsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

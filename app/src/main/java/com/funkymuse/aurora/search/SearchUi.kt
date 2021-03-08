@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bottomNav.search
+package com.funkymuse.aurora.search
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
@@ -16,24 +16,25 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavBackStackEntry
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.ToasterViewModel
+import com.funkymuse.aurora.extensions.hiltViewModel
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun Search(onInputText: (inputText: String) -> Unit = {}) {
+fun Search(navBackStackEntry: NavBackStackEntry, onInputText: (inputText: String) -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SearchInput(onInputText)
+        SearchInput(navBackStackEntry, onInputText)
         SearchInputExplained()
     }
 }
@@ -52,13 +53,17 @@ fun SearchInputExplained() {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SearchInput(onInputText: (inputText: String) -> Unit = {}) {
+fun SearchInput(
+    navBackStackEntry: NavBackStackEntry,
+    onInputText: (inputText: String) -> Unit = {}
+) {
+    val viewModel = hiltViewModel<ToasterViewModel>(navBackStackEntry)
     val keyboardController = LocalSoftwareKeyboardController.current
     /*migrate to rememberSavable when
     https://issuetracker.google.com/issues/180042685
     beta02 is released*/
     var inputText by remember { mutableStateOf("") }
-    val invalidInput = inputText.isBlank()
+    val invalidInput = inputText.isBlank() || inputText.length < 3
 
     OutlinedTextField(
         modifier = Modifier
@@ -73,6 +78,10 @@ fun SearchInput(onInputText: (inputText: String) -> Unit = {}) {
             keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(onSearch = {
+            if (invalidInput) {
+                viewModel.shortToast(R.string.empty_or_short_input)
+                return@KeyboardActions
+            }
             keyboardController?.hideSoftwareKeyboard()
             onInputText(inputText)
         })

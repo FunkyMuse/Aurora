@@ -1,6 +1,5 @@
-package com.funkymuse.aurora.bottomNav.favorites
+package com.funkymuse.aurora.favorites
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,24 +10,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.navigate
+import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.FavoriteBook
-import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_ROUTE
-import com.funkymuse.aurora.bottomNav.latestBooks.ShowEmptyData
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
-import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.dto.FavoriteBook
+import com.funkymuse.aurora.extensions.hiltViewModel
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -36,12 +28,10 @@ import com.funkymuse.aurora.dto.FavoriteBook
 
 @Composable
 fun Favorites(
-    navController: NavHostController,
-    @SuppressLint("RestrictedApi") viewModel: FavoritesViewModel = viewModel(
-        factory =
-        HiltViewModelFactory(LocalContext.current, navController.backStack.last)
-    )
+    navBackStackEntry: NavBackStackEntry,
+    onBookClicked: (id: Int) -> Unit
 ) {
+    val viewModel: FavoritesViewModel = hiltViewModel(navBackStackEntry)
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
     if (longClickedBook.value != null) {
@@ -49,7 +39,7 @@ fun Favorites(
             onConfirm = { viewModel.removeFromFavorites(it) },
             onDismiss = { longClickedBook.value = null })
     }
-    if (favorites.itemCount == 0){
+    if (favorites.itemCount == 0) {
         FullSizeBoxCenteredContent {
             //LottieAnim(anim = R.raw.no_latest_books)
         }
@@ -65,9 +55,7 @@ fun Favorites(
                         longClickedBook.value = it
                     }) {
                         viewModel.saveMirrorsForBookId(it.id, it.mirrors)
-                        navController.navigate("$BOOK_DETAILS_ROUTE/${it.id}") {
-                            launchSingleTop = true
-                        }
+                        onBookClicked(it.id)
                     }
                 }
             }

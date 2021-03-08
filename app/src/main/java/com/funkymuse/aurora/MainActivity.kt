@@ -26,19 +26,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bookDetails.*
-import com.funkymuse.aurora.bottomNav.BottomNavScreen
-import com.funkymuse.aurora.bottomNav.favorites.Favorites
-import com.funkymuse.aurora.bottomNav.latestBooks.LatestBooks
-import com.funkymuse.aurora.bottomNav.search.Search
-import com.funkymuse.aurora.bottomNav.settings.Settings
 import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
-import com.funkymuse.aurora.searchResult.SEARCH_PARAM
-import com.funkymuse.aurora.searchResult.SEARCH_RESULT_ROUTE
-import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
-import com.funkymuse.aurora.searchResult.SearchResult
+import com.funkymuse.aurora.favorites.Favorites
+import com.funkymuse.aurora.latestBooks.LatestBooks
+import com.funkymuse.aurora.search.Search
+import com.funkymuse.aurora.searchResult.*
+import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
-import com.funkymuse.aurora.ui.theme.Shapes
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,13 +43,16 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
 
+    @Inject
+    lateinit var searchResultVMF: SearchResultVM.SearchResultVMF
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AuroraTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    AuroraScaffold(bookDetailsViewModelFactory)
+                    AuroraScaffold(bookDetailsViewModelFactory, searchResultVMF)
                 }
             }
         }
@@ -64,7 +62,10 @@ class MainActivity : ComponentActivity() {
 data class BottomEntry(val screen: BottomNavScreen, val icon: ImageVector)
 
 @Composable
-fun AuroraScaffold(bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF) {
+fun AuroraScaffold(
+    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
+    searchResultVMF: SearchResultVM.SearchResultVMF
+) {
 
     val navController = rememberNavController()
     val bottomNavList =
@@ -90,41 +91,60 @@ fun AuroraScaffold(bookDetailsViewModelFactory: BookDetailsViewModel.BookDetails
     Scaffold(
         bottomBar = {
             AuroraBottomNavigation(navController, bottomNavList)
-        }
+        },
     ) {
         NavHost(
             navController = navController,
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search { inputText ->
-                        navController.navigate("$SEARCH_RESULT_ROUTE/$inputText") {
-                            launchSingleTop = true
-                        }
+                    Search(it) { inputText ->
+                        openSearchResult(navController, inputText)
                     }
                 }
                 composable(BottomNavScreen.Favorites.route) {
-                    Favorites(navController)
+                    Favorites(it) { id ->
+                        openDetailedBook(navController, id)
+                    }
                 }
                 composable(BottomNavScreen.LatestBooks.route) {
-                    LatestBooks(navController)
+                    LatestBooks(it) { id ->
+                        openDetailedBook(navController, id)
+                    }
                 }
                 composable(BottomNavScreen.Settings.route) {
                     Settings(navController)
                 }
-                addSearchResult(navController)
+                addSearchResult(navController, searchResultVMF)
                 addBookDetails(navController, bookDetailsViewModelFactory)
             }
         )
     }
 }
 
-private fun NavGraphBuilder.addSearchResult(navController: NavHostController) {
+fun openSearchResult(navController: NavHostController, inputText: String) {
+    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText") {
+        launchSingleTop = true
+    }
+}
+
+fun openDetailedBook(navController: NavHostController, id: Int) {
+    navController.navigate("$BOOK_DETAILS_ROUTE/${id}") {
+        launchSingleTop = true
+    }
+}
+
+private fun NavGraphBuilder.addSearchResult(
+    navController: NavHostController,
+    searchResultVMF: SearchResultVM.SearchResultVMF
+) {
     composable(
         SEARCH_ROUTE_BOTTOM_NAV,
         arguments = listOf(navArgument(SEARCH_PARAM) { type = NavType.StringType })
     ) {
-        SearchResult(navController, it.arguments?.getString(SEARCH_PARAM))
+        SearchResult(searchResultVMF, it.arguments?.getString(SEARCH_PARAM).toString()) { id: Int ->
+            openDetailedBook(navController, id)
+        }
     }
 }
 

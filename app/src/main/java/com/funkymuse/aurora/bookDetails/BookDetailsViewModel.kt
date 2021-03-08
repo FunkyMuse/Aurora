@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitStateInitialLoading
 import com.funkymuse.aurora.api.LibgenAPI
-import com.funkymuse.aurora.bottomNav.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
+import com.funkymuse.aurora.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.mirrorsDB.MirrorDao
 import com.funkymuse.aurora.mirrorsDB.MirrorModel
 import dagger.assisted.Assisted
