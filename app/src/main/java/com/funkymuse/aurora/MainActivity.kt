@@ -85,13 +85,13 @@ fun AuroraScaffold(
             BottomEntry(
                 BottomNavScreen.Settings,
                 Icons.Filled.Settings
-            ),
+            )
         )
 
     Scaffold(
         bottomBar = {
             AuroraBottomNavigation(navController, bottomNavList)
-        },
+        }
     ) {
         NavHost(
             navController = navController,

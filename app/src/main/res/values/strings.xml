@@ -96,4 +96,25 @@
     <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
     <string name="remove">Remove</string>
     <string name="loading">Loading…</string>
+    <string name="libgen_sci_tech">Libgen (Sci-Tech)</string>
+    <string name="scientific_articles">Scientific articles</string>
+    <string name="fiction">Fiction</string>
+    <string name="comics">Comics</string>
+    <string name="standards">Standards</string>
+    <string name="magazines">Magazines</string>
+    <string name="filter">Filter</string>
+    <string name="search_in">Search in</string>
+    <string name="search_with_mask_word">Search with mask (word*)</string>
+    <string name="mask_word">Mask word</string>
+    <string name="search_in_fields">Search in fields</string>
+    <string name="default_column">All columns</string>
+    <string name="title">Title</string>
+    <string name="author">Author(s)</string>
+    <string name="series">Series</string>
+    <string name="publisher">Publisher</string>
+    <string name="isbn">ISBN</string>
+    <string name="language">Language</string>
+    <string name="tags">Tags</string>
+    <string name="extension">Extension</string>
+    <string name="md5">MD5</string>
 </resources>
