@@ -12,7 +12,6 @@ import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
-import com.funkymuse.aurora.mirrorsDB.MirrorsRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -34,7 +33,6 @@ class SearchResultVM @AssistedInject constructor(
     /* private val sortQuery: String = "",
      private val sortType: String = "",*/
     internetDetector: InternetDetector,
-    private val mirrorsRepository: MirrorsRepository,
     application: Application
 ) : AndroidViewModel(application) {
     @AssistedFactory
@@ -168,11 +166,5 @@ class SearchResultVM @AssistedInject constructor(
         searchForBook()
     }
 
-
-    fun saveMirrorsForBookId(id: String?, mirrors: ArrayList<String>?) {
-        viewModelScope.launch {
-            mirrorsRepository.saveMirrorsForBookId(id, mirrors)
-        }
-    }
 
 }

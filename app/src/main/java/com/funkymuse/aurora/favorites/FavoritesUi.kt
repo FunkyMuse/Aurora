@@ -18,8 +18,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.FavoriteBook
-import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.dto.FavoriteBook
+import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.hiltViewModel
 
 /**
@@ -29,34 +29,27 @@ import com.funkymuse.aurora.extensions.hiltViewModel
 @Composable
 fun Favorites(
     navBackStackEntry: NavBackStackEntry,
-    onBookClicked: (id: Int) -> Unit
+    onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     val viewModel: FavoritesViewModel = hiltViewModel(navBackStackEntry)
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
-    if (longClickedBook.value != null) {
-        DeleteBook(it = longClickedBook.value!!,
+    longClickedBook.value?.apply {
+        DeleteBook(it = this,
             onConfirm = { viewModel.removeFromFavorites(it) },
             onDismiss = { longClickedBook.value = null })
     }
-    if (favorites.itemCount == 0) {
-        FullSizeBoxCenteredContent {
-            //LottieAnim(anim = R.raw.no_latest_books)
-        }
-    } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 56.dp)
-        ) {
-            items(favorites) { book ->
-                book?.let {
-                    FavoriteBook(it, onLongClick = {
-                        longClickedBook.value = it
-                    }) {
-                        viewModel.saveMirrorsForBookId(it.id, it.mirrors)
-                        onBookClicked(it.id)
-                    }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 56.dp)
+    ) {
+        items(favorites) { book ->
+            book?.let {
+                FavoriteBook(it, onLongClick = {
+                    longClickedBook.value = it
+                }) {
+                    onBookClicked(it.id, Mirrors(it.mirrors ?: emptyList()))
                 }
             }
         }

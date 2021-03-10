@@ -11,8 +11,6 @@ import com.funkymuse.aurora.api.LibgenAPI
 import com.funkymuse.aurora.consts.LIBGEN_BASE_URL
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.favorites.db.FavoritesDatabase
-import com.funkymuse.aurora.mirrorsDB.MirrorDao
-import com.funkymuse.aurora.mirrorsDB.MirrorsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,11 +52,6 @@ object AppModule {
     @Singleton
     fun favoritesDBDao(@ApplicationContext context: Context): FavoritesDAO =
         FavoritesDatabase.getInstance(context).dao()
-
-    @Provides
-    @Singleton
-    fun mirrorsDBDao(@ApplicationContext context: Context): MirrorDao =
-        MirrorsDatabase.getInstance(context).dao()
 
     @Provides
     @Singleton

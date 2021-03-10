@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavBackStackEntry
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
@@ -39,7 +40,14 @@ data class RadioButtonEntries(@StringRes val title: Int)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Search(navBackStackEntry: NavBackStackEntry, onInputText: (inputText: String) -> Unit = {}) {
+fun Search(
+    navBackStackEntry: NavBackStackEntry, onInputText: (
+        inputText: String,
+        searchInCheckedPosition: Int,
+        searchInFieldsCheckedPosition: Int,
+        searchWithMaskWord: Boolean
+    ) -> Unit = { _, _, _, _ -> }
+) {
 
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -72,7 +80,7 @@ fun Search(navBackStackEntry: NavBackStackEntry, onInputText: (inputText: String
     )
 
     ModalBottomSheetLayout(
-        modifier = Modifier.zIndex(1f),
+        modifier = Modifier.zIndex(if (state.targetValue == ModalBottomSheetValue.Hidden) 0f else 1f),
         sheetState = state,
         sheetShape = BottomSheetShapes.large,
         sheetContent = {
@@ -134,30 +142,50 @@ fun Search(navBackStackEntry: NavBackStackEntry, onInputText: (inputText: String
             }
         }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SearchInput(navBackStackEntry, onInputText)
-            SearchInputExplained()
-        }
 
-        Box(
-            contentAlignment = Alignment.BottomCenter,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 64.dp)
-        ) {
-            FloatingActionButton(
-                onClick = { scope.launch { state.show() } },
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (searchInput, searchInputExplanation, filter) = createRefs()
+            Box(modifier = Modifier.constrainAs(searchInput) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            }) {
+                SearchInput(navBackStackEntry) {
+                    onInputText(
+                        it,
+                        searchInCheckedPosition,
+                        searchInFieldsCheckedPosition,
+                        searchWithMaskWord
+                    )
+                }
+            }
+            Box(modifier = Modifier.constrainAs(searchInputExplanation) {
+                top.linkTo(searchInput.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }) {
+                SearchInputExplained()
+            }
+
+            Box(
+                modifier = Modifier
+                    .constrainAs(filter) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 64.dp)
             ) {
-                Icon(
-                    Icons.Filled.FilterList,
-                    contentDescription = stringResource(id = R.string.filter),
-                    tint = Color.White
-                )
+                FloatingActionButton(
+                    onClick = { scope.launch { state.show() } },
+                ) {
+                    Icon(
+                        Icons.Filled.FilterList,
+                        contentDescription = stringResource(id = R.string.filter),
+                        tint = Color.White
+                    )
+                }
             }
         }
     }

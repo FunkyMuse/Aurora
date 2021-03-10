@@ -28,6 +28,7 @@ import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.dto.Book
+import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
 import com.funkymuse.aurora.extensions.hiltViewModel
 import com.funkymuse.aurora.ui.theme.Shapes
@@ -39,7 +40,7 @@ import com.funkymuse.aurora.ui.theme.Shapes
 @Composable
 fun LatestBooks(
     navBackStackEntry: NavBackStackEntry,
-    onBookClicked: (id: Int) -> Unit
+    onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
     val viewModel: LatestBooksVM = hiltViewModel(navBackStackEntry)
     val scope = rememberCoroutineScope()
@@ -90,10 +91,14 @@ fun LatestBooks(
             }
         },
         success = {
-            ShowBooks(this) { item ->
+            ShowBooks(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp),
+                list = this
+            ) { item ->
                 val bookID = item.id?.toInt() ?: return@ShowBooks
-                viewModel.saveMirrorsForBookId(item.id, item.mirrors)
-                onBookClicked(bookID)
+                onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
             }
         }
     )
@@ -119,15 +124,13 @@ fun ShowEmptyData() {
 
 @Composable
 fun ShowBooks(
+    modifier: Modifier = Modifier,
     list: List<Book>,
     onBookClicked: (Book) -> Unit,
 ) {
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 56.dp)
-
+        modifier = modifier
     ) {
         items(list, key = { it.id.toString() }) { item ->
             Book(item) {

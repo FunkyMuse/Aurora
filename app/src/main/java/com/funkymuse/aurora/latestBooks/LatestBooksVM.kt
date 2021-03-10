@@ -12,7 +12,6 @@ import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
-import com.funkymuse.aurora.mirrorsDB.MirrorsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
-    private val mirrorsRepository: MirrorsRepository,
+
     internetDetector: InternetDetector,
     application: Application
 ) : AndroidViewModel(application) {
@@ -154,13 +153,6 @@ class LatestBooksVM @Inject constructor(
     fun refresh() {
         resetOnSort()
         searchForBook()
-    }
-
-
-    fun saveMirrorsForBookId(id: String?, mirrors: ArrayList<String>?) {
-        viewModelScope.launch {
-           mirrorsRepository.saveMirrorsForBookId(id, mirrors)
-        }
     }
 
 }

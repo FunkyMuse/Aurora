@@ -40,6 +40,7 @@ import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
+import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.*
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
@@ -52,12 +53,14 @@ import java.util.*
 
 const val BOOK_DETAILS_ROUTE = "book_details"
 const val BOOK_ID_PARAM = "book"
+const val BOOK_MIRRORS_PARAM = "mirrors"
 const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 
 @SuppressLint("RestrictedApi")
 @Composable
 fun ShowDetailedBook(
     id: Int?,
+    mirrors: Mirrors?,
     navController: NavHostController,
     bookDetailsViewModel: BookDetailsViewModel.BookDetailsVMF,
 ) {
@@ -67,7 +70,7 @@ fun ShowDetailedBook(
     val viewModel = assistedViewModel { bookDetailsViewModel.create(id) }
     val scope = rememberCoroutineScope()
     val book = viewModel.book.collectAsState().value
-    val mirrors = viewModel.bookMirrors.collectAsState().value
+
     val favoritesBook = viewModel.favoriteBook.collectAsState().value
     book.handle(
         loading = {
@@ -111,7 +114,7 @@ fun ShowDetailedBook(
                 return
             }
 
-            DetailedBook(detailedBook, mirrors?.mirrors, favoritesBook, onFavoritesClicked = {
+            DetailedBook(detailedBook, mirrors?.list, favoritesBook, onFavoritesClicked = {
                 if (favoritesBook == null) {
                     viewModel.addToFavorites(
                         FavoriteBook(
@@ -121,7 +124,7 @@ fun ShowDetailedBook(
                             detailedBook.pages,
                             detailedBook.extension,
                             detailedBook.author,
-                            mirrors?.mirrors
+                            mirrors?.list
                         )
                     )
                 } else {
@@ -132,11 +135,6 @@ fun ShowDetailedBook(
             }
         }
     )
-    DisposableEffect(key1 = Unit) {
-        onDispose {
-            viewModel.deleteBookMirrors()
-        }
-    }
 }
 
 

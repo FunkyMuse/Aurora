@@ -98,17 +98,25 @@ fun AuroraScaffold(
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search(it) { inputText ->
-                        openSearchResult(navController, inputText)
+                    Search(it) { inputText, searchInCheckedPosition, searchInFieldsCheckedPosition, searchWithMaskWord ->
+                        openSearchResult(
+                            navController,
+                            inputText,
+                            searchInCheckedPosition,
+                            searchInFieldsCheckedPosition,
+                            searchWithMaskWord
+                        )
                     }
                 }
                 composable(BottomNavScreen.Favorites.route) {
-                    Favorites(it) { id ->
+                    Favorites(it) { id, mirrors ->
+                        it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }
                 }
                 composable(BottomNavScreen.LatestBooks.route) {
-                    LatestBooks(it) { id ->
+                    LatestBooks(it) { id, mirrors ->
+                        it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }
                 }
@@ -122,8 +130,14 @@ fun AuroraScaffold(
     }
 }
 
-fun openSearchResult(navController: NavHostController, inputText: String) {
-    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText") {
+fun openSearchResult(
+    navController: NavHostController,
+    inputText: String,
+    searchInCheckedPosition: Int,
+    searchInFieldsCheckedPosition: Int,
+    searchWithMaskWord: Boolean
+) {
+    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText/$searchInCheckedPosition/$searchInFieldsCheckedPosition/$searchWithMaskWord") {
         launchSingleTop = true
     }
 }
@@ -140,9 +154,34 @@ private fun NavGraphBuilder.addSearchResult(
 ) {
     composable(
         SEARCH_ROUTE_BOTTOM_NAV,
-        arguments = listOf(navArgument(SEARCH_PARAM) { type = NavType.StringType })
+        arguments = listOf(
+            navArgument(SEARCH_PARAM) { type = NavType.StringType },
+            navArgument(SEARCH_IN_PARAM) {
+                type = NavType.IntType
+                defaultValue = 0
+            },
+            navArgument(SEARCH_IN_FIELDS_PARAM) {
+                type = NavType.IntType
+                defaultValue = 0
+            },
+            navArgument(SEARCH_WITH_MASK_WORD_PARAM) {
+                type = NavType.BoolType
+                defaultValue = false
+            }
+        )
     ) {
-        SearchResult(searchResultVMF, it.arguments?.getString(SEARCH_PARAM).toString()) { id: Int ->
+        val query = it.arguments?.getString(SEARCH_PARAM).toString()
+        val searchInCheckedPosition = it.arguments?.getInt(SEARCH_IN_PARAM) ?: 0
+        val searchInFieldsCheckedPosition = it.arguments?.getInt(SEARCH_IN_FIELDS_PARAM) ?: 0
+        val searchWithMaskWord =
+            it.arguments?.getBoolean(SEARCH_WITH_MASK_WORD_PARAM, false) ?: false
+        SearchResult(
+            searchResultVMF,
+            query,
+            searchInCheckedPosition,
+            searchInFieldsCheckedPosition,
+            searchWithMaskWord
+        ) { id: Int, mirrors ->
             openDetailedBook(navController, id)
         }
     }
@@ -154,13 +193,16 @@ private fun NavGraphBuilder.addBookDetails(
 ) {
     composable(
         BOOK_DETAILS_BOTTOM_NAV_ROUTE,
-        arguments = listOf(navArgument(BOOK_ID_PARAM) {
-            type = NavType.IntType
-        })
+        arguments = listOf(
+            navArgument(BOOK_ID_PARAM) {
+                type = NavType.IntType
+            },
+        )
     ) {
         it.arguments?.apply {
             ShowDetailedBook(
                 getInt(BOOK_ID_PARAM),
+                navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
                 navController,
                 bookDetailsViewModelFactory
             )

@@ -1,8 +1,10 @@
 package com.funkymuse.aurora.searchResult
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitResult.handle
@@ -12,6 +14,7 @@ import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.components.LottieWithRetry
+import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.assistedViewModel
 import com.funkymuse.aurora.latestBooks.ShowBooks
 import com.funkymuse.aurora.latestBooks.ShowLoading
@@ -21,14 +24,21 @@ import com.funkymuse.aurora.latestBooks.ShowLoading
  */
 const val SEARCH_RESULT_ROUTE = "search_result"
 const val SEARCH_PARAM = "query"
+const val SEARCH_IN_PARAM = "searchInCheckedPosition"
+const val SEARCH_IN_FIELDS_PARAM = "searchInFieldsCheckedPosition"
+const val SEARCH_WITH_MASK_WORD_PARAM = "searchWithMaskWord"
 
-const val SEARCH_ROUTE_BOTTOM_NAV = "$SEARCH_RESULT_ROUTE/{$SEARCH_PARAM}"
+const val SEARCH_ROUTE_BOTTOM_NAV =
+    "$SEARCH_RESULT_ROUTE/{$SEARCH_PARAM}/{$SEARCH_IN_PARAM}/{$SEARCH_IN_FIELDS_PARAM}/{$SEARCH_WITH_MASK_WORD_PARAM}"
 
 @Composable
 fun SearchResult(
     searchResultVMF: SearchResultVM.SearchResultVMF,
     searchQuery: String,
-    onBookClicked: (id: Int) -> Unit
+    searchInCheckedPosition: Int,
+    searchInFieldsCheckedPosition: Int,
+    searchWithMaskWord: Boolean,
+    onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 
 ) {
     val viewModel = assistedViewModel {
@@ -76,7 +86,6 @@ fun SearchResult(
             }
         },
         apiError = { _, _ ->
-
             FullSizeBoxCenteredContent {
                 LottieWithRetry(
                     R.raw.server_error,
@@ -86,10 +95,9 @@ fun SearchResult(
             }
         },
         success = {
-            ShowBooks(this) { item ->
+            ShowBooks(modifier = Modifier.fillMaxSize(), this) { item ->
                 val bookID = item.id?.toInt() ?: return@ShowBooks
-                viewModel.saveMirrorsForBookId(item.id, item.mirrors)
-                onBookClicked(bookID)
+                onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
             }
         }
     )
