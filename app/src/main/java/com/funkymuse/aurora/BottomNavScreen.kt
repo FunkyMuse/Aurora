@@ -9,7 +9,7 @@ sealed class BottomNavScreen(val route: String, @StringRes val resourceID: Int) 
     companion object {
         private const val SEARCH = "search"
         private const val FAVORITES = "favorites"
-        private const val LATEST_BOOKS = "latest"
+        private const val LATEST_BOOKS = "latestBooks"
         private const val SETTINGS = "settings"
     }
 

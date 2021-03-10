@@ -97,9 +97,11 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     //hilt jetpack
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltJetpackVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha01"
     implementation "androidx.hilt:hilt-work:$hiltJetpackVersion"
     implementation "androidx.hilt:hilt-navigation:$hiltJetpackVersion"
+
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //lifecycle

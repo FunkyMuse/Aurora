@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitResult.handle
@@ -30,7 +31,6 @@ import com.funkymuse.aurora.components.LottieWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
-import com.funkymuse.aurora.extensions.hiltViewModel
 import com.funkymuse.aurora.ui.theme.Shapes
 
 /**
@@ -42,7 +42,7 @@ fun LatestBooks(
     navBackStackEntry: NavBackStackEntry,
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
-    val viewModel: LatestBooksVM = hiltViewModel(navBackStackEntry)
+    val viewModel: LatestBooksVM = hiltNavGraphViewModel(navBackStackEntry)
     val scope = rememberCoroutineScope()
     val internetDetector = InternetDetector(LocalContext.current)
     val list = viewModel.booksData.collectAsState()

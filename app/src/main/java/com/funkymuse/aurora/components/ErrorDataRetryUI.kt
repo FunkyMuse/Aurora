@@ -47,6 +47,18 @@ fun ScaffoldWithBack(
 }
 
 @Composable
+fun ScaffoldWithBackAndContent(
+    onBackClicked: () -> Unit,
+    content: @Composable() (PaddingValues) -> Unit
+) {
+    Scaffold(topBar = {
+        TopAppBarBackOnly(onBackClicked)
+    }) {
+        content(it)
+    }
+}
+
+@Composable
 @Preview
 fun LottieWithRetry(
     @RawRes anim: Int = R.raw.server_error,

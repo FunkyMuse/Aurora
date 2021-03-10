@@ -272,13 +272,6 @@ inline fun <reified T : ViewModel> assistedViewModel(
         viewModelProducer(it)
     })
 
-@Composable
-inline fun <reified T : ViewModel> hiltViewModel(navBackStackEntry: NavBackStackEntry): T =
-    viewModel(
-        factory =
-        HiltViewModelFactory(LocalContext.current, navBackStackEntry)
-    )
-
 
 @Composable
 fun rememberBooleanSaveableDefaultFalse() = rememberSaveable { mutableStateOf(false) }

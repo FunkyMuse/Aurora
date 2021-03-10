@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -25,10 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
-import com.funkymuse.aurora.extensions.hiltViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import kotlinx.coroutines.launch
 
@@ -236,12 +237,9 @@ fun SearchInput(
     navBackStackEntry: NavBackStackEntry,
     onInputText: (inputText: String) -> Unit = {}
 ) {
-    val viewModel = hiltViewModel<ToasterViewModel>(navBackStackEntry)
+    val viewModel = hiltNavGraphViewModel<ToasterViewModel>(navBackStackEntry)
     val keyboardController = LocalSoftwareKeyboardController.current
-    /*migrate to rememberSavable when
-    https://issuetracker.google.com/issues/180042685
-    beta02 is released*/
-    var inputText by remember { mutableStateOf("") }
+    var inputText by rememberSaveable { mutableStateOf("") }
     val invalidInput = inputText.isBlank() || inputText.length < 3
 
     OutlinedTextField(

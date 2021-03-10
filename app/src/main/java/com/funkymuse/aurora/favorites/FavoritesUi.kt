@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -20,7 +21,6 @@ import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.FavoriteBook
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.hiltViewModel
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -31,7 +31,7 @@ fun Favorites(
     navBackStackEntry: NavBackStackEntry,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
-    val viewModel: FavoritesViewModel = hiltViewModel(navBackStackEntry)
+    val viewModel: FavoritesViewModel = hiltNavGraphViewModel(navBackStackEntry)
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
     longClickedBook.value?.apply {

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
@@ -382,16 +383,28 @@ fun TopAppBarBookDetails(
     onFavoritesClicked: () -> Unit
 ) {
     TopAppBar(backgroundColor = PrimaryVariant) {
-        BackButton(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp), onClick = onBackClicked
-        )
-        AddToFavorites(
-            Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp), isInFavorites, onFavoritesClicked
-        )
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (backButton, favorites) = createRefs()
+            BackButton(
+                modifier = Modifier
+                    .constrainAs(backButton){
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .padding(8.dp), onClick = onBackClicked
+            )
+
+            AddToFavorites(
+                Modifier
+                    .constrainAs(favorites){
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .padding(8.dp), isInFavorites, onFavoritesClicked
+            )
+        }
     }
 }
 

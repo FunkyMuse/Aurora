@@ -176,12 +176,16 @@ private fun NavGraphBuilder.addSearchResult(
         val searchWithMaskWord =
             it.arguments?.getBoolean(SEARCH_WITH_MASK_WORD_PARAM, false) ?: false
         SearchResult(
+            {
+              navController.navigateUp()
+            },
             searchResultVMF,
             query,
             searchInCheckedPosition,
             searchInFieldsCheckedPosition,
             searchWithMaskWord
         ) { id: Int, mirrors ->
+            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
             openDetailedBook(navController, id)
         }
     }

@@ -14,6 +14,8 @@ import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
 import com.funkymuse.aurora.components.LottieWithRetry
+import com.funkymuse.aurora.components.ScaffoldWithBack
+import com.funkymuse.aurora.components.ScaffoldWithBackAndContent
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.assistedViewModel
 import com.funkymuse.aurora.latestBooks.ShowBooks
@@ -33,6 +35,7 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
 
 @Composable
 fun SearchResult(
+    onBackClicked: () -> Unit,
     searchResultVMF: SearchResultVM.SearchResultVMF,
     searchQuery: String,
     searchInCheckedPosition: Int,
@@ -95,9 +98,11 @@ fun SearchResult(
             }
         },
         success = {
-            ShowBooks(modifier = Modifier.fillMaxSize(), this) { item ->
-                val bookID = item.id?.toInt() ?: return@ShowBooks
-                onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
+            ScaffoldWithBackAndContent(onBackClicked = onBackClicked){
+                ShowBooks(modifier = Modifier.fillMaxSize(), this) { item ->
+                    val bookID = item.id?.toInt() ?: return@ShowBooks
+                    onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
+                }
             }
         }
     )
