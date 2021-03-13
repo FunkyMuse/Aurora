@@ -26,8 +26,8 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
-import com.funkymuse.aurora.components.FullSizeBoxCenteredContent
-import com.funkymuse.aurora.components.LottieWithRetry
+import com.funkymuse.aurora.components.CenteredWidget
+import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
@@ -56,7 +56,7 @@ fun LatestBooks(
             ShowLoading()
         },
         emptyData = {
-            LottieWithRetry(R.raw.no_latest_books,
+            ErrorWithRetry(R.raw.no_latest_books,
                 true, onRetryClicked = {
                     viewModel.refresh()
                 })
@@ -69,12 +69,12 @@ fun LatestBooks(
                 ) {
                     viewModel.refresh()
                 }
-                FullSizeBoxCenteredContent {
+                CenteredWidget {
                     //LottieAnim(anim = R.raw.no_connection, size = 50.dp)
                 }
             } else {
-                FullSizeBoxCenteredContent {
-                    LottieWithRetry(R.raw.server_error,
+                CenteredWidget {
+                    ErrorWithRetry(R.raw.server_error,
                         true, onRetryClicked = {
                             viewModel.refresh()
                         })
@@ -82,9 +82,8 @@ fun LatestBooks(
             }
         },
         apiError = { _, _ ->
-
-            FullSizeBoxCenteredContent {
-                LottieWithRetry(R.raw.server_error,
+            CenteredWidget {
+                ErrorWithRetry(R.raw.server_error,
                     true, onRetryClicked = {
                         viewModel.refresh()
                     })
