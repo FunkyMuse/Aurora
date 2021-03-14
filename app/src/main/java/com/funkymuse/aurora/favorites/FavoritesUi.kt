@@ -3,6 +3,7 @@ package com.funkymuse.aurora.favorites
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -74,14 +75,14 @@ fun DeleteBook(
             Button(onClick = {
                 onConfirm(it.id)
                 onDismiss()
-            }) {
+            }, modifier = Modifier.padding(horizontal = 4.dp)) {
                 Text(text = stringResource(id = R.string.remove))
             }
         },
         dismissButton = {
             Button(onClick = {
                 onDismiss()
-            }) {
+            }, modifier = Modifier.padding(horizontal = 4.dp)) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
         },

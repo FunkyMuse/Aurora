@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,10 +32,12 @@ import com.funkymuse.aurora.favorites.Favorites
 import com.funkymuse.aurora.latestBooks.LatestBooks
 import com.funkymuse.aurora.search.Search
 import com.funkymuse.aurora.searchResult.*
+import com.funkymuse.aurora.settings.DefaultPreferences
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -121,7 +124,7 @@ fun AuroraScaffold(
                     }
                 }
                 composable(BottomNavScreen.Settings.route) {
-                    Settings(navController)
+                    Settings()
                 }
                 addSearchResult(navController, searchResultVMF)
                 addBookDetails(navController, bookDetailsViewModelFactory)

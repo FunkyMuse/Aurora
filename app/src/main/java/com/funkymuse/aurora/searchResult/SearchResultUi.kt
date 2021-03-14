@@ -12,7 +12,7 @@ import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.components.CenteredWidget
+import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.components.ScaffoldWithBackAndContent
 import com.funkymuse.aurora.dto.Mirrors
@@ -60,11 +60,11 @@ fun SearchResult(
             ShowLoading()
         },
         emptyData = {
-            ErrorWithRetry(
-                R.raw.no_latest_books,
-                true, onRetryClicked = {
+            ScaffoldWithBackAndContent(onBackClicked) {
+                ErrorWithRetry(R.string.no_book_loaded) {
                     viewModel.refresh()
-                })
+                }
+            }
         },
         callError = { throwable ->
             if (throwable is NoConnectionException) {
@@ -74,30 +74,26 @@ fun SearchResult(
                 ) {
                     viewModel.refresh()
                 }
-                CenteredWidget {
-                    //LottieAnim(anim = R.raw.no_connection, size = 50.dp)
-                }
+               ScaffoldWithBackAndContent(onBackClicked) {
+                   ErrorMessage(R.string.no_book_loaded_no_connect)
+               }
             } else {
-                CenteredWidget {
-                    ErrorWithRetry(
-                        R.raw.server_error,
-                        true, onRetryClicked = {
-                            viewModel.refresh()
-                        })
+                ScaffoldWithBackAndContent(onBackClicked) {
+                    ErrorWithRetry(R.string.no_book_loaded) {
+                        viewModel.refresh()
+                    }
                 }
             }
         },
         apiError = { _, _ ->
-            CenteredWidget {
-                ErrorWithRetry(
-                    R.raw.server_error,
-                    true, onRetryClicked = {
-                        viewModel.refresh()
-                    })
+            ScaffoldWithBackAndContent(onBackClicked) {
+                ErrorWithRetry(R.string.no_book_loaded) {
+                    viewModel.refresh()
+                }
             }
         },
         success = {
-            ScaffoldWithBackAndContent(onBackClicked = onBackClicked){
+            ScaffoldWithBackAndContent(onBackClicked = onBackClicked) {
                 ShowBooks(modifier = Modifier.fillMaxSize(), this) { item ->
                     val bookID = item.id?.toInt() ?: return@ShowBooks
                     onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
