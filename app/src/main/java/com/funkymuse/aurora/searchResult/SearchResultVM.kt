@@ -3,6 +3,7 @@ package com.funkymuse.aurora.searchResult
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.context.isOnline
 import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
@@ -29,17 +30,33 @@ import java.util.*
  */
 
 class SearchResultVM @AssistedInject constructor(
-    @Assisted private val searchQuery: String,
-    /* private val sortQuery: String = "",
-     private val sortType: String = "",*/
     internetDetector: InternetDetector,
-    application: Application
+    application: Application,
+    @Assisted private val searchQuery: String,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted(SEARCH_IN_CHECKED_POSITION_KEY) private val searchInCheckedPosition: Int,
+    @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) private val searchInFieldsCheckedPosition: Int,
+    @Assisted private val searchWithMaskWord: Boolean
 ) : AndroidViewModel(application) {
-    @AssistedFactory
-    interface SearchResultVMF {
-        fun create(searchQuery: String): SearchResultVM
+
+    private companion object {
+        private const val SEARCH_IN_CHECKED_POSITION_KEY = "searchInCheckedPosition"
+        private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"
+        private const val SEARCH_WITH_MASKED_WORD_KEY = "searchWithMaskWord"
+        private const val SORT_QUERY_KEY = "sortQuery"
+        private const val SORT_TYPE_KEY = "sortType"
     }
 
+    @AssistedFactory
+    interface SearchResultVMF {
+        fun create(
+            searchQuery: String,
+            savedStateHandle: SavedStateHandle,
+            @Assisted(SEARCH_IN_CHECKED_POSITION_KEY) searchInCheckedPosition: Int,
+            @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) searchInFieldsCheckedPosition: Int,
+            searchWithMaskWord: Boolean
+        ): SearchResultVM
+    }
 
     val internetConnection = internetDetector.state
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
@@ -49,8 +66,36 @@ class SearchResultVM @AssistedInject constructor(
     private var page = 1
     private var canLoadMore = true
     private val adapterList = mutableStateListOf<Book>()
-    private var sortQuery = ""
-    private var sortType = ""
+
+    private var maskWord
+        get() = savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] ?: searchWithMaskWord
+        set(value) {
+            setMaskWordHandle(value)
+        }
+
+    private fun setMaskWordHandle(value: Boolean) {
+        savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] = value
+    }
+
+    private var sortQuery
+        get() = savedStateHandle[SORT_QUERY_KEY] ?: ""
+        set(value) {
+            setSortQueryHandle(value)
+        }
+
+    private fun setSortQueryHandle(query: String) {
+        savedStateHandle[SORT_QUERY_KEY] = query
+    }
+
+    private var sortType
+        get() = savedStateHandle[SORT_TYPE_KEY] ?: ""
+        set(value) {
+            setSortTypeHandle(value)
+        }
+
+    private fun setSortTypeHandle(type: String) {
+        savedStateHandle[SORT_TYPE_KEY] = type
+    }
 
     init {
         searchForBook()
@@ -67,7 +112,6 @@ class SearchResultVM @AssistedInject constructor(
                             booksDataHolder.emptyData()
                         } else {
                             val list = processDocument(it)
-                            debug { "LIST $list" }
                             if (list.isNullOrEmpty()) {
                                 booksDataHolder.emptyData()
                             } else {
@@ -91,12 +135,14 @@ class SearchResultVM @AssistedInject constructor(
             .timeout(DEFAULT_API_TIMEOUT)
             .data(SORT_QUERY, sortQuery)
             .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(LAST_MODE, LAST_QUERY)
+            .data(SEARCH_WITH_MASK, if (searchWithMaskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
             .data(COLUM_QUERY, COLUMN_QUERY_PARAM)
             .data(RES_CONST, PAGE_SIZE)
             .data(SORT_TYPE, sortType)
             .data(PAGE_CONST, page.toString())
-        return jsoup.get()
+        val req = jsoup.get()
+        debug("URL ${req.location()}")
+        return req
     }
 
 

@@ -28,8 +28,8 @@ const val VIEW_QUERY = "view"
 const val VIEW_QUERY_PARAM = "simple"
 
 const val SEARCH_WITH_MASK = "phrase"
-const val SEARCH_WITH_MASK_NO = "1"
 const val SEARCH_WITH_MASK_YES = "0"
+const val SEARCH_WITH_MASK_NO = "1"
 
 const val COLUM_QUERY = "column"
 const val COLUMN_QUERY_PARAM = "def"

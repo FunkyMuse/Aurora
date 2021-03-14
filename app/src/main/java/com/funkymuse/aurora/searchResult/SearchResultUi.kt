@@ -44,7 +44,8 @@ fun SearchResult(
 
 ) {
     val viewModel = assistedViewModel {
-        searchResultVMF.create(searchQuery)
+        searchResultVMF.create(searchQuery, it, searchInCheckedPosition,
+            searchInFieldsCheckedPosition, searchWithMaskWord)
     }
 
     val scope = rememberCoroutineScope()
