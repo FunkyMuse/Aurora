@@ -34,13 +34,11 @@ class SearchResultVM @AssistedInject constructor(
     application: Application,
     @Assisted private val searchQuery: String,
     @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted(SEARCH_IN_CHECKED_POSITION_KEY) private val searchInCheckedPosition: Int,
     @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) private val searchInFieldsCheckedPosition: Int,
     @Assisted private val searchWithMaskWord: Boolean
 ) : AndroidViewModel(application) {
 
     private companion object {
-        private const val SEARCH_IN_CHECKED_POSITION_KEY = "searchInCheckedPosition"
         private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"
         private const val SEARCH_WITH_MASKED_WORD_KEY = "searchWithMaskWord"
         private const val SORT_QUERY_KEY = "sortQuery"
@@ -52,7 +50,6 @@ class SearchResultVM @AssistedInject constructor(
         fun create(
             searchQuery: String,
             savedStateHandle: SavedStateHandle,
-            @Assisted(SEARCH_IN_CHECKED_POSITION_KEY) searchInCheckedPosition: Int,
             @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) searchInFieldsCheckedPosition: Int,
             searchWithMaskWord: Boolean
         ): SearchResultVM
@@ -67,6 +64,17 @@ class SearchResultVM @AssistedInject constructor(
     private var canLoadMore = true
     private val adapterList = mutableStateListOf<Book>()
 
+    private var searchInFieldsPosition
+        get() = savedStateHandle[SEARCH_IN_FIELDS_CHECKED_POSITION_KEY]
+            ?: searchInFieldsCheckedPosition
+        set(value) {
+            setSearchInFieldPositionState(value)
+        }
+
+    private fun setSearchInFieldPositionState(value: Int) {
+        savedStateHandle[SEARCH_IN_FIELDS_CHECKED_POSITION_KEY] = value
+    }
+
     private var maskWord
         get() = savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] ?: searchWithMaskWord
         set(value) {
@@ -75,16 +83,6 @@ class SearchResultVM @AssistedInject constructor(
 
     private fun setMaskWordHandle(value: Boolean) {
         savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] = value
-    }
-
-    private var sortQuery
-        get() = savedStateHandle[SORT_QUERY_KEY] ?: ""
-        set(value) {
-            setSortQueryHandle(value)
-        }
-
-    private fun setSortQueryHandle(query: String) {
-        savedStateHandle[SORT_QUERY_KEY] = query
     }
 
     private var sortType
@@ -96,6 +94,17 @@ class SearchResultVM @AssistedInject constructor(
     private fun setSortTypeHandle(type: String) {
         savedStateHandle[SORT_TYPE_KEY] = type
     }
+
+
+    private var sortQuery
+        get() = savedStateHandle[SORT_QUERY_KEY] ?: ""
+        set(value) {
+            setSortQueryHandle(value)
+        }
+    private fun setSortQueryHandle(query: String) {
+        savedStateHandle[SORT_QUERY_KEY] = query
+    }
+
 
     init {
         searchForBook()
@@ -130,16 +139,18 @@ class SearchResultVM @AssistedInject constructor(
     }
 
     private fun getData(): Document? {
+        debug("SORT BY $sortQuery")
         val jsoup = Jsoup.connect(SEARCH_BASE_URL)
-            .data(REQ_CONST, searchQuery)
             .timeout(DEFAULT_API_TIMEOUT)
-            .data(SORT_QUERY, sortQuery)
+            .data(REQ_CONST, searchQuery)
             .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(SEARCH_WITH_MASK, if (searchWithMaskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
-            .data(COLUM_QUERY, COLUMN_QUERY_PARAM)
+            .data(COLUM_QUERY, getFieldParamByPosition(searchInFieldsPosition))
+            .data(SEARCH_WITH_MASK, if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
             .data(RES_CONST, PAGE_SIZE)
+            .data(SORT_QUERY, sortQuery)
             .data(SORT_TYPE, sortType)
             .data(PAGE_CONST, page.toString())
+
         val req = jsoup.get()
         debug("URL ${req.location()}")
         return req
@@ -168,47 +179,137 @@ class SearchResultVM @AssistedInject constructor(
 
     private fun resetOnSort() {
         adapterList.clear()
-        sortType = ""
         sortQuery = ""
+        sortType = ""
         page = 1
         canLoadMore = true
     }
 
-    fun sortByYearDESC() {
+    private fun sortByYearDESC() {
         resetOnSort()
-        sortType = SORT_YEAR_CONST
-        sortQuery = SORT_TYPE_DESC
+        sortQuery = SORT_YEAR_CONST
+        sortType = SORT_TYPE_DESC
         searchForBook()
     }
 
-    fun sortByYearASC() {
+    private fun sortByYearASC() {
         resetOnSort()
-        sortType = SORT_YEAR_CONST
-        sortQuery = SORT_TYPE_ASC
+        sortQuery = SORT_YEAR_CONST
+        sortType = SORT_TYPE_ASC
         searchForBook()
     }
 
-    fun sortByDefault() {
+    private fun sortByDefault() {
         resetOnSort()
         searchForBook()
     }
 
-    fun sortBySizeDESC() {
+    private fun sortBySizeDESC() {
         resetOnSort()
-        sortType = SORT_SIZE
-        sortQuery = SORT_TYPE_DESC
+        sortQuery = SORT_SIZE
+        sortType = SORT_TYPE_DESC
         searchForBook()
     }
 
-    fun sortBySizeASC() {
+    private fun sortBySizeASC() {
         resetOnSort()
-        sortType = SORT_SIZE
-        sortQuery = SORT_TYPE_ASC
+        sortQuery = SORT_SIZE
+        sortType = SORT_TYPE_ASC
         searchForBook()
     }
 
     fun refresh() {
         resetOnSort()
+        searchForBook()
+    }
+
+    /**
+     *  Pair(0, R.string.default_sort),
+    Pair(1, R.string.year_asc),
+    Pair(2, R.string.year_desc),
+    Pair(3, R.string.size_asc),
+    Pair(4, R.string.size_desc),
+    Pair(5, R.string.author_asc),
+    Pair(6, R.string.author_desc),
+    Pair(7, R.string.title_asc),
+    Pair(8, R.string.title_desc),
+    Pair(9, R.string.extension_asc),
+    Pair(10, R.string.extension_desc),
+    Pair(11, R.string.publisher_asc),
+    Pair(12, R.string.publisher_desc),
+     * @param position Int
+     */
+    fun sortByPosition(position: Int) {
+        when (position) {
+            0 -> sortByDefault()
+            1 -> sortByYearASC()
+            2 -> sortByYearDESC()
+            3 -> sortBySizeASC()
+            4 -> sortBySizeDESC()
+            5 -> sortByAuthorASC()
+            6 -> sortByAuthorDESC()
+            7 -> sortByTitleASC()
+            8 -> sortByTitleDESC()
+            9 -> sortByExtensionASC()
+            10 -> sortByExtensionDESC()
+            11 -> sortByPublisherASC()
+            12 -> sortByPublisherDESC()
+        }
+    }
+
+    private fun sortByPublisherASC() {
+        resetOnSort()
+        sortQuery = SORT_PUBLISHER
+        sortType = SORT_TYPE_ASC
+        searchForBook()
+    }
+
+    private fun sortByPublisherDESC() {
+        resetOnSort()
+        sortQuery = SORT_PUBLISHER
+        sortType = SORT_TYPE_DESC
+        searchForBook()
+    }
+
+    private fun sortByExtensionASC() {
+        resetOnSort()
+        sortQuery = SORT_EXTENSION
+        sortType = SORT_TYPE_ASC
+        searchForBook()
+    }
+
+    private fun sortByExtensionDESC() {
+        resetOnSort()
+        sortQuery = SORT_EXTENSION
+        sortType = SORT_TYPE_DESC
+        searchForBook()
+    }
+
+    private fun sortByTitleASC() {
+        resetOnSort()
+        sortQuery = SORT_TITLE
+        sortType = SORT_TYPE_ASC
+        searchForBook()
+    }
+
+    private fun sortByTitleDESC() {
+        resetOnSort()
+        sortQuery = SORT_TITLE
+        sortType = SORT_TYPE_DESC
+        searchForBook()
+    }
+
+    private fun sortByAuthorDESC() {
+        resetOnSort()
+        sortQuery = SORT_AUTHOR
+        sortType = SORT_TYPE_DESC
+        searchForBook()
+    }
+
+    private fun sortByAuthorASC() {
+        resetOnSort()
+        sortQuery = SORT_AUTHOR
+        sortType = SORT_TYPE_ASC
         searchForBook()
     }
 

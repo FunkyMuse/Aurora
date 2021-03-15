@@ -1,7 +1,10 @@
 package com.funkymuse.aurora.search
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -10,13 +13,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -39,32 +46,21 @@ import kotlinx.coroutines.launch
 
 data class RadioButtonEntries(@StringRes val title: Int)
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
+@OptIn(ExperimentalMaterialApi::class)
 fun Search(
     navBackStackEntry: NavBackStackEntry, onInputText: (
         inputText: String,
-        searchInCheckedPosition: Int,
         searchInFieldsCheckedPosition: Int,
         searchWithMaskWord: Boolean
-    ) -> Unit = { _, _, _, _ -> }
+    ) -> Unit = { _, _, _ -> }
 ) {
 
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    var searchInCheckedPosition by remember { mutableStateOf(0) }
-    var searchInFieldsCheckedPosition by remember { mutableStateOf(0) }
-    var searchWithMaskWord by remember { mutableStateOf(false) }
-
-    val searchInEntries = listOf(
-        RadioButtonEntries(R.string.libgen_sci_tech),
-        RadioButtonEntries(R.string.scientific_articles),
-        RadioButtonEntries(R.string.fiction),
-        RadioButtonEntries(R.string.comics),
-        RadioButtonEntries(R.string.standards),
-        RadioButtonEntries(R.string.magazines),
-    )
+    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
+    var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
 
     val searchInFieldEntries = listOf(
         RadioButtonEntries(R.string.default_column),
@@ -86,20 +82,21 @@ fun Search(
         sheetShape = BottomSheetShapes.large,
         sheetContent = {
             LazyColumn {
+
                 item {
                     Text(
-                        text = stringResource(R.string.search_in), modifier = Modifier
+                        text = stringResource(R.string.search_in_fields), modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 24.dp, start = 16.dp, end = 16.dp)
                     )
                 }
 
-                itemsIndexed(searchInEntries) { index, item ->
+                itemsIndexed(searchInFieldEntries) { index, item ->
                     RadioButtonWithText(
                         text = item.title,
-                        isChecked = searchInCheckedPosition == index,
+                        isChecked = searchInFieldsCheckedPosition == index,
                         onRadioButtonClicked = {
-                            searchInCheckedPosition = index
+                            searchInFieldsCheckedPosition = index
                         })
                 }
 
@@ -121,23 +118,6 @@ fun Search(
                 }
 
                 item {
-                    Text(
-                        text = stringResource(R.string.search_in_fields), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    )
-                }
-
-                itemsIndexed(searchInFieldEntries) { index, item ->
-                    RadioButtonWithText(
-                        text = item.title,
-                        isChecked = searchInFieldsCheckedPosition == index,
-                        onRadioButtonClicked = {
-                            searchInFieldsCheckedPosition = index
-                        })
-                }
-
-                item {
                     Spacer(modifier = Modifier.padding(bottom = 64.dp))
                 }
             }
@@ -145,7 +125,7 @@ fun Search(
     ) {
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (searchInput, searchInputExplanation, filter) = createRefs()
+            val (searchInput, searchInputExplanation, filter, searchButton) = createRefs()
             Box(modifier = Modifier.constrainAs(searchInput) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -155,7 +135,6 @@ fun Search(
                 SearchInput(navBackStackEntry) {
                     onInputText(
                         it,
-                        searchInCheckedPosition,
                         searchInFieldsCheckedPosition,
                         searchWithMaskWord
                     )
@@ -168,6 +147,7 @@ fun Search(
             }) {
                 SearchInputExplained()
             }
+
 
             Box(
                 modifier = Modifier
@@ -215,9 +195,39 @@ fun RadioButtonWithText(
                     Alignment.CenterVertically
                 )
                 .padding(start = 8.dp)
+                .clickable { onRadioButtonClicked() }
         )
     }
 }
+
+@Composable
+fun RadioButtonWithTextNotClickable(
+    @StringRes text: Int,
+    isChecked: Boolean,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+    ) {
+        Image(
+            imageVector = if (isChecked) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+            modifier = Modifier
+                .align(
+                    Alignment.CenterVertically
+                ),
+            contentDescription = null
+        )
+        Text(
+            text = stringResource(id = text), modifier = Modifier
+                .align(
+                    Alignment.CenterVertically
+                )
+                .padding(start = 8.dp)
+        )
+    }
+}
+
 
 @Composable
 fun SearchInputExplained() {
@@ -241,7 +251,6 @@ fun SearchInput(
     val keyboardController = LocalSoftwareKeyboardController.current
     var inputText by rememberSaveable { mutableStateOf("") }
     val invalidInput = inputText.isBlank() || inputText.length < 3
-
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()

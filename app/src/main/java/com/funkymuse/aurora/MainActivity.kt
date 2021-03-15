@@ -3,6 +3,7 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.size
@@ -13,7 +14,6 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -32,12 +32,10 @@ import com.funkymuse.aurora.favorites.Favorites
 import com.funkymuse.aurora.latestBooks.LatestBooks
 import com.funkymuse.aurora.search.Search
 import com.funkymuse.aurora.searchResult.*
-import com.funkymuse.aurora.settings.DefaultPreferences
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,6 +62,7 @@ class MainActivity : ComponentActivity() {
 
 data class BottomEntry(val screen: BottomNavScreen, val icon: ImageVector)
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AuroraScaffold(
     bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
@@ -101,11 +100,10 @@ fun AuroraScaffold(
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search(it) { inputText, searchInCheckedPosition, searchInFieldsCheckedPosition, searchWithMaskWord ->
+                    Search(it) { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
                         openSearchResult(
                             navController,
                             inputText,
-                            searchInCheckedPosition,
                             searchInFieldsCheckedPosition,
                             searchWithMaskWord
                         )
@@ -136,11 +134,10 @@ fun AuroraScaffold(
 fun openSearchResult(
     navController: NavHostController,
     inputText: String,
-    searchInCheckedPosition: Int,
     searchInFieldsCheckedPosition: Int,
     searchWithMaskWord: Boolean
 ) {
-    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText/$searchInCheckedPosition/$searchInFieldsCheckedPosition/$searchWithMaskWord") {
+    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText/$searchInFieldsCheckedPosition/$searchWithMaskWord") {
         launchSingleTop = true
     }
 }
@@ -159,10 +156,6 @@ private fun NavGraphBuilder.addSearchResult(
         SEARCH_ROUTE_BOTTOM_NAV,
         arguments = listOf(
             navArgument(SEARCH_PARAM) { type = NavType.StringType },
-            navArgument(SEARCH_IN_PARAM) {
-                type = NavType.IntType
-                defaultValue = 0
-            },
             navArgument(SEARCH_IN_FIELDS_PARAM) {
                 type = NavType.IntType
                 defaultValue = 0
@@ -174,7 +167,6 @@ private fun NavGraphBuilder.addSearchResult(
         )
     ) {
         val query = it.arguments?.getString(SEARCH_PARAM).toString()
-        val searchInCheckedPosition = it.arguments?.getInt(SEARCH_IN_PARAM) ?: 0
         val searchInFieldsCheckedPosition = it.arguments?.getInt(SEARCH_IN_FIELDS_PARAM) ?: 0
         val searchWithMaskWord =
             it.arguments?.getBoolean(SEARCH_WITH_MASK_WORD_PARAM, false) ?: false
@@ -184,7 +176,6 @@ private fun NavGraphBuilder.addSearchResult(
             },
             searchResultVMF,
             query,
-            searchInCheckedPosition,
             searchInFieldsCheckedPosition,
             searchWithMaskWord
         ) { id: Int, mirrors ->

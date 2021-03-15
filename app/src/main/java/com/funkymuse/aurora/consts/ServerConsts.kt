@@ -32,7 +32,32 @@ const val SEARCH_WITH_MASK_YES = "0"
 const val SEARCH_WITH_MASK_NO = "1"
 
 const val COLUM_QUERY = "column"
-const val COLUMN_QUERY_PARAM = "def"
+const val FIELD_DEFAULT_PARAM = "def"
+const val FIELD_TITLE_PARAM = "title"
+const val FIELD_AUTHOR_PARAM = "author"
+const val FIELD_SERIES_PARAM = "series"
+const val FIELD_PUBLISHER_PARAM = "publisher"
+const val FIELD_YEAR_PARAM = "year"
+const val FIELD_ISBN_PARAM = "identifier"
+const val FIELD_LANGUAGE_PARAM = "language"
+const val FIELD_MD5_PARAM = "md5"
+const val FIELD_TAGS_PARAM = "tags"
+const val FIELD_EXTENSION_PARAM = "extension"
+
+fun getFieldParamByPosition(position: Int) = when (position) {
+    0 -> FIELD_DEFAULT_PARAM
+    1 -> FIELD_TITLE_PARAM
+    2 -> FIELD_AUTHOR_PARAM
+    3 -> FIELD_SERIES_PARAM
+    4 -> FIELD_PUBLISHER_PARAM
+    5 -> FIELD_YEAR_PARAM
+    6 -> FIELD_ISBN_PARAM
+    7 -> FIELD_LANGUAGE_PARAM
+    8 -> FIELD_MD5_PARAM
+    9 -> FIELD_TAGS_PARAM
+    10 -> FIELD_EXTENSION_PARAM
+    else -> FIELD_DEFAULT_PARAM
+}
 
 const val SORT_TYPE_ASC = "ASC"
 const val SORT_TYPE_DESC = "DESC"

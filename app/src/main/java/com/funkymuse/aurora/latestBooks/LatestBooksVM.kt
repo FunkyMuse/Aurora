@@ -81,7 +81,7 @@ class LatestBooksVM @Inject constructor(
             .data(SORT_QUERY, sortQuery)
             .data(VIEW_QUERY, VIEW_QUERY_PARAM)
             .data(LAST_MODE, LAST_QUERY)
-            .data(COLUM_QUERY, COLUMN_QUERY_PARAM)
+            .data(COLUM_QUERY, FIELD_DEFAULT_PARAM)
             .data(RES_CONST, PAGE_SIZE)
             .data(SORT_TYPE, sortType)
             .data(PAGE_CONST, page.toString())
