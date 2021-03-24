@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
@@ -35,7 +36,7 @@ import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.backButton.BackButton
+import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ScaffoldWithBack
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
@@ -43,9 +44,11 @@ import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.*
+import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 
 /**
@@ -63,16 +66,17 @@ fun ShowDetailedBook(
     id: Int?,
     mirrors: Mirrors?,
     navController: NavHostController,
-    bookDetailsViewModel: BookDetailsViewModel.BookDetailsVMF,
+    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
 ) {
     if (id == null) {
         return
     }
-    val viewModel = assistedViewModel { bookDetailsViewModel.create(id) }
+    val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
+    val bookDetailsViewModel = assistedViewModel { bookDetailsViewModelFactory.create(id) }
     val scope = rememberCoroutineScope()
-    val book = viewModel.book.collectAsState().value
+    val book = bookDetailsViewModel.book.collectAsState().value
 
-    val favoritesBook = viewModel.favoriteBook.collectAsState().value
+    val favoritesBook = bookDetailsViewModel.favoriteBook.collectAsState().value
     book.handle(
         loading = {
             Loading()
@@ -84,9 +88,9 @@ fun ShowDetailedBook(
         },
         callError = { throwable ->
             if (throwable is NoConnectionException){
-                retryOnConnectedToInternet(viewModel.internetConnection,
+                retryOnConnectedToInternet(internetDetectorVM.internetConnection,
                 scope){
-                    viewModel.retry()
+                    bookDetailsViewModel.retry()
                 }
                 ScaffoldWithBack() {
                     navController.navigateUp()
@@ -94,7 +98,7 @@ fun ShowDetailedBook(
             } else {
                 ScaffoldWithBack(true,
                     onRetryClicked = {
-                    viewModel.retry()
+                    bookDetailsViewModel.retry()
                 }) {
                     navController.navigateUp()
                 }
@@ -103,7 +107,7 @@ fun ShowDetailedBook(
         },
         apiError = { _, _ ->
             ScaffoldWithBack(true, onRetryClicked = {
-                viewModel.retry()
+                bookDetailsViewModel.retry()
             }) {
                 navController.navigateUp()
             }
@@ -117,7 +121,7 @@ fun ShowDetailedBook(
 
             DetailedBook(detailedBook, mirrors?.list, favoritesBook, onFavoritesClicked = {
                 if (favoritesBook == null) {
-                    viewModel.addToFavorites(
+                    bookDetailsViewModel.addToFavorites(
                         FavoriteBook(
                             detailedBook.id.toString().toInt(),
                             detailedBook.title,
@@ -129,7 +133,7 @@ fun ShowDetailedBook(
                         )
                     )
                 } else {
-                    viewModel.removeFromFavorites(favoritesBook.id)
+                    bookDetailsViewModel.removeFromFavorites(favoritesBook.id)
                 }
             }) {
                 navController.navigateUp()
@@ -382,12 +386,12 @@ fun TopAppBarBookDetails(
     onBackClicked: () -> Unit, isInFavorites: Boolean,
     onFavoritesClicked: () -> Unit
 ) {
-    TopAppBar(backgroundColor = PrimaryVariant) {
+    TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (backButton, favorites) = createRefs()
             BackButton(
                 modifier = Modifier
-                    .constrainAs(backButton){
+                    .constrainAs(backButton) {
                         start.linkTo(parent.start)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
@@ -397,7 +401,7 @@ fun TopAppBarBookDetails(
 
             AddToFavorites(
                 Modifier
-                    .constrainAs(favorites){
+                    .constrainAs(favorites) {
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
@@ -412,7 +416,7 @@ fun TopAppBarBookDetails(
 fun TopAppBarBackOnly(
     onBackClicked: () -> Unit
 ) {
-    TopAppBar(backgroundColor = PrimaryVariant) {
+    TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
         BackButton(
             modifier = Modifier
                 .align(Alignment.CenterVertically)

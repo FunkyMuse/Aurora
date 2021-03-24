@@ -25,12 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
-
-    internetDetector: InternetDetector,
     application: Application
 ) : AndroidViewModel(application) {
 
-    val internetConnection = internetDetector.state
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
         MutableStateFlow(RetrofitResult.EmptyData)
     val booksData = booksDataHolder.asStateFlow()

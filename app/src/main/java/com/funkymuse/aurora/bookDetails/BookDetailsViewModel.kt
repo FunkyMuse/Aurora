@@ -25,7 +25,6 @@ class BookDetailsViewModel @AssistedInject constructor(
     @Assisted private val id: Int,
     private val libgenAPI: LibgenAPI,
     private val favoritesDAO: FavoritesDAO,
-    internetDetector: InternetDetector
 ) : ViewModel() {
 
     @AssistedFactory
@@ -39,7 +38,6 @@ class BookDetailsViewModel @AssistedInject constructor(
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)
     val favoriteBook = favoriteBookData.asStateFlow()
 
-    val internetConnection = internetDetector.state
 
     init {
         loadBook()

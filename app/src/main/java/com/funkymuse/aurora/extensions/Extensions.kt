@@ -37,6 +37,8 @@ import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.bumptech.glide.request.RequestOptions
 import com.funkymuse.aurora.R
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -94,7 +96,7 @@ fun CardListShimmer(
             )
         )
 
-        LazyColumn {
+        LazyColumn(contentPadding =LocalWindowInsets.current.systemBars.toPaddingValues()) {
             items(itemsCount) {
                 ShimmerCardItem(
                     colors = colors,

@@ -1,6 +1,5 @@
-package com.funkymuse.aurora.backButton
+package com.funkymuse.aurora.components
 
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -9,10 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ui.theme.Shapes
 

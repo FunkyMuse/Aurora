@@ -6,7 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.context.isOnline
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.kotlinextensions.livedata.context
 import com.crazylegend.kotlinextensions.log.debug
 import com.crazylegend.retrofit.retrofitResult.*
@@ -29,8 +28,7 @@ import java.util.*
  * Created by funkymuse on 3/8/21 to long live and prosper !
  */
 
-class SearchResultVM @AssistedInject constructor(
-    internetDetector: InternetDetector,
+class SearchResultViewModel @AssistedInject constructor(
     application: Application,
     @Assisted private val searchQuery: String,
     @Assisted private val savedStateHandle: SavedStateHandle,
@@ -52,10 +50,9 @@ class SearchResultVM @AssistedInject constructor(
             savedStateHandle: SavedStateHandle,
             @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) searchInFieldsCheckedPosition: Int,
             searchWithMaskWord: Boolean
-        ): SearchResultVM
+        ): SearchResultViewModel
     }
 
-    val internetConnection = internetDetector.state
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
         MutableStateFlow(RetrofitResult.EmptyData)
     val booksData = booksDataHolder.asStateFlow()

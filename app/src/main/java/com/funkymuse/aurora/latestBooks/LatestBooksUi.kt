@@ -2,26 +2,18 @@ package com.funkymuse.aurora.latestBooks
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retrofitResult.handle
-import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
@@ -31,7 +23,11 @@ import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
-import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.toPaddingValues
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -42,14 +38,10 @@ fun LatestBooks(
     navBackStackEntry: NavBackStackEntry,
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
-    val viewModel: LatestBooksVM = hiltNavGraphViewModel(navBackStackEntry)
+    val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
+    val latestBooksVM = hiltNavGraphViewModel<LatestBooksVM>(navBackStackEntry)
     val scope = rememberCoroutineScope()
-    val internetDetector = InternetDetector(LocalContext.current)
-    val list = viewModel.booksData.collectAsState()
-
-    list.value.retryWhenInternetIsAvailable(internetDetector.state, scope) {
-        viewModel.refresh()
-    }
+    val list = latestBooksVM.booksData.collectAsState()
 
     list.value.handle(
         loading = {
@@ -57,27 +49,27 @@ fun LatestBooks(
         },
         emptyData = {
             ErrorWithRetry(R.string.no_books_loaded) {
-                viewModel.refresh()
+                latestBooksVM.refresh()
             }
         },
         callError = { throwable ->
             if (throwable is NoConnectionException) {
                 retryOnConnectedToInternet(
-                    viewModel.internetConnection,
+                    internetDetectorVM.internetConnection,
                     scope
                 ) {
-                    viewModel.refresh()
+                    latestBooksVM.refresh()
                 }
                 ErrorMessage(R.string.no_books_loaded_no_connect)
             } else {
                 ErrorWithRetry(R.string.no_books_loaded) {
-                    viewModel.refresh()
+                    latestBooksVM.refresh()
                 }
             }
         },
         apiError = { _, _ ->
             ErrorWithRetry(R.string.no_latest_books) {
-                viewModel.refresh()
+                latestBooksVM.refresh()
             }
         },
         success = {
@@ -103,7 +95,27 @@ fun ShowBooks(
 ) {
 
     LazyColumn(
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()
+    ) {
+        items(list, key = { it.id.toString() }) { item ->
+            Book(item) {
+                onBookClicked(item)
+            }
+        }
+    }
+
+}
+
+@Composable
+fun ShowBooksSearch(
+    list: List<Book>,
+    onBookClicked: (Book) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding(bottom = true, left = false, right = false)
     ) {
         items(list, key = { it.id.toString() }) { item ->
             Book(item) {

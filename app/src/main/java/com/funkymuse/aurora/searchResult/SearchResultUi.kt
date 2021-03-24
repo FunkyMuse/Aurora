@@ -1,42 +1,45 @@
 package com.funkymuse.aurora.searchResult
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.crazylegend.kotlinextensions.intent.openWebPage
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
+import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.backButton.BackButton
-import com.funkymuse.aurora.bookDetails.AddToFavorites
-import com.funkymuse.aurora.bookDetails.TopAppBarBackOnly
+import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.components.ScaffoldWithBackAndContent
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.assistedViewModel
+import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.latestBooks.ShowBooks
+import com.funkymuse.aurora.latestBooks.ShowBooksSearch
 import com.funkymuse.aurora.latestBooks.ShowLoading
+import com.funkymuse.aurora.search.RadioButtonEntries
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
+import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.launch
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -52,27 +55,27 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
 @Composable
 fun SearchResult(
     onBackClicked: () -> Unit,
-    searchResultVMF: SearchResultVM.SearchResultVMF,
+    searchResultVMF: SearchResultViewModel.SearchResultVMF,
     searchQuery: String,
     searchInFieldsCheckedPosition: Int,
     searchWithMaskWord: Boolean,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 
 ) {
-    val viewModel = assistedViewModel {
+    val searchResultViewModel = assistedViewModel {
         searchResultVMF.create(
             searchQuery, it,
             searchInFieldsCheckedPosition, searchWithMaskWord
         )
     }
+    val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
     var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
 
     val scope = rememberCoroutineScope()
-    val internetDetector = InternetDetector(LocalContext.current)
-    val list = viewModel.booksData.collectAsState()
+    val list = searchResultViewModel.booksData.collectAsState()
 
-    list.value.retryWhenInternetIsAvailable(internetDetector.state, scope) {
-        viewModel.refresh()
+    list.value.retryWhenInternetIsAvailable(internetDetectorViewModel.internetConnection, scope) {
+        searchResultViewModel.refresh()
     }
 
     list.value.handle(
@@ -82,17 +85,17 @@ fun SearchResult(
         emptyData = {
             ScaffoldWithBackAndContent(onBackClicked) {
                 ErrorWithRetry(R.string.no_book_loaded) {
-                    viewModel.refresh()
+                    searchResultViewModel.refresh()
                 }
             }
         },
         callError = { throwable ->
             if (throwable is NoConnectionException) {
                 retryOnConnectedToInternet(
-                    viewModel.internetConnection,
+                    internetDetectorViewModel.internetConnection,
                     scope
                 ) {
-                    viewModel.refresh()
+                    searchResultViewModel.refresh()
                 }
                 ScaffoldWithBackAndContent(onBackClicked) {
                     ErrorMessage(R.string.no_book_loaded_no_connect)
@@ -100,7 +103,7 @@ fun SearchResult(
             } else {
                 ScaffoldWithBackAndContent(onBackClicked) {
                     ErrorWithRetry(R.string.no_book_loaded) {
-                        viewModel.refresh()
+                        searchResultViewModel.refresh()
                     }
                 }
             }
@@ -108,7 +111,7 @@ fun SearchResult(
         apiError = { _, _ ->
             ScaffoldWithBackAndContent(onBackClicked) {
                 ErrorWithRetry(R.string.no_book_loaded) {
-                    viewModel.refresh()
+                    searchResultViewModel.refresh()
                 }
             }
         },
@@ -118,10 +121,10 @@ fun SearchResult(
                 onBackClicked = onBackClicked,
                 onSortPositionClicked = {
                     checkedSortPosition = it
-                    viewModel.sortByPosition(it)
+                    searchResultViewModel.sortByPosition(it)
                 }) {
-                ShowBooks(modifier = Modifier.fillMaxSize(), this) { item ->
-                    val bookID = item.id?.toInt() ?: return@ShowBooks
+                ShowBooksSearch(this) { item ->
+                    val bookID = item.id?.toInt() ?: return@ShowBooksSearch
                     onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
                 }
             }
@@ -129,13 +132,37 @@ fun SearchResult(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScaffoldWithBackFiltersAndContent(
-    checkedSortPosition:Int,
+    checkedSortPosition: Int,
     onBackClicked: () -> Unit,
     onSortPositionClicked: (Int) -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
+
+    val state = rememberBottomSheetState(BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
+    val scope = rememberCoroutineScope()
+
+
+    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
+    var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
+
+    val searchInFieldEntries = listOf(
+        RadioButtonEntries(R.string.default_column),
+        RadioButtonEntries(R.string.title),
+        RadioButtonEntries(R.string.author),
+        RadioButtonEntries(R.string.series),
+        RadioButtonEntries(R.string.publisher),
+        RadioButtonEntries(R.string.year),
+        RadioButtonEntries(R.string.isbn),
+        RadioButtonEntries(R.string.language),
+        RadioButtonEntries(R.string.md5),
+        RadioButtonEntries(R.string.tags),
+        RadioButtonEntries(R.string.extension),
+    )
+
     val sortList = listOf(
         Pair(0, R.string.default_sort),
         Pair(1, R.string.year_asc),
@@ -151,10 +178,56 @@ fun ScaffoldWithBackFiltersAndContent(
         Pair(11, R.string.publisher_asc),
         Pair(12, R.string.publisher_desc),
     )
-    var dropDownMenuExpansionStatus by remember { mutableStateOf(false) }
-    Scaffold(modifier = Modifier.fillMaxSize(),
+    var dropDownMenuExpanded by remember { mutableStateOf(false) }
+    BottomSheetScaffold(sheetContent = {
+        LazyColumn {
+
+            item {
+                Text(
+                    text = stringResource(R.string.search_in_fields), modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                )
+            }
+
+            itemsIndexed(searchInFieldEntries) { index, item ->
+                RadioButtonWithText(
+                    text = item.title,
+                    isChecked = searchInFieldsCheckedPosition == index,
+                    onRadioButtonClicked = {
+                        searchInFieldsCheckedPosition = index
+                        scope.launch { state.collapse() }
+                    })
+            }
+
+            item {
+                Text(
+                    text = stringResource(R.string.mask_word), modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                )
+            }
+
+            item {
+                RadioButtonWithText(
+                    text = R.string.search_with_mask_word,
+                    isChecked = searchWithMaskWord,
+                    onRadioButtonClicked = {
+                        searchWithMaskWord = !searchWithMaskWord
+                    })
+            }
+
+            item {
+                Spacer(modifier = Modifier.padding(bottom = 64.dp))
+            }
+        }
+    },
+        sheetPeekHeight = 0.dp,
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        sheetShape = BottomSheetShapes.large,
         topBar = {
-            TopAppBar(backgroundColor = PrimaryVariant) {
+            TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
                 ConstraintLayout(modifier = Modifier.fillMaxSize()) {
                     val (backButton, filter) = createRefs()
                     BackButton(
@@ -169,7 +242,7 @@ fun ScaffoldWithBackFiltersAndContent(
 
                     Button(
                         onClick = {
-                            dropDownMenuExpansionStatus = !dropDownMenuExpansionStatus
+                            dropDownMenuExpanded = !dropDownMenuExpanded
                         },
                         shape = Shapes.large,
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
@@ -187,14 +260,14 @@ fun ScaffoldWithBackFiltersAndContent(
                         )
                     }
 
-                    DropdownMenu(expanded = dropDownMenuExpansionStatus,
+                    DropdownMenu(expanded = dropDownMenuExpanded,
                         modifier = Modifier.fillMaxWidth(),
                         offset = DpOffset(32.dp, 16.dp),
-                        onDismissRequest = { dropDownMenuExpansionStatus = false }) {
+                        onDismissRequest = { dropDownMenuExpanded = false }) {
                         sortList.forEach {
                             DropdownMenuItem(onClick = {
                                 onSortPositionClicked(it.first)
-                                dropDownMenuExpansionStatus = false
+                                dropDownMenuExpanded = false
                             }) {
                                 RadioButtonWithTextNotClickable(
                                     text = it.second,
@@ -206,6 +279,36 @@ fun ScaffoldWithBackFiltersAndContent(
                 }
             }
         }) {
-        content(it)
+
+        ConstraintLayout {
+            val filter = createRef()
+
+            Box(modifier = Modifier.fillMaxSize()){
+                content(it)
+            }
+
+            Box(
+                modifier = Modifier
+                    .constrainAs(filter) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 12.dp)
+            ) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .navigationBarsPadding(),
+                    onClick = { scope.launch { state.expand() } },
+                ) {
+                    Icon(
+                        Icons.Filled.FilterList,
+                        contentDescription = stringResource(id = R.string.filter),
+                        tint = Color.White
+                    )
+                }
+            }
+        }
+
     }
 }

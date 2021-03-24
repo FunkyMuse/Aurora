@@ -15,11 +15,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 @Composable
 fun Settings() {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(modifier = Modifier.fillMaxSize(),
+        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()) {
         item { DarkTheme() }
     }
 }

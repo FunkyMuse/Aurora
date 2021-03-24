@@ -173,7 +173,8 @@ private fun ConstraintLayoutScope.AddYearNumberOfPagesAndFileFormat(
         textAlign = TextAlign.Center
     )
     Text(
-        text = pagesText ?: stringResource(id = R.string.not_available),
+        text = pagesText?.toIntOrNull()?.toString() ?: pagesText?.take(5)
+        ?: stringResource(id = R.string.not_available),
         modifier = Modifier
             .constrainAs(pages) {
                 start.linkTo(pagesTitle.start)

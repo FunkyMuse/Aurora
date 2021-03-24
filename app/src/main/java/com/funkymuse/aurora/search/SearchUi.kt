@@ -38,6 +38,7 @@ import androidx.navigation.NavBackStackEntry
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 
 /**
@@ -125,7 +126,7 @@ fun Search(
     ) {
 
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (searchInput, searchInputExplanation, filter, searchButton) = createRefs()
+            val (searchInput, searchInputExplanation, filter) = createRefs()
             Box(modifier = Modifier.constrainAs(searchInput) {
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
@@ -159,6 +160,8 @@ fun Search(
                     .padding(bottom = 64.dp)
             ) {
                 FloatingActionButton(
+                    modifier = Modifier
+                        .navigationBarsPadding(),
                     onClick = { scope.launch { state.show() } },
                 ) {
                     Icon(

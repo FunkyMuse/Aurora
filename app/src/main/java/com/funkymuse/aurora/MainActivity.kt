@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -35,9 +37,11 @@ import com.funkymuse.aurora.searchResult.*
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.google.accompanist.insets.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@ExperimentalAnimatedInsets
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -45,15 +49,18 @@ class MainActivity : ComponentActivity() {
     lateinit var bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
 
     @Inject
-    lateinit var searchResultVMF: SearchResultVM.SearchResultVMF
+    lateinit var searchResultVMF: SearchResultViewModel.SearchResultVMF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             AuroraTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    AuroraScaffold(bookDetailsViewModelFactory, searchResultVMF)
+                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                    // A surface container using the 'background' color from the theme
+                    Surface(color = MaterialTheme.colors.background) {
+                        AuroraScaffold(bookDetailsViewModelFactory, searchResultVMF)
+                    }
                 }
             }
         }
@@ -66,7 +73,7 @@ data class BottomEntry(val screen: BottomNavScreen, val icon: ImageVector)
 @Composable
 fun AuroraScaffold(
     bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
-    searchResultVMF: SearchResultVM.SearchResultVMF
+    searchResultVMF: SearchResultViewModel.SearchResultVMF
 ) {
 
     val navController = rememberNavController()
@@ -150,7 +157,7 @@ fun openDetailedBook(navController: NavHostController, id: Int) {
 
 private fun NavGraphBuilder.addSearchResult(
     navController: NavHostController,
-    searchResultVMF: SearchResultVM.SearchResultVMF
+    searchResultVMF: SearchResultViewModel.SearchResultVMF
 ) {
     composable(
         SEARCH_ROUTE_BOTTOM_NAV,
@@ -212,6 +219,7 @@ val hideBottomNavList = listOf(BOOK_DETAILS_BOTTOM_NAV_ROUTE, SEARCH_ROUTE_BOTTO
 
 @Composable
 fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
+
     var hideBottomNav by rememberBooleanSaveableDefaultFalse()
     val size = if (hideBottomNav) {
         Modifier.size(animateDpAsState(targetValue = 0.dp, animationSpec = tween()).value)
@@ -219,7 +227,7 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         Modifier
     }
 
-    BottomNavigation(modifier = size.clip(BottomSheetShapes.large)) {
+    BottomNavigation(modifier = size.clip(BottomSheetShapes.large).navigationBarsPadding()) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         debug { "CURRENT ROUTE $currentRoute" }
