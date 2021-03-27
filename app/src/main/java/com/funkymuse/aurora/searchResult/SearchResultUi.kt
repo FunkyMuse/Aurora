@@ -13,9 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
 import com.crazylegend.retrofit.retryOnConnectedToInternet
@@ -27,8 +27,8 @@ import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.components.ScaffoldWithBackAndContent
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.assistedViewModel
+import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
-import com.funkymuse.aurora.latestBooks.ShowBooks
 import com.funkymuse.aurora.latestBooks.ShowBooksSearch
 import com.funkymuse.aurora.latestBooks.ShowLoading
 import com.funkymuse.aurora.search.RadioButtonEntries
@@ -57,28 +57,39 @@ fun SearchResult(
     onBackClicked: () -> Unit,
     searchResultVMF: SearchResultViewModel.SearchResultVMF,
     searchQuery: String,
-    searchInFieldsCheckedPosition: Int,
-    searchWithMaskWord: Boolean,
+    searchInFieldsCheckedPositionParam: Int,
+    searchWithMaskWordParam: Boolean,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 
 ) {
     val searchResultViewModel = assistedViewModel {
         searchResultVMF.create(
             searchQuery, it,
-            searchInFieldsCheckedPosition, searchWithMaskWord
+            searchInFieldsCheckedPositionParam, searchWithMaskWordParam
         )
     }
     val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
     var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
 
-    val scope = rememberCoroutineScope()
-    val list = searchResultViewModel.booksData.collectAsState()
+    var searchInFieldsCheckedPosition by rememberSaveable {
+        mutableStateOf(
+            searchInFieldsCheckedPositionParam
+        )
+    }
+    var searchWithMaskWord by rememberSaveable { mutableStateOf(searchWithMaskWordParam) }
 
-    list.value.retryWhenInternetIsAvailable(internetDetectorViewModel.internetConnection, scope) {
+    val scope = rememberCoroutineScope()
+
+    val list by stateWhenStarted(
+        flow = searchResultViewModel.booksData,
+        initial = RetrofitResult.Loading
+    )
+
+    list.retryWhenInternetIsAvailable(internetDetectorViewModel.internetConnection, scope) {
         searchResultViewModel.refresh()
     }
 
-    list.value.handle(
+    list.handle(
         loading = {
             ShowLoading()
         },
@@ -118,10 +129,20 @@ fun SearchResult(
         success = {
             ScaffoldWithBackFiltersAndContent(
                 checkedSortPosition,
+                searchInFieldsCheckedPosition,
+                searchWithMaskWord,
                 onBackClicked = onBackClicked,
                 onSortPositionClicked = {
                     checkedSortPosition = it
                     searchResultViewModel.sortByPosition(it)
+                },
+                onSearchInFieldsCheckedPosition = {
+                    searchInFieldsCheckedPosition = it
+                    searchResultViewModel.searchInFieldsByPosition(it)
+                },
+                onSearchWithMaskWord = {
+                    searchWithMaskWord = it
+                    searchResultViewModel.searchWithMaskedWord(it)
                 }) {
                 ShowBooksSearch(this) { item ->
                     val bookID = item.id?.toInt() ?: return@ShowBooksSearch
@@ -136,8 +157,12 @@ fun SearchResult(
 @Composable
 fun ScaffoldWithBackFiltersAndContent(
     checkedSortPosition: Int,
+    searchInFieldsCheckedPosition: Int,
+    searchWithMaskWord: Boolean,
     onBackClicked: () -> Unit,
     onSortPositionClicked: (Int) -> Unit,
+    onSearchInFieldsCheckedPosition: (Int) -> Unit,
+    onSearchWithMaskWord: (Boolean) -> Unit,
     content: @Composable (PaddingValues) -> Unit
 ) {
 
@@ -145,9 +170,6 @@ fun ScaffoldWithBackFiltersAndContent(
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
     val scope = rememberCoroutineScope()
 
-
-    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
-    var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
 
     val searchInFieldEntries = listOf(
         RadioButtonEntries(R.string.default_column),
@@ -195,7 +217,8 @@ fun ScaffoldWithBackFiltersAndContent(
                     text = item.title,
                     isChecked = searchInFieldsCheckedPosition == index,
                     onRadioButtonClicked = {
-                        searchInFieldsCheckedPosition = index
+                        onSearchInFieldsCheckedPosition(index)
+
                         scope.launch { state.collapse() }
                     })
             }
@@ -213,7 +236,7 @@ fun ScaffoldWithBackFiltersAndContent(
                     text = R.string.search_with_mask_word,
                     isChecked = searchWithMaskWord,
                     onRadioButtonClicked = {
-                        searchWithMaskWord = !searchWithMaskWord
+                        onSearchWithMaskWord(!searchWithMaskWord)
                     })
             }
 
@@ -283,7 +306,7 @@ fun ScaffoldWithBackFiltersAndContent(
         ConstraintLayout {
             val filter = createRef()
 
-            Box(modifier = Modifier.fillMaxSize()){
+            Box(modifier = Modifier.fillMaxSize()) {
                 content(it)
             }
 

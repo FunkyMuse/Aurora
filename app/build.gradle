@@ -111,7 +111,7 @@ dependencies {
 
 
     //lifecycle
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
 
     //test
     testImplementation 'junit:junit:4.13.2'

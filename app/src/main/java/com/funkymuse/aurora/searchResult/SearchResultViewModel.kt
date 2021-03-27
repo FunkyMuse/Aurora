@@ -310,5 +310,17 @@ class SearchResultViewModel @AssistedInject constructor(
         searchForBook()
     }
 
+    fun searchWithMaskedWord(maskedWord: Boolean) {
+        resetOnSort()
+        maskWord = maskedWord
+        searchForBook()
+    }
+
+    fun searchInFieldsByPosition(position: Int) {
+        resetOnSort()
+        searchInFieldsPosition = position
+        searchForBook()
+    }
+
 
 }

@@ -11,13 +11,15 @@ buildscript {
         retrofit = "2.9.0"
         glide = "4.12.0"
         accompanist = "0.7.0"
+        lifecycle = '2.4.0-alpha01'
+
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha11'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
@@ -26,4 +28,3 @@ buildscript {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-

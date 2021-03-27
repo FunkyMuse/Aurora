@@ -24,21 +24,19 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.HiltViewModelFactory
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 import com.bumptech.glide.request.RequestOptions
 import com.funkymuse.aurora.R
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -288,7 +286,7 @@ fun rememberStringSaveableDefaultEmpty() = rememberSaveable { mutableStateOf("")
 inline fun loadPicture(
     url: String,
     requestOptions: RequestOptions.() -> Unit = {}
-): StateFlow<GlideImageState> {
+): GlideImageState {
     val target = remember { GlideFlowTarget() }
     GlideApp.with(LocalContext.current)
         .applyDefaultRequestOptions(RequestOptions().also { it.requestOptions() })
@@ -296,7 +294,8 @@ inline fun loadPicture(
         .load(url)
         .into(target)
 
-    return target.imageState
+    val state by stateWhenStarted(flow = target.imageState, initial = GlideImageState.Loading)
+    return state
 }
 
 @Composable
@@ -357,4 +356,13 @@ fun Loading(
     ) {
         Text(text = stringResource(id = text), Modifier.graphicsLayer(scale, scale))
     }
+}
+
+@Composable
+fun <T> stateWhenStarted(flow: Flow<T>, initial:T): State<T> {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val flowLifecycleAware = remember(flow, lifecycleOwner) {
+        flow.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+    }
+    return flowLifecycleAware.collectAsState(initial)
 }

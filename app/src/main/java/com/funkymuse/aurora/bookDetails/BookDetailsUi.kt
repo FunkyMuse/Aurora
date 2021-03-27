@@ -32,6 +32,7 @@ import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
 import com.crazylegend.kotlinextensions.string.isNotNullOrEmpty
+import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
@@ -74,9 +75,9 @@ fun ShowDetailedBook(
     val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
     val bookDetailsViewModel = assistedViewModel { bookDetailsViewModelFactory.create(id) }
     val scope = rememberCoroutineScope()
-    val book = bookDetailsViewModel.book.collectAsState().value
+    val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 
-    val favoritesBook = bookDetailsViewModel.favoriteBook.collectAsState().value
+    val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     book.handle(
         loading = {
             Loading()
@@ -87,9 +88,11 @@ fun ShowDetailedBook(
             }
         },
         callError = { throwable ->
-            if (throwable is NoConnectionException){
-                retryOnConnectedToInternet(internetDetectorVM.internetConnection,
-                scope){
+            if (throwable is NoConnectionException) {
+                retryOnConnectedToInternet(
+                    internetDetectorVM.internetConnection,
+                    scope
+                ) {
                     bookDetailsViewModel.retry()
                 }
                 ScaffoldWithBack() {
@@ -98,8 +101,8 @@ fun ShowDetailedBook(
             } else {
                 ScaffoldWithBack(true,
                     onRetryClicked = {
-                    bookDetailsViewModel.retry()
-                }) {
+                        bookDetailsViewModel.retry()
+                    }) {
                     navController.navigateUp()
                 }
             }
@@ -133,7 +136,9 @@ fun ShowDetailedBook(
                         )
                     )
                 } else {
-                    bookDetailsViewModel.removeFromFavorites(favoritesBook.id)
+                    favoritesBook?.id?.let {
+                        bookDetailsViewModel.removeFromFavorites(it)
+                    }
                 }
             }) {
                 navController.navigateUp()
@@ -141,7 +146,6 @@ fun ShowDetailedBook(
         }
     )
 }
-
 
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
@@ -183,7 +187,7 @@ fun DetailedBook(
             val imageModifier = Modifier
                 .padding(top = 16.dp)
 
-            when (val res = loadPicture(url = imageUrl).collectAsState().value) {
+            when (val res = loadPicture(imageUrl)) {
                 is GlideImageState.Failure -> {
                     res.errorDrawable?.let {
                         Image(

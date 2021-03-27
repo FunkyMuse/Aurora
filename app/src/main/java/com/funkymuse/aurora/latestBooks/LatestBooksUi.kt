@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -13,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
+import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
@@ -23,6 +25,7 @@ import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
+import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -41,9 +44,9 @@ fun LatestBooks(
     val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
     val latestBooksVM = hiltNavGraphViewModel<LatestBooksVM>(navBackStackEntry)
     val scope = rememberCoroutineScope()
-    val list = latestBooksVM.booksData.collectAsState()
+    val list by stateWhenStarted(flow = latestBooksVM.booksData, initial = RetrofitResult.Loading)
 
-    list.value.handle(
+    list.handle(
         loading = {
             ShowLoading()
         },
