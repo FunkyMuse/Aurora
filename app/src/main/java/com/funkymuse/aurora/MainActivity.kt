@@ -6,20 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -29,6 +22,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bookDetails.*
+import com.funkymuse.aurora.bottomnavigation.BottomEntry
+import com.funkymuse.aurora.bottomnavigation.BottomNav
+import com.funkymuse.aurora.bottomnavigation.BottomNavScreen
 import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.aurora.favorites.Favorites
 import com.funkymuse.aurora.latestBooks.LatestBooks
@@ -66,8 +62,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class BottomEntry(val screen: BottomNavScreen, val icon: ImageVector)
-
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AuroraScaffold(
@@ -76,29 +70,10 @@ fun AuroraScaffold(
 ) {
 
     val navController = rememberNavController()
-    val bottomNavList =
-        listOf(
-            BottomEntry(
-                BottomNavScreen.Search,
-                Icons.Filled.Search
-            ),
-            BottomEntry(
-                BottomNavScreen.Favorites,
-                Icons.Filled.Favorite
-            ),
-            BottomEntry(
-                BottomNavScreen.LatestBooks,
-                Icons.Filled.List
-            ),
-            BottomEntry(
-                BottomNavScreen.Settings,
-                Icons.Filled.Settings
-            )
-        )
 
     Scaffold(
         bottomBar = {
-            AuroraBottomNavigation(navController, bottomNavList)
+            AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
         }
     ) {
         NavHost(
@@ -214,7 +189,6 @@ private fun NavGraphBuilder.addBookDetails(
     }
 }
 
-val hideBottomNavList = listOf(BOOK_DETAILS_BOTTOM_NAV_ROUTE, SEARCH_ROUTE_BOTTOM_NAV)
 
 @Composable
 fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
@@ -230,7 +204,7 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         debug { "CURRENT ROUTE $currentRoute" }
-        hideBottomNav = currentRoute in hideBottomNavList
+        hideBottomNav = currentRoute in BottomNav.hideBottomNavOnDestinations
         bottomNavList.forEach { bottomEntry ->
             BottomNavigationItem(
                 selected = currentRoute == bottomEntry.screen.route,

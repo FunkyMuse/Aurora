@@ -1,12 +1,14 @@
-package com.funkymuse.aurora
+package com.funkymuse.aurora.bottomnavigation
 
 import androidx.annotation.StringRes
+import com.funkymuse.aurora.R
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 sealed class BottomNavScreen(val route: String, @StringRes val resourceID: Int) {
-    companion object {
+
+     private companion object {
         private const val SEARCH = "search"
         private const val FAVORITES = "favorites"
         private const val LATEST_BOOKS = "latestBooks"
