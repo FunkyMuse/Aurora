@@ -376,7 +376,7 @@ fun DetailedBook(
                 DetailedButton(stringResource(id = R.string.torrent_download)) {
                     context.openWebPage(torrentDownloadURL(book.md5.toString()))
                 }
-                Spacer(modifier = Modifier.padding(16.dp))
+                Spacer(modifier = Modifier.padding(top = 16.dp, bottom = 46.dp))
             } else {
                 Spacer(modifier = Modifier.padding(16.dp))
             }

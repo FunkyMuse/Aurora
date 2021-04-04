@@ -37,7 +37,6 @@ import com.funkymuse.aurora.R
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 /**
  * Created by FunkyMuse, date 2/27/21
@@ -45,6 +44,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun CardListShimmer(
+    enableTopPadding: Boolean = true,
     imageHeight: Dp = 160.dp,
     padding: Dp = 16.dp,
     shimmerDelayDuration: Int = 300,
@@ -93,8 +93,11 @@ fun CardListShimmer(
                 repeatMode = RepeatMode.Reverse
             )
         )
-
-        LazyColumn(contentPadding =LocalWindowInsets.current.systemBars.toPaddingValues()) {
+        val paddingValues =
+            if (enableTopPadding) LocalWindowInsets.current.systemBars.toPaddingValues() else PaddingValues(
+                0.dp
+            )
+        LazyColumn(contentPadding = paddingValues) {
             items(itemsCount) {
                 ShimmerCardItem(
                     colors = colors,
@@ -359,7 +362,7 @@ fun Loading(
 }
 
 @Composable
-fun <T> stateWhenStarted(flow: Flow<T>, initial:T): State<T> {
+fun <T> stateWhenStarted(flow: Flow<T>, initial: T): State<T> {
     val lifecycleOwner = LocalLifecycleOwner.current
     val flowLifecycleAware = remember(flow, lifecycleOwner) {
         flow.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)

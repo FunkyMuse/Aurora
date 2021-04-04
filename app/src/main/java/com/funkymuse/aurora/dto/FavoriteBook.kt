@@ -18,21 +18,23 @@ data class FavoriteBook(
     var id: Int = 0,
 
     @ColumnInfo(name = "title")
-    var title: String? = null,
+    override var title: String? = null,
 
     @ColumnInfo(name = "year")
-    var year: String? = null,
+    override var year: String? = null,
 
     @ColumnInfo(name = "pages")
-    var pages: String? = null,
+    override var pages: String? = null,
 
     @ColumnInfo(name = "extension")
-    var extension: String? = null,
+    override var extension: String? = null,
 
     @ColumnInfo(name = "author")
-    var author: String? = null,
+    override var author: String? = null,
 
     @ColumnInfo(name = "mirrors")
     @TypeConverters(ArrayListStringConverter::class)
     val mirrors: List<String>? = null
-)
+) : GeneralBook {
+
+}

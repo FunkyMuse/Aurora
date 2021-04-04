@@ -3,9 +3,11 @@ package com.funkymuse.aurora.book
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +32,7 @@ import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
-import com.funkymuse.aurora.dto.FavoriteBook
+import com.funkymuse.aurora.dto.GeneralBook
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.Shapes
 import org.jsoup.nodes.Element
@@ -40,34 +42,14 @@ import org.jsoup.parser.Tag
  * Created by FunkyMuse, date 2/25/21
  */
 
-@Composable
-@Preview(showSystemUi = true, showBackground = true, device = Devices.PIXEL_4)
-fun Book(book: Book = Book(Element(Tag.valueOf("div"), "test")), onClick: () -> Unit = {}) {
-    Card(
-        shape = Shapes.large,
-        modifier = Modifier
-            .padding(16.dp, 8.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
-        backgroundColor = CardBackground
-    ) {
-        ConstraintLayout(modifier = Modifier.clickable { onClick() }) {
-            val image = addStaticImage()
-            val title = addTitle(image, book.title)
-            val author = addAuthor(title, image, book.author)
-            AddYearNumberOfPagesAndFileFormat(author, book.year, book.pages, book.extension)
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview(showSystemUi = true, showBackground = true, device = Devices.PIXEL_4)
-fun FavoriteBook(
-    book: FavoriteBook = FavoriteBook(
-        1, "Test", "1999", "999",
-        "EPUB", "TEST", null
-    ), onLongClick: () -> Unit = {}, onClick: () -> Unit = {}
+fun Book(
+    book: GeneralBook = Book(Element(Tag.valueOf("div"), "test")),
+    onLongClick: (() -> Unit)? = null,
+    onClick: () -> Unit = {}
 ) {
     Card(
         shape = Shapes.large,

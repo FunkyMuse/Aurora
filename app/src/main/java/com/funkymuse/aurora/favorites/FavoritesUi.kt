@@ -3,7 +3,6 @@ package com.funkymuse.aurora.favorites
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -19,13 +18,16 @@ import androidx.navigation.NavBackStackEntry
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.book.FavoriteBook
+import com.funkymuse.aurora.book.Book
+import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
+import com.google.accompanist.insets.systemBarsPadding
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
+
 
 @Composable
 fun Favorites(
@@ -40,17 +42,24 @@ fun Favorites(
             onConfirm = { viewModel.removeFromFavorites(it) },
             onDismiss = { longClickedBook.value = null })
     }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 56.dp)
-    ) {
-        items(favorites) { book ->
-            book?.let {
-                FavoriteBook(it, onLongClick = {
-                    longClickedBook.value = it
-                }) {
-                    onBookClicked(it.id, Mirrors(it.mirrors ?: emptyList()))
+
+    favorites.loadState.source
+
+    if (favorites.itemCount == 0) {
+        ErrorMessage(text = R.string.no_favorites_expl)
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+        ) {
+            items(favorites) { book ->
+                book?.let {
+                    Book(it, onLongClick = {
+                        longClickedBook.value = it
+                    }) {
+                        onBookClicked(it.id, Mirrors(it.mirrors ?: emptyList()))
+                    }
                 }
             }
         }

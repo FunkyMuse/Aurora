@@ -5,14 +5,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavBackStackEntry
@@ -32,12 +28,12 @@ import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.accompanist.insets.toPaddingValues
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
+
 
 @Composable
 fun LatestBooks(
@@ -50,7 +46,7 @@ fun LatestBooks(
     val list by stateWhenStarted(flow = latestBooksVM.booksData, initial = RetrofitResult.Loading)
     list.handle(
         loading = {
-            ShowLoading()
+            CardListShimmer()
         },
         emptyData = {
             ErrorWithRetry(R.string.no_books_loaded) {
@@ -114,6 +110,7 @@ fun ShowBooks(
 
 }
 
+
 @Composable
 fun ShowBooksSearch(
     list: List<Book>,
@@ -133,9 +130,4 @@ fun ShowBooksSearch(
 
 }
 
-@Composable
-@Preview(showSystemUi = true, showBackground = true)
-fun ShowLoading() {
-    CardListShimmer()
-}
 

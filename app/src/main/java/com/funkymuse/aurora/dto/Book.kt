@@ -13,22 +13,31 @@ import org.jsoup.nodes.TextNode
  */
 
 @Parcelize
-class Book(private val element: @RawValue Element) : Parcelable {
+class Book(private val element: @RawValue Element) : Parcelable, GeneralBook {
 
-    val generateFavoriteBook get() = FavoriteBook(id.toString().toInt(), title, year, pages, extension, author, mirrors)
+    val generateFavoriteBook
+        get() = FavoriteBook(
+            id.toString().toInt(),
+            title,
+            year,
+            pages,
+            extension,
+            author,
+            mirrors
+        )
 
     val id: String?
         get() = tryOrNull {
             (element.childNodes()[0].childNodes()[0] as TextNode).wholeText
         }
 
-    val author: String?
+    override val author: String?
         get() = tryOrNull {
             (element.childNodes()[2].childNodes()[0].childNodes()[0] as TextNode).wholeText
         }
 
 
-    val title: String?
+    override val title: String?
         get() = tryOrNull {
             parseTitle(element)
         }
@@ -40,13 +49,13 @@ class Book(private val element: @RawValue Element) : Parcelable {
         }
 
 
-    val year: String?
+    override val year: String?
         get() = tryOrNull {
             (element.childNodes()[8].childNodes()[0] as TextNode).wholeText
         }
 
 
-    val pages: String?
+    override val pages: String?
         get() = tryOrNull {
             (element.childNodes()[10].childNodes()[0] as TextNode).wholeText
         }
@@ -64,7 +73,7 @@ class Book(private val element: @RawValue Element) : Parcelable {
         }
 
 
-    val extension: String?
+    override val extension: String?
         get() = tryOrNull {
             (element.childNodes()[16].childNodes()[0] as TextNode).wholeText
         }
