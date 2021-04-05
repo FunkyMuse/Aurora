@@ -76,7 +76,7 @@ fun AuroraScaffold() {
                     Search(it) { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
                         openSearchResult(
                             navController,
-                            inputText,
+                            inputText.trim(),
                             searchInFieldsCheckedPosition,
                             searchWithMaskWord
                         )
