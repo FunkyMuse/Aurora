@@ -26,7 +26,6 @@ import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
-import com.funkymuse.aurora.extensions.assistedViewModel
 import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.search.RadioButtonEntries
@@ -54,29 +53,19 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
 @Composable
 fun SearchResult(
     onBackClicked: () -> Unit,
-    searchResultVMF: SearchResultViewModel.SearchResultVMF,
-    searchQuery: String,
-    searchInFieldsCheckedPositionParam: Int,
-    searchWithMaskWordParam: Boolean,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
-
 ) {
-    val searchResultViewModel = assistedViewModel {
-        searchResultVMF.create(
-            searchQuery, it,
-            searchInFieldsCheckedPositionParam, searchWithMaskWordParam
-        )
-    }
+    val searchResultViewModel = hiltNavGraphViewModel<SearchResultViewModel>()
     val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
     var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
 
     var searchInFieldsCheckedPosition by rememberSaveable {
         mutableStateOf(
-            searchInFieldsCheckedPositionParam
+            searchResultViewModel.searchInFieldsCheckedPosition
         )
     }
-    var searchWithMaskWord by rememberSaveable { mutableStateOf(searchWithMaskWordParam) }
+    var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModel.searchWithMaskWord) }
 
     val scope = rememberCoroutineScope()
 

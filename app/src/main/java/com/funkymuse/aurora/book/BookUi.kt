@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.book
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -111,6 +112,7 @@ fun LoadingBook(book: Book = Book(Element(Tag.valueOf("div"), "test"))) {
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun ConstraintLayoutScope.AddYearNumberOfPagesAndFileFormat(
     author: ConstrainedLayoutReference,

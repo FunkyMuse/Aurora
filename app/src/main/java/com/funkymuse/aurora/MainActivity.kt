@@ -33,19 +33,14 @@ import com.funkymuse.aurora.searchResult.*
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
-import com.google.accompanist.insets.*
+import com.google.accompanist.insets.ExperimentalAnimatedInsets
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsPadding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @ExperimentalAnimatedInsets
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
-
-    @Inject
-    lateinit var searchResultVMF: SearchResultViewModel.SearchResultVMF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +49,7 @@ class MainActivity : ComponentActivity() {
             AuroraTheme {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface(color = MaterialTheme.colors.background) {
-                        AuroraScaffold(bookDetailsViewModelFactory, searchResultVMF)
+                        AuroraScaffold()
                     }
                 }
             }
@@ -64,10 +59,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun AuroraScaffold(
-    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
-    searchResultVMF: SearchResultViewModel.SearchResultVMF
-) {
+fun AuroraScaffold() {
 
     val navController = rememberNavController()
 
@@ -105,8 +97,8 @@ fun AuroraScaffold(
                 composable(BottomNavScreen.Settings.route) {
                     Settings()
                 }
-                addSearchResult(navController, searchResultVMF)
-                addBookDetails(navController, bookDetailsViewModelFactory)
+                addSearchResult(navController)
+                addBookDetails(navController)
             }
         )
     }
@@ -131,7 +123,6 @@ fun openDetailedBook(navController: NavHostController, id: Int) {
 
 private fun NavGraphBuilder.addSearchResult(
     navController: NavHostController,
-    searchResultVMF: SearchResultViewModel.SearchResultVMF
 ) {
     composable(
         SEARCH_ROUTE_BOTTOM_NAV,
@@ -147,18 +138,10 @@ private fun NavGraphBuilder.addSearchResult(
             }
         )
     ) {
-        val query = it.arguments?.getString(SEARCH_PARAM).toString()
-        val searchInFieldsCheckedPosition = it.arguments?.getInt(SEARCH_IN_FIELDS_PARAM) ?: 0
-        val searchWithMaskWord =
-            it.arguments?.getBoolean(SEARCH_WITH_MASK_WORD_PARAM, false) ?: false
         SearchResult(
             {
               navController.navigateUp()
             },
-            searchResultVMF,
-            query,
-            searchInFieldsCheckedPosition,
-            searchWithMaskWord
         ) { id: Int, mirrors ->
             it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
             openDetailedBook(navController, id)
@@ -168,7 +151,6 @@ private fun NavGraphBuilder.addSearchResult(
 
 private fun NavGraphBuilder.addBookDetails(
     navController: NavHostController,
-    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF
 ) {
     composable(
         BOOK_DETAILS_BOTTOM_NAV_ROUTE,
@@ -183,7 +165,6 @@ private fun NavGraphBuilder.addBookDetails(
                 getInt(BOOK_ID_PARAM),
                 navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
                 navController,
-                bookDetailsViewModelFactory
             )
         }
     }
@@ -200,7 +181,9 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         Modifier
     }
 
-    BottomNavigation(modifier = size.clip(BottomSheetShapes.large).navigationBarsPadding()) {
+    BottomNavigation(modifier = size
+        .clip(BottomSheetShapes.large)
+        .navigationBarsPadding()) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
         debug { "CURRENT ROUTE $currentRoute" }

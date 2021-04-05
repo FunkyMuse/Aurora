@@ -67,13 +67,14 @@ fun ShowDetailedBook(
     id: Int?,
     mirrors: Mirrors?,
     navController: NavHostController,
-    bookDetailsViewModelFactory: BookDetailsViewModel.BookDetailsVMF,
 ) {
     if (id == null) {
         return
     }
+
+    val bookDetailsViewModel = hiltNavGraphViewModel<BookDetailsViewModel>()
+
     val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
-    val bookDetailsViewModel = assistedViewModel { bookDetailsViewModelFactory.create(id) }
     val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 

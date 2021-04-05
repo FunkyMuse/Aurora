@@ -12,9 +12,7 @@ import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,34 +21,28 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Created by funkymuse on 3/8/21 to long live and prosper !
  */
 
-class SearchResultViewModel @AssistedInject constructor(
+@HiltViewModel
+class SearchResultViewModel @Inject constructor(
     application: Application,
-    @Assisted private val searchQuery: String,
-    @Assisted private val savedStateHandle: SavedStateHandle,
-    @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) private val searchInFieldsCheckedPosition: Int,
-    @Assisted private val searchWithMaskWord: Boolean
+    private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(application) {
+
+    private val searchQuery get() = savedStateHandle.get<String>(SEARCH_PARAM)
+    val searchInFieldsCheckedPosition get() = savedStateHandle.get<Int>(SEARCH_IN_FIELDS_PARAM) ?: 0
+    val searchWithMaskWord
+        get() = savedStateHandle.get<Boolean>(SEARCH_WITH_MASK_WORD_PARAM) ?: false
 
     private companion object {
         private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"
         private const val SEARCH_WITH_MASKED_WORD_KEY = "searchWithMaskWord"
         private const val SORT_QUERY_KEY = "sortQuery"
         private const val SORT_TYPE_KEY = "sortType"
-    }
-
-    @AssistedFactory
-    interface SearchResultVMF {
-        fun create(
-            searchQuery: String,
-            savedStateHandle: SavedStateHandle,
-            @Assisted(SEARCH_IN_FIELDS_CHECKED_POSITION_KEY) searchInFieldsCheckedPosition: Int,
-            searchWithMaskWord: Boolean
-        ): SearchResultViewModel
     }
 
     private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
@@ -92,12 +84,12 @@ class SearchResultViewModel @AssistedInject constructor(
         savedStateHandle[SORT_TYPE_KEY] = type
     }
 
-
     private var sortQuery
         get() = savedStateHandle[SORT_QUERY_KEY] ?: ""
         set(value) {
             setSortQueryHandle(value)
         }
+
     private fun setSortQueryHandle(query: String) {
         savedStateHandle[SORT_QUERY_KEY] = query
     }

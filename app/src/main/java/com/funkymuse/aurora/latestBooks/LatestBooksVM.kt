@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.context.isOnline
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
 import com.crazylegend.kotlinextensions.livedata.context
 import com.crazylegend.kotlinextensions.log.debug
 import com.crazylegend.retrofit.retrofitResult.*
