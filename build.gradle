@@ -1,7 +1,7 @@
 buildscript {
     ext {
         compose_version = '1.0.0-beta03'
-        kotlin_version = '1.4.30'
+        kotlin_version = '1.4.31'
         room = "2.3.0-rc01"
         KAHelpers = '2.2.14'
         moshi = "1.11.0"
@@ -19,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
 
