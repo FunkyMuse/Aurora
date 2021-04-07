@@ -11,7 +11,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Replay
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -106,25 +107,12 @@ fun ScaffoldWithBack(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            ErrorWidget()
+            ErrorWidget(Modifier.size(width = 250.dp, 250.dp))
 
             if (showRetry) {
                 RetryOption(onRetryClicked)
             }
         }
-    }
-}
-
-@Composable
-fun ScaffoldWithBackAndContent(
-    onBackClicked: () -> Unit,
-    content: @Composable (PaddingValues) -> Unit
-) {
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBarBackOnly(onBackClicked)
-        }) {
-        content(it)
     }
 }
 

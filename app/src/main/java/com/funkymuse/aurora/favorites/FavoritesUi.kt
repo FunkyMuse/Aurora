@@ -22,7 +22,9 @@ import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
+import com.google.accompanist.insets.toPaddingValues
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -43,6 +45,7 @@ fun Favorites(
             onDismiss = { longClickedBook.value = null })
     }
 
+    //this fixes the item count ffs
     favorites.loadState.source
 
     if (favorites.itemCount == 0) {
@@ -51,9 +54,14 @@ fun Favorites(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .systemBarsPadding()
+                .systemBarsPadding(),
+            contentPadding = LocalWindowInsets.current.navigationBars.toPaddingValues(
+                top = false,
+                additionalBottom = 16.dp
+            )
         ) {
-            items(favorites) { book ->
+
+        items(favorites) { book ->
                 book?.let {
                     Book(it, onLongClick = {
                         longClickedBook.value = it

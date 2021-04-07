@@ -1,5 +1,8 @@
 package com.funkymuse.aurora.searchResult
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.*
@@ -9,9 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
@@ -34,8 +39,10 @@ import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch
 
 /**
@@ -129,8 +136,10 @@ fun SearchResult(
             success = {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding(bottom = true, left = false, right = false)
+                        .fillMaxSize(),
+                    contentPadding = LocalWindowInsets.current.navigationBars.toPaddingValues(
+                        additionalBottom = 64.dp
+                    )
                 ) {
                     items(this@handle, key = { it.id.toString() }) { item ->
                         Book(item) {
@@ -163,6 +172,7 @@ fun ScaffoldWithBackFiltersAndContent(
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
     val scope = rememberCoroutineScope()
 
+
     val searchInFieldEntries = listOf(
         RadioButtonEntries(R.string.default_column),
         RadioButtonEntries(R.string.title),
@@ -193,49 +203,51 @@ fun ScaffoldWithBackFiltersAndContent(
         Pair(12, R.string.publisher_desc),
     )
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
-    BottomSheetScaffold(sheetContent = {
-        LazyColumn {
 
-            item {
-                Text(
-                    text = stringResource(R.string.search_in_fields), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                )
-            }
+    BottomSheetScaffold(
+        sheetContent = {
+            LazyColumn {
 
-            itemsIndexed(searchInFieldEntries) { index, item ->
-                RadioButtonWithText(
-                    text = item.title,
-                    isChecked = searchInFieldsCheckedPosition == index,
-                    onRadioButtonClicked = {
-                        onSearchInFieldsCheckedPosition(index)
-                        scope.launch { state.collapse() }
-                    })
-            }
+                item {
+                    Text(
+                        text = stringResource(R.string.search_in_fields), modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    )
+                }
 
-            item {
-                Text(
-                    text = stringResource(R.string.mask_word), modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                )
-            }
+                itemsIndexed(searchInFieldEntries) { index, item ->
+                    RadioButtonWithText(
+                        text = item.title,
+                        isChecked = searchInFieldsCheckedPosition == index,
+                        onRadioButtonClicked = {
+                            onSearchInFieldsCheckedPosition(index)
+                            scope.launch { state.collapse() }
+                        })
+                }
 
-            item {
-                RadioButtonWithText(
-                    text = R.string.search_with_mask_word,
-                    isChecked = searchWithMaskWord,
-                    onRadioButtonClicked = {
-                        onSearchWithMaskWord(!searchWithMaskWord)
-                    })
-            }
+                item {
+                    Text(
+                        text = stringResource(R.string.mask_word), modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    )
+                }
 
-            item {
-                Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                item {
+                    RadioButtonWithText(
+                        text = R.string.search_with_mask_word,
+                        isChecked = searchWithMaskWord,
+                        onRadioButtonClicked = {
+                            onSearchWithMaskWord(!searchWithMaskWord)
+                        })
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                }
             }
-        }
-    },
+        },
         sheetPeekHeight = 0.dp,
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
@@ -258,6 +270,11 @@ fun ScaffoldWithBackFiltersAndContent(
                         Button(
                             onClick = {
                                 dropDownMenuExpanded = !dropDownMenuExpanded
+                                scope.launch {
+                                    if (!state.isCollapsed) {
+                                        state.collapse()
+                                    }
+                                } // only the filter menu is visible since it takes almost the whole screen
                             },
                             shape = Shapes.large,
                             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
@@ -299,7 +316,25 @@ fun ScaffoldWithBackFiltersAndContent(
         ConstraintLayout {
             val filter = createRef()
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            //add scrim
+            if (state.isExpanded) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        indication = null,
+                        interactionSource = MutableInteractionSource()
+                    ) {
+                        scope.launch { state.collapse() }
+                    }
+                    .background(brush = SolidColor(Color.Black), alpha = 0.5f)
+                    .zIndex(0.5f))
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(if (state.isExpanded) 0.2f else 0f)
+            ) {
                 content(it)
             }
 
@@ -311,6 +346,7 @@ fun ScaffoldWithBackFiltersAndContent(
                         end.linkTo(parent.end)
                     }
                     .padding(bottom = 12.dp)
+                    .zIndex(0.3f)
             ) {
                 if (filtersVisible) {
                     FloatingActionButton(
