@@ -1,19 +1,17 @@
 package com.funkymuse.aurora.ui.theme
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import com.crazylegend.kotlinextensions.context.isDarkTheme
-import com.crazylegend.kotlinextensions.misc.enableNightMode
-import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.settings.SettingsViewModel
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import com.funkymuse.composed.core.stateWhenStarted
+import kotlinx.coroutines.flow.firstOrNull
 
 private val DarkColorPalette = darkColors(
     primary = Primary,
@@ -42,9 +40,16 @@ onSurface = Color.Black,
 @Composable
 fun AuroraTheme(content: @Composable () -> Unit) {
     val settingsViewModel = hiltNavGraphViewModel<SettingsViewModel>()
+    val scope = rememberCoroutineScope()
+    var isSystemInDark = isSystemInDarkTheme()
+
+    LaunchedEffect(scope) {
+        settingsViewModel.darkTheme.firstOrNull()?.let { isSystemInDark = it }
+    }
+
     val darkTheme by stateWhenStarted(
         flow = settingsViewModel.darkTheme,
-        initial = isSystemInDarkTheme()
+        initial = isSystemInDark
     )
 
     val colors = if (darkTheme) {

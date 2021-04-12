@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -22,21 +24,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.*
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.bumptech.glide.request.RequestOptions
 import com.funkymuse.aurora.R
+import com.funkymuse.composed.core.context
+import com.funkymuse.composed.core.density
+import com.funkymuse.composed.core.savedStateRegistryOwner
+import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Created by FunkyMuse, date 2/27/21
@@ -62,8 +65,8 @@ fun CardListShimmer(
         modifier = Modifier.fillMaxSize()
     ) {
 
-        val cardWidthPx = with(LocalDensity.current) { (maxWidth - (padding * 2)).toPx() }
-        val cardHeightPx = with(LocalDensity.current) { (imageHeight - padding).toPx() }
+        val cardWidthPx = with(density) { (maxWidth - (padding * 2)).toPx() }
+        val cardHeightPx = with(density) { (imageHeight - padding).toPx() }
         val gradientWidth: Float = (0.2f * cardHeightPx)
         val tweenAnim = tweenParameters(shimmerDuration, shimmerDelayDuration)
         val infiniteTransition = rememberInfiniteTransition()
@@ -139,8 +142,8 @@ fun CardShimmer(
         modifier = modifier
     ) {
 
-        val cardWidthPx = with(LocalDensity.current) { (maxWidth - (padding * 2)).toPx() }
-        val cardHeightPx = with(LocalDensity.current) { (imageHeight - padding).toPx() }
+        val cardWidthPx = with(density) { (maxWidth - (padding * 2)).toPx() }
+        val cardHeightPx = with(density) { (imageHeight - padding).toPx() }
         val gradientWidth: Float = (0.2f * cardHeightPx)
         val tweenAnim = tweenParameters(shimmerDuration, shimmerDelayDuration)
         val infiniteTransition = rememberInfiniteTransition()
@@ -270,20 +273,11 @@ inline fun <reified T : ViewModel> assistedViewModel(
 ): T =
     viewModel(factory = createAssistedViewModel(
         arguments = arguments,
-        owner = LocalSavedStateRegistryOwner.current
+        owner = savedStateRegistryOwner
     ) {
         viewModelProducer(it)
     })
 
-
-@Composable
-fun rememberBooleanSaveableDefaultFalse() = rememberSaveable { mutableStateOf(false) }
-
-@Composable
-fun rememberBooleanSaveableDefaultTrue() = rememberSaveable { mutableStateOf(true) }
-
-@Composable
-fun rememberStringSaveableDefaultEmpty() = rememberSaveable { mutableStateOf("") }
 
 @Composable
 inline fun loadPicture(
@@ -291,7 +285,7 @@ inline fun loadPicture(
     requestOptions: RequestOptions.() -> Unit = {}
 ): GlideImageState {
     val target = remember { GlideFlowTarget() }
-    GlideApp.with(LocalContext.current)
+    GlideApp.with(context)
         .applyDefaultRequestOptions(RequestOptions().also { it.requestOptions() })
         .asBitmap()
         .load(url)
@@ -359,13 +353,4 @@ fun Loading(
     ) {
         Text(text = stringResource(id = text), Modifier.graphicsLayer(scale, scale))
     }
-}
-
-@Composable
-fun <T> stateWhenStarted(flow: Flow<T>, initial: T): State<T> {
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val flowLifecycleAware = remember(flow, lifecycleOwner) {
-        flow.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-    }
-    return flowLifecycleAware.collectAsState(initial)
 }

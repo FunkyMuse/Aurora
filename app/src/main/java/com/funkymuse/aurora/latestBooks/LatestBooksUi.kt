@@ -24,8 +24,8 @@ import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
-import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.toPaddingValues
@@ -56,7 +56,7 @@ fun LatestBooks(
         callError = { throwable ->
             if (throwable is NoConnectionException) {
                 retryOnConnectedToInternet(
-                    internetDetectorVM.internetConnection,
+                    internetDetectorVM,
                     scope
                 ) {
                     latestBooksVM.refresh()

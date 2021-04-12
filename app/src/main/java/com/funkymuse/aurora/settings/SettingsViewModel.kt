@@ -10,7 +10,4 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val defaultPreferences: DefaultPreferences
-) : ViewModel(), DefaultPrefsContract by defaultPreferences {
-
-
-}
+) : ViewModel(), DefaultPrefsContract by defaultPreferences

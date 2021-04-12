@@ -25,7 +25,6 @@ import com.funkymuse.aurora.bookDetails.*
 import com.funkymuse.aurora.bottomnavigation.BottomEntry
 import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.BottomNavScreen
-import com.funkymuse.aurora.extensions.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.aurora.favorites.Favorites
 import com.funkymuse.aurora.latestBooks.LatestBooks
 import com.funkymuse.aurora.search.Search
@@ -33,6 +32,7 @@ import com.funkymuse.aurora.searchResult.*
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
 import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -138,11 +138,7 @@ private fun NavGraphBuilder.addSearchResult(
             }
         )
     ) {
-        SearchResult(
-            {
-              navController.navigateUp()
-            },
-        ) { id: Int, mirrors ->
+        SearchResult({ navController.navigateUp() }) { id: Int, mirrors ->
             it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
             openDetailedBook(navController, id)
         }

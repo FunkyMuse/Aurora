@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -44,11 +43,16 @@ import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.*
+import com.funkymuse.aurora.extensions.CardShimmer
+import com.funkymuse.aurora.extensions.GlideImageState
+import com.funkymuse.aurora.extensions.Loading
+import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.composed.core.context
+import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 
@@ -91,7 +95,7 @@ fun ShowDetailedBook(
         callError = { throwable ->
             if (throwable is NoConnectionException) {
                 retryOnConnectedToInternet(
-                    internetDetectorVM.internetConnection,
+                    internetDetectorVM,
                     scope
                 ) {
                     bookDetailsViewModel.retry()
@@ -168,7 +172,7 @@ fun DetailedBook(
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
-    val context = LocalContext.current
+    val localContext = context
 
     Scaffold(
         topBar = {
@@ -356,7 +360,7 @@ fun DetailedBook(
                     onDismissRequest = { menuExpanded = false }) {
                     dlMirrors?.forEachIndexed { index, it ->
                         DropdownMenuItem(onClick = {
-                            context.openWebPage(it)
+                            localContext.openWebPage(it)
                             menuExpanded = false
                         }) {
                             Icon(
@@ -375,7 +379,7 @@ fun DetailedBook(
 
             if (book.md5.isNotNullOrEmpty()) {
                 DetailedButton(stringResource(id = R.string.torrent_download)) {
-                    context.openWebPage(torrentDownloadURL(book.md5.toString()))
+                    localContext.openWebPage(torrentDownloadURL(book.md5.toString()))
                 }
                 Spacer(modifier = Modifier.padding(top = 16.dp, bottom = 46.dp))
             } else {

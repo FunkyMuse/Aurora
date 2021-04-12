@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -16,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import com.funkymuse.aurora.extensions.stateWhenStarted
+import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
 import kotlinx.coroutines.launch

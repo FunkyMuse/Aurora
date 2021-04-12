@@ -31,7 +31,6 @@ import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.CardListShimmer
-import com.funkymuse.aurora.extensions.stateWhenStarted
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.search.RadioButtonEntries
 import com.funkymuse.aurora.search.RadioButtonWithText
@@ -39,6 +38,7 @@ import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsPadding
@@ -81,7 +81,7 @@ fun SearchResult(
         initial = RetrofitResult.Loading
     )
 
-    list.retryWhenInternetIsAvailable(internetDetectorViewModel.internetConnection, scope) {
+    list.retryWhenInternetIsAvailable(internetDetectorViewModel, scope) {
         searchResultViewModel.refresh()
     }
     filtersVisible = list is RetrofitResult.Success
@@ -116,7 +116,7 @@ fun SearchResult(
             callError = { throwable ->
                 if (throwable is NoConnectionException) {
                     retryOnConnectedToInternet(
-                        internetDetectorViewModel.internetConnection,
+                        internetDetectorViewModel,
                         scope
                     ) {
                         searchResultViewModel.refresh()
