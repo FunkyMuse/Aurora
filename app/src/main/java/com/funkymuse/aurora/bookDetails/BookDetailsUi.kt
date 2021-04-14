@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
@@ -44,11 +43,10 @@ import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.CardShimmer
 import com.funkymuse.aurora.extensions.GlideImageState
-import com.funkymuse.aurora.extensions.Loading
 import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.funkymuse.aurora.loading.LoadingAnimation
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
@@ -102,7 +100,7 @@ fun ShowDetailedBook(
     ) {
         book.handle(
             loading = {
-                Loading()
+                LoadingAnimation.LoadingBubbles()
             },
             emptyData = {
                 ErrorWithRetry(R.string.no_book_loaded) {
@@ -228,7 +226,7 @@ fun DetailedBook(
                 }
             }
             GlideImageState.Loading -> {
-                CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
+                LoadingAnimation.CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
             }
             is GlideImageState.Success -> {
                 Card(shape = Shapes.large, modifier = imageModifier) {

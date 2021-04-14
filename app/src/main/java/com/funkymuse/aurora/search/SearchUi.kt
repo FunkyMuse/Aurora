@@ -1,7 +1,6 @@
 package com.funkymuse.aurora.search
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -34,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.navigation.NavBackStackEntry
+import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
@@ -50,11 +48,7 @@ data class RadioButtonEntries(@StringRes val title: Int)
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 fun Search(
-    navBackStackEntry: NavBackStackEntry, onInputText: (
-        inputText: String,
-        searchInFieldsCheckedPosition: Int,
-        searchWithMaskWord: Boolean
-    ) -> Unit = { _, _, _ -> }
+    onInputText: (inputText: String, searchInFieldsCheckedPosition: Int, searchWithMaskWord: Boolean) -> Unit = { _, _, _ -> }
 ) {
 
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -62,28 +56,21 @@ fun Search(
 
     var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
+    val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
 
-    val searchInFieldEntries = listOf(
-        RadioButtonEntries(R.string.default_column),
-        RadioButtonEntries(R.string.title),
-        RadioButtonEntries(R.string.author),
-        RadioButtonEntries(R.string.series),
-        RadioButtonEntries(R.string.publisher),
-        RadioButtonEntries(R.string.year),
-        RadioButtonEntries(R.string.isbn),
-        RadioButtonEntries(R.string.language),
-        RadioButtonEntries(R.string.md5),
-        RadioButtonEntries(R.string.tags),
-        RadioButtonEntries(R.string.extension),
-    )
+
+    val zIndex = if (state.targetValue == ModalBottomSheetValue.Hidden) {
+        0f
+    } else {
+        2f
+    }
 
     ModalBottomSheetLayout(
-        modifier = Modifier.zIndex(if (state.targetValue == ModalBottomSheetValue.Hidden) 0f else 1f),
+        modifier = Modifier.navigationBarsPadding().zIndex(zIndex),
         sheetState = state,
         sheetShape = BottomSheetShapes.large,
         sheetContent = {
             LazyColumn {
-
                 item {
                     Text(
                         text = stringResource(R.string.search_in_fields), modifier = Modifier
@@ -92,7 +79,7 @@ fun Search(
                     )
                 }
 
-                itemsIndexed(searchInFieldEntries) { index, item ->
+                itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
                     RadioButtonWithText(
                         text = item.title,
                         isChecked = searchInFieldsCheckedPosition == index,
@@ -119,7 +106,7 @@ fun Search(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                    Spacer(modifier = Modifier.navigationBarsPadding().padding(bottom = 36.dp))
                 }
             }
         }
@@ -133,7 +120,7 @@ fun Search(
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
             }) {
-                SearchInput(navBackStackEntry) {
+                SearchInput() {
                     onInputText(
                         it,
                         searchInFieldsCheckedPosition,
@@ -149,7 +136,6 @@ fun Search(
                 SearchInputExplained()
             }
 
-
             Box(
                 modifier = Modifier
                     .constrainAs(filter) {
@@ -160,8 +146,6 @@ fun Search(
                     .padding(bottom = 64.dp)
             ) {
                 FloatingActionButton(
-                    modifier = Modifier
-                        .navigationBarsPadding(),
                     onClick = { scope.launch { state.show() } },
                 ) {
                     Icon(
@@ -188,15 +172,11 @@ fun RadioButtonWithText(
             .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
         RadioButton(
-            selected = isChecked, onClick = onRadioButtonClicked, modifier = Modifier.align(
-                Alignment.CenterVertically
-            )
+            selected = isChecked, onClick = onRadioButtonClicked, modifier = Modifier.align(Alignment.CenterVertically)
         )
         Text(
             text = stringResource(id = text), modifier = Modifier
-                .align(
-                    Alignment.CenterVertically
-                )
+                .align(Alignment.CenterVertically)
                 .padding(start = 8.dp)
                 .clickable { onRadioButtonClicked() }
         )
@@ -215,17 +195,12 @@ fun RadioButtonWithTextNotClickable(
     ) {
         Image(
             imageVector = if (isChecked) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
-            modifier = Modifier
-                .align(
-                    Alignment.CenterVertically
-                ),
+            modifier = Modifier.align(Alignment.CenterVertically),
             contentDescription = null
         )
         Text(
             text = stringResource(id = text), modifier = Modifier
-                .align(
-                    Alignment.CenterVertically
-                )
+                .align(Alignment.CenterVertically)
                 .padding(start = 8.dp)
         )
     }
@@ -247,10 +222,10 @@ fun SearchInputExplained() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchInput(
-    navBackStackEntry: NavBackStackEntry,
     onInputText: (inputText: String) -> Unit = {}
 ) {
-    val viewModel = hiltNavGraphViewModel<ToasterViewModel>(navBackStackEntry)
+    val viewModel = hiltNavGraphViewModel<ToasterViewModel>()
+
     val keyboardController = LocalSoftwareKeyboardController.current
     var inputText by rememberSaveable { mutableStateOf("") }
     val invalidInput = inputText.isBlank() || inputText.length < 3
@@ -271,7 +246,7 @@ fun SearchInput(
                 viewModel.shortToast(R.string.empty_or_short_input)
                 return@KeyboardActions
             }
-            keyboardController?.hideSoftwareKeyboard()
+            keyboardController?.hide()
             onInputText(inputText)
         })
     )
