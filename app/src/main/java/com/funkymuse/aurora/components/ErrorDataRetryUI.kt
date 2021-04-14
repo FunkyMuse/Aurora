@@ -23,7 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.bookDetails.TopAppBarBackOnly
 import com.funkymuse.aurora.ui.theme.Primary
 import com.funkymuse.aurora.ui.theme.Secondary
 
@@ -89,30 +88,6 @@ fun ErrorWidget(modifier: Modifier = Modifier) {
             strokeWidth = scale,
             cap = StrokeCap.Round
         )
-    }
-}
-
-
-@Composable
-fun ScaffoldWithBack(
-    showRetry: Boolean = false,
-    onRetryClicked: () -> Unit = {},
-    onBackClicked: () -> Unit
-) {
-    Scaffold(topBar = {
-        TopAppBarBackOnly(onBackClicked)
-    }) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            ErrorWidget(Modifier.size(width = 250.dp, 250.dp))
-
-            if (showRetry) {
-                RetryOption(onRetryClicked)
-            }
-        }
     }
 }
 

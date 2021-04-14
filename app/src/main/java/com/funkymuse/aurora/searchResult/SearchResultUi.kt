@@ -67,22 +67,19 @@ fun SearchResult(
     var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
 
-    var searchInFieldsCheckedPosition by rememberSaveable {
-        mutableStateOf(
-            searchResultViewModel.searchInFieldsCheckedPosition
-        )
-    }
+    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModel.searchInFieldsCheckedPosition) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModel.searchWithMaskWord) }
 
     val scope = rememberCoroutineScope()
 
+    val retry = { searchResultViewModel.refresh() }
     val list by stateWhenStarted(
         flow = searchResultViewModel.booksData,
         initial = RetrofitResult.Loading
     )
 
     list.retryWhenInternetIsAvailable(internetDetectorViewModel, scope) {
-        searchResultViewModel.refresh()
+        retry()
     }
     filtersVisible = list is RetrofitResult.Success
 
@@ -110,7 +107,7 @@ fun SearchResult(
             },
             emptyData = {
                 ErrorWithRetry(R.string.no_books_loaded_search) {
-                    searchResultViewModel.refresh()
+                    retry()
                 }
             },
             callError = { throwable ->
@@ -119,18 +116,18 @@ fun SearchResult(
                         internetDetectorViewModel,
                         scope
                     ) {
-                        searchResultViewModel.refresh()
+                        retry()
                     }
                     ErrorMessage(R.string.no_books_loaded_no_connect)
                 } else {
                     ErrorWithRetry(R.string.no_books_loaded_search) {
-                        searchResultViewModel.refresh()
+                        retry()
                     }
                 }
             },
             apiError = { _, _ ->
                 ErrorWithRetry(R.string.no_books_loaded_search) {
-                    searchResultViewModel.refresh()
+                    retry()
                 }
             },
             success = {

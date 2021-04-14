@@ -102,27 +102,4 @@ fun ShowBooks(
             }
         }
     }
-
 }
-
-
-@Composable
-fun ShowBooksSearch(
-    list: List<Book>,
-    onBookClicked: (Book) -> Unit,
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(bottom = true, left = false, right = false)
-    ) {
-        items(list, key = { it.id.toString() }) { item ->
-            Book(item) {
-                onBookClicked(item)
-            }
-        }
-    }
-
-}
-
-

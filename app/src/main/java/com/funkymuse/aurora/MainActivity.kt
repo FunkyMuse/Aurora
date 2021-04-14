@@ -160,8 +160,9 @@ private fun NavGraphBuilder.addBookDetails(
             ShowDetailedBook(
                 getInt(BOOK_ID_PARAM),
                 navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
-                navController,
-            )
+            ){
+                navController.navigateUp()
+            }
         }
     }
 }
