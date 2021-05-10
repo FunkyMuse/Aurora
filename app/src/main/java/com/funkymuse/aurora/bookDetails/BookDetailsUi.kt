@@ -83,6 +83,8 @@ fun ShowDetailedBook(
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
+
+
     book.handle(
         loading = {
             Loading()
@@ -128,23 +130,7 @@ fun ShowDetailedBook(
             }
 
             DetailedBook(detailedBook, mirrors?.list, favoritesBook, onFavoritesClicked = {
-                if (favoritesBook == null) {
-                    bookDetailsViewModel.addToFavorites(
-                        FavoriteBook(
-                            detailedBook.id.toString().toInt(),
-                            detailedBook.title,
-                            detailedBook.year,
-                            detailedBook.pages,
-                            detailedBook.extension,
-                            detailedBook.author,
-                            mirrors?.list
-                        )
-                    )
-                } else {
-                    favoritesBook?.id?.let {
-                        bookDetailsViewModel.removeFromFavorites(it)
-                    }
-                }
+
             }) {
                 navController.navigateUp()
             }

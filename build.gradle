@@ -1,13 +1,12 @@
 buildscript {
     ext {
-        compose_version = '1.0.0-beta04'
-        kotlin_version = '1.4.32'
-        room = "2.3.0-rc01"
+        compose_version = '1.0.0-beta06'
+        kotlin_version = '1.4.30'
+        room = "2.4.0-alpha02"
         KAHelpers = '2.2.16'
         moshi = "1.12.0"
-        daggerVersion = '2.34'
-        hilt_version = '2.34-beta'
-        hiltJetpackVersion = '1.0.0-beta01'
+        daggerVersion = '2.35.1'
+        hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
         glide = "4.12.0"
         accompanist = "0.7.1"
@@ -20,9 +19,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha14'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha15'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
 
     }
 }
