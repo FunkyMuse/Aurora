@@ -30,11 +30,11 @@ import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.CardListShimmer
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
-import com.funkymuse.aurora.search.RadioButtonEntries
+import com.funkymuse.aurora.loading.LoadingAnimation
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
+import com.funkymuse.aurora.search.SearchViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
@@ -67,22 +67,19 @@ fun SearchResult(
     var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
     var filtersVisible by rememberSaveable { mutableStateOf(false) }
 
-    var searchInFieldsCheckedPosition by rememberSaveable {
-        mutableStateOf(
-            searchResultViewModel.searchInFieldsCheckedPosition
-        )
-    }
+    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModel.searchInFieldsCheckedPosition) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModel.searchWithMaskWord) }
 
     val scope = rememberCoroutineScope()
 
+    val retry = { searchResultViewModel.refresh() }
     val list by stateWhenStarted(
         flow = searchResultViewModel.booksData,
         initial = RetrofitResult.Loading
     )
 
     list.retryWhenInternetIsAvailable(internetDetectorViewModel, scope) {
-        searchResultViewModel.refresh()
+        retry()
     }
     filtersVisible = list is RetrofitResult.Success
 
@@ -106,11 +103,11 @@ fun SearchResult(
         }) {
         list.handle(
             loading = {
-                CardListShimmer(false)
+                LoadingAnimation.CardListShimmer(false)
             },
             emptyData = {
                 ErrorWithRetry(R.string.no_books_loaded_search) {
-                    searchResultViewModel.refresh()
+                    retry()
                 }
             },
             callError = { throwable ->
@@ -119,18 +116,18 @@ fun SearchResult(
                         internetDetectorViewModel,
                         scope
                     ) {
-                        searchResultViewModel.refresh()
+                        retry()
                     }
                     ErrorMessage(R.string.no_books_loaded_no_connect)
                 } else {
                     ErrorWithRetry(R.string.no_books_loaded_search) {
-                        searchResultViewModel.refresh()
+                        retry()
                     }
                 }
             },
             apiError = { _, _ ->
                 ErrorWithRetry(R.string.no_books_loaded_search) {
-                    searchResultViewModel.refresh()
+                    retry()
                 }
             },
             success = {
@@ -171,37 +168,8 @@ fun ScaffoldWithBackFiltersAndContent(
     val state = rememberBottomSheetState(BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
     val scope = rememberCoroutineScope()
+    val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
 
-
-    val searchInFieldEntries = listOf(
-        RadioButtonEntries(R.string.default_column),
-        RadioButtonEntries(R.string.title),
-        RadioButtonEntries(R.string.author),
-        RadioButtonEntries(R.string.series),
-        RadioButtonEntries(R.string.publisher),
-        RadioButtonEntries(R.string.year),
-        RadioButtonEntries(R.string.isbn),
-        RadioButtonEntries(R.string.language),
-        RadioButtonEntries(R.string.md5),
-        RadioButtonEntries(R.string.tags),
-        RadioButtonEntries(R.string.extension),
-    )
-
-    val sortList = listOf(
-        Pair(0, R.string.default_sort),
-        Pair(1, R.string.year_asc),
-        Pair(2, R.string.year_desc),
-        Pair(3, R.string.size_asc),
-        Pair(4, R.string.size_desc),
-        Pair(5, R.string.author_asc),
-        Pair(6, R.string.author_desc),
-        Pair(7, R.string.title_asc),
-        Pair(8, R.string.title_desc),
-        Pair(9, R.string.extension_asc),
-        Pair(10, R.string.extension_desc),
-        Pair(11, R.string.publisher_asc),
-        Pair(12, R.string.publisher_desc),
-    )
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
 
     BottomSheetScaffold(
@@ -216,7 +184,7 @@ fun ScaffoldWithBackFiltersAndContent(
                     )
                 }
 
-                itemsIndexed(searchInFieldEntries) { index, item ->
+                itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
                     RadioButtonWithText(
                         text = item.title,
                         isChecked = searchInFieldsCheckedPosition == index,
@@ -296,7 +264,7 @@ fun ScaffoldWithBackFiltersAndContent(
                             modifier = Modifier.fillMaxWidth(),
                             offset = DpOffset(32.dp, 16.dp),
                             onDismissRequest = { dropDownMenuExpanded = false }) {
-                            sortList.forEach {
+                            searchViewModel.sortList.forEach {
                                 DropdownMenuItem(onClick = {
                                     onSortPositionClicked(it.first)
                                     dropDownMenuExpanded = false

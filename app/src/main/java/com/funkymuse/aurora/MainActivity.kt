@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -73,7 +74,7 @@ fun AuroraScaffold() {
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search(it) { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
+                    Search() { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
                         openSearchResult(
                             navController,
                             inputText.trim(),
@@ -160,8 +161,9 @@ private fun NavGraphBuilder.addBookDetails(
             ShowDetailedBook(
                 getInt(BOOK_ID_PARAM),
                 navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
-                navController,
-            )
+            ){
+                navController.navigateUp()
+            }
         }
     }
 }
@@ -171,6 +173,10 @@ private fun NavGraphBuilder.addBookDetails(
 fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
 
     var hideBottomNav by rememberBooleanSaveableDefaultFalse()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    navBackStackEntry?.debug { "CURRENT ROUTE $currentRoute" }
+
     val size = if (hideBottomNav) {
         Modifier.size(animateDpAsState(targetValue = 0.dp, animationSpec = tween()).value)
     } else {
@@ -180,9 +186,6 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
     BottomNavigation(modifier = size
         .clip(BottomSheetShapes.large)
         .navigationBarsPadding()) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-        debug { "CURRENT ROUTE $currentRoute" }
         hideBottomNav = currentRoute in BottomNav.hideBottomNavOnDestinations
         bottomNavList.forEach { bottomEntry ->
             BottomNavigationItem(

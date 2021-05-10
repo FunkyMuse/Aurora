@@ -21,11 +21,10 @@ import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.CardListShimmer
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.funkymuse.aurora.loading.LoadingAnimation
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.toPaddingValues
 
 /**
@@ -44,7 +43,7 @@ fun LatestBooks(
     val list by stateWhenStarted(flow = latestBooksVM.booksData, initial = RetrofitResult.Loading)
     list.handle(
         loading = {
-            CardListShimmer()
+            LoadingAnimation.CardListShimmer()
         },
         emptyData = {
             ErrorWithRetry(R.string.no_books_loaded) {
@@ -102,27 +101,4 @@ fun ShowBooks(
             }
         }
     }
-
 }
-
-
-@Composable
-fun ShowBooksSearch(
-    list: List<Book>,
-    onBookClicked: (Book) -> Unit,
-) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding(bottom = true, left = false, right = false)
-    ) {
-        items(list, key = { it.id.toString() }) { item ->
-            Book(item) {
-                onBookClicked(item)
-            }
-        }
-    }
-
-}
-
-

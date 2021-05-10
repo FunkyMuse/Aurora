@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.navigation.NavHostController
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
@@ -37,17 +36,17 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.components.BackButton
-import com.funkymuse.aurora.components.ScaffoldWithBack
+import com.funkymuse.aurora.components.ErrorMessage
+import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.CardShimmer
 import com.funkymuse.aurora.extensions.GlideImageState
-import com.funkymuse.aurora.extensions.Loading
 import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.funkymuse.aurora.loading.LoadingAnimation
 import com.funkymuse.aurora.ui.theme.CardBackground
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
@@ -70,315 +69,353 @@ const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 fun ShowDetailedBook(
     id: Int?,
     mirrors: Mirrors?,
-    navController: NavHostController,
+    onBackClicked: () -> Unit,
 ) {
     if (id == null) {
+        onBackClicked()
         return
     }
 
     val bookDetailsViewModel = hiltNavGraphViewModel<BookDetailsViewModel>()
-
-    val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
+    val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
     val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
+    var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
 
 
-    book.handle(
-        loading = {
-            Loading()
+    val retry = {
+        bookDetailsViewModel.retry()
+    }
+    ScaffoldWithBackAndFavorites(
+        book is RetrofitResult.Success,
+        favoritesBook,
+        onBackClicked = {
+            onBackClicked()
         },
-        emptyData = {
-            ScaffoldWithBack() {
-                navController.navigateUp()
-            }
-        },
-        callError = { throwable ->
-            if (throwable is NoConnectionException) {
-                retryOnConnectedToInternet(
-                    internetDetectorVM,
-                    scope
-                ) {
-                    bookDetailsViewModel.retry()
-                }
-                ScaffoldWithBack() {
-                    navController.navigateUp()
-                }
-            } else {
-                ScaffoldWithBack(true,
-                    onRetryClicked = {
-                        bookDetailsViewModel.retry()
-                    }) {
-                    navController.navigateUp()
-                }
-            }
-
-        },
-        apiError = { _, _ ->
-            ScaffoldWithBack(true, onRetryClicked = {
-                bookDetailsViewModel.retry()
-            }) {
-                navController.navigateUp()
-            }
-        },
-        success = {
-            val detailedBook = firstOrNull()
-            if (detailedBook == null) {
-                navController.navigateUp()
-                return
-            }
-
-            DetailedBook(detailedBook, mirrors?.list, favoritesBook, onFavoritesClicked = {
-
-            }) {
-                navController.navigateUp()
-            }
+        onFavoritesClicked = {
+            favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel, mirrors)
         }
-    )
+    ) {
+        book.handle(
+            loading = {
+                LoadingAnimation.LoadingBubbles()
+            },
+            emptyData = {
+                ErrorWithRetry(R.string.no_book_loaded) {
+                    retry()
+                }
+            },
+            callError = { throwable ->
+                if (throwable is NoConnectionException) {
+                    retryOnConnectedToInternet(
+                        internetDetectorViewModel,
+                        scope
+                    ) {
+                        retry()
+                    }
+                    ErrorMessage(R.string.no_book_loaded_no_connect)
+                } else {
+                    ErrorWithRetry(R.string.no_book_loaded) {
+                        retry()
+                    }
+                }
+            },
+            apiError = { _, _ ->
+                ErrorWithRetry(R.string.no_book_loaded) {
+                    retry()
+                }
+            },
+            success = {
+                detailedBook = firstOrNull()
+                if (detailedBook == null) {
+                    onBackClicked()
+                    return@handle
+                }
+                detailedBook?.apply {
+                    DetailedBook(this, mirrors?.list)
+                }
+
+            }
+        )
+    }
+
+
+}
+
+private fun favoritesClick(
+    favoritesBook: FavoriteBook?,
+    detailedBook: DetailedBookModel?,
+    bookDetailsViewModel: BookDetailsViewModel,
+    mirrors: Mirrors?
+) {
+    if (favoritesBook == null) {
+        detailedBook?.let { bookModel ->
+            bookDetailsViewModel.addToFavorites(
+                FavoriteBook(
+                    bookModel.id.toString().toInt(),
+                    bookModel.title,
+                    bookModel.year,
+                    bookModel.pages,
+                    bookModel.extension,
+                    bookModel.author,
+                    mirrors?.list
+                )
+            )
+        }
+
+    } else {
+        bookDetailsViewModel.removeFromFavorites(favoritesBook.id)
+    }
+}
+
+@Composable
+fun ScaffoldWithBackAndFavorites(
+    showFavoritesButton: Boolean,
+    favoritesBook: FavoriteBook?,
+    onBackClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBarBookDetails(onBackClicked, favoritesBook != null, showFavoritesButton) {
+                onFavoritesClicked()
+            }
+        }) {
+        content(it)
+    }
 }
 
 
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
 fun BookPreview() {
-    DetailedBook(book = DetailedBookModel.testBook, listOf("test", "test")) {
-
-    }
+    DetailedBook(book = DetailedBookModel.testBook, listOf("test", "test"))
 }
 
 
 @Composable
 fun DetailedBook(
     book: DetailedBookModel,
-    dlMirrors: List<String>? = null,
-    favoritesBook: FavoriteBook? = null,
-    onFavoritesClicked: () -> Unit = {},
-    onBackClicked: () -> Unit = {}
+    dlMirrors: List<String>? = null
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
 
-    Scaffold(
-        topBar = {
-            TopAppBarBookDetails(onBackClicked, favoritesBook != null) {
-                onFavoritesClicked()
-            }
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
 
-            val alignment = Modifier.align(Alignment.Start)
-            val imageModifier = Modifier
-                .padding(top = 16.dp)
+        val alignment = Modifier.align(Alignment.Start)
+        val imageModifier = Modifier
+            .padding(top = 16.dp)
 
-            when (val res = loadPicture(imageUrl)) {
-                is GlideImageState.Failure -> {
-                    res.errorDrawable?.let {
+        when (val res = loadPicture(imageUrl)) {
+            is GlideImageState.Failure -> {
+                res.errorDrawable?.let {
+                    Image(
+                        bitmap = it,
+                        contentDescription = stringResource(id = R.string.book_details)
+                    )
+                }
+            }
+            GlideImageState.Loading -> {
+                LoadingAnimation.CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
+            }
+            is GlideImageState.Success -> {
+                Card(shape = Shapes.large, modifier = imageModifier) {
+                    res.imageBitmap?.let {
                         Image(
                             bitmap = it,
                             contentDescription = stringResource(id = R.string.book_details)
                         )
                     }
                 }
-                GlideImageState.Loading -> {
-                    CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
-                }
-                is GlideImageState.Success -> {
-                    Card(shape = Shapes.large, modifier = imageModifier) {
-                        res.imageBitmap?.let {
-                            Image(
-                                bitmap = it,
-                                contentDescription = stringResource(id = R.string.book_details)
-                            )
-                        }
-                    }
-                }
             }
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-                text = book.author ?: stringResource(id = R.string.not_available),
-                style = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
-                )
-            )
-
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                text = book.title ?: stringResource(id = R.string.not_available),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp, textAlign = TextAlign.Center
-                )
-            )
-
-            book.descr?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.description_detail,
-                        clearHtmlTags()
-                    )
-            }
-
-            book.year?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.year,
-                        this
-                    )
-            }
-
-            book.language?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.language_detail,
-                        this
-                    )
-            }
-
-
-            book.pages?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.number_of_pages_detail,
-                        this
-                    )
-            }
-
-
-            book.extension?.toUpperCase(Locale.ROOT)?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.file_type_detail,
-                        this
-                    )
-            }
-
-            book.timeadded?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.time_added_detail,
-                        this
-                    )
-            }
-
-            book.timelastmodified?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.time_last_modified_detail,
-                        this
-                    )
-            }
-
-            book.edition?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.edition_detail,
-                        this
-                    )
-            }
-
-            book.publisher?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.publisher_detail,
-                        this
-                    )
-            }
-
-            book.series?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.series_detail,
-                        this
-                    )
-            }
-
-            book.volumeinfo?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.volume_info_detail,
-                        this
-                    )
-            }
-
-            book.periodical?.apply {
-                if (isNotNullOrEmpty())
-                    TitleCardWithContent(
-                        alignment,
-                        R.string.periodical_detail,
-                        this
-                    )
-            }
-
-            if (dlMirrors.isNotNullOrEmpty) {
-                var menuExpanded by remember { mutableStateOf(false) }
-
-                DetailedButton(stringResource(id = R.string.download_mirrors)) {
-                    menuExpanded = true
-                }
-                DropdownMenu(expanded = menuExpanded,
-                    modifier = Modifier.fillMaxWidth(),
-                    offset = DpOffset(32.dp, 16.dp),
-                    onDismissRequest = { menuExpanded = false }) {
-                    dlMirrors?.forEachIndexed { index, it ->
-                        DropdownMenuItem(onClick = {
-                            localContext.openWebPage(it)
-                            menuExpanded = false
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_download),
-                                contentDescription = stringResource(id = R.string.download)
-                            )
-
-                            Text(
-                                text = stringResource(id = R.string.mirror_placeholder, index + 1),
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-            if (book.md5.isNotNullOrEmpty()) {
-                DetailedButton(stringResource(id = R.string.torrent_download)) {
-                    localContext.openWebPage(torrentDownloadURL(book.md5.toString()))
-                }
-                Spacer(modifier = Modifier.padding(top = 16.dp, bottom = 46.dp))
-            } else {
-                Spacer(modifier = Modifier.padding(16.dp))
-            }
-
         }
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+            text = book.author ?: stringResource(id = R.string.not_available),
+            style = TextStyle(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
+            )
+        )
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            text = book.title ?: stringResource(id = R.string.not_available),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp, textAlign = TextAlign.Center
+            )
+        )
+
+        book.descr?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.description_detail,
+                    clearHtmlTags()
+                )
+        }
+
+        book.year?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.year,
+                    this
+                )
+        }
+
+        book.language?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.language_detail,
+                    this
+                )
+        }
+
+
+        book.pages?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.number_of_pages_detail,
+                    this
+                )
+        }
+
+
+        book.extension?.toUpperCase(Locale.ROOT)?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.file_type_detail,
+                    this
+                )
+        }
+
+        book.timeadded?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.time_added_detail,
+                    this
+                )
+        }
+
+        book.timelastmodified?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.time_last_modified_detail,
+                    this
+                )
+        }
+
+        book.edition?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.edition_detail,
+                    this
+                )
+        }
+
+        book.publisher?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.publisher_detail,
+                    this
+                )
+        }
+
+        book.series?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.series_detail,
+                    this
+                )
+        }
+
+        book.volumeinfo?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.volume_info_detail,
+                    this
+                )
+        }
+
+        book.periodical?.apply {
+            if (isNotNullOrEmpty())
+                TitleCardWithContent(
+                    alignment,
+                    R.string.periodical_detail,
+                    this
+                )
+        }
+
+        if (dlMirrors.isNotNullOrEmpty) {
+            var menuExpanded by remember { mutableStateOf(false) }
+
+            DetailedButton(stringResource(id = R.string.download_mirrors)) {
+                menuExpanded = true
+            }
+            DropdownMenu(expanded = menuExpanded,
+                modifier = Modifier.fillMaxWidth(),
+                offset = DpOffset(32.dp, 16.dp),
+                onDismissRequest = { menuExpanded = false }) {
+                dlMirrors?.forEachIndexed { index, it ->
+                    DropdownMenuItem(onClick = {
+                        localContext.openWebPage(it)
+                        menuExpanded = false
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_download),
+                            contentDescription = stringResource(id = R.string.download)
+                        )
+
+                        Text(
+                            text = stringResource(id = R.string.mirror_placeholder, index + 1),
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        if (book.md5.isNotNullOrEmpty()) {
+            DetailedButton(stringResource(id = R.string.torrent_download)) {
+                localContext.openWebPage(torrentDownloadURL(book.md5.toString()))
+            }
+            Spacer(modifier = Modifier.padding(top = 16.dp, bottom = 46.dp))
+        } else {
+            Spacer(modifier = Modifier.padding(16.dp))
+        }
+
     }
 }
 
 @Composable
 fun TopAppBarBookDetails(
-    onBackClicked: () -> Unit, isInFavorites: Boolean,
+    onBackClicked: () -> Unit, isInFavorites: Boolean, showFavoritesButton: Boolean,
     onFavoritesClicked: () -> Unit
 ) {
     TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
@@ -394,29 +431,18 @@ fun TopAppBarBookDetails(
                     .padding(8.dp), onClick = onBackClicked
             )
 
-            AddToFavorites(
-                Modifier
-                    .constrainAs(favorites) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .padding(8.dp), isInFavorites, onFavoritesClicked
-            )
+            if (showFavoritesButton) {
+                AddToFavorites(
+                    Modifier
+                        .constrainAs(favorites) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .padding(8.dp), isInFavorites, onFavoritesClicked
+                )
+            }
         }
-    }
-}
-
-@Composable
-fun TopAppBarBackOnly(
-    onBackClicked: () -> Unit
-) {
-    TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
-        BackButton(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(8.dp), onClick = onBackClicked
-        )
     }
 }
 

@@ -59,4 +59,5 @@ class BookDetailsViewModel @Inject constructor(
     fun retry() {
         loadBook()
     }
+
 }
