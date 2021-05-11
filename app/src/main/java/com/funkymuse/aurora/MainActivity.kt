@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -90,7 +89,7 @@ fun AuroraScaffold() {
                     }
                 }
                 composable(BottomNavScreen.LatestBooks.route) {
-                    LatestBooks(it) { id, mirrors ->
+                    LatestBooks() { id, mirrors ->
                         it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }
@@ -139,7 +138,9 @@ private fun NavGraphBuilder.addSearchResult(
             }
         )
     ) {
-        SearchResult({ navController.navigateUp() }) { id: Int, mirrors ->
+        SearchResult(onBackClicked = {
+            navController.navigateUp()
+        }) { id: Int, mirrors ->
             it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
             openDetailedBook(navController, id)
         }

@@ -1,101 +1,136 @@
 package com.funkymuse.aurora.latestBooks
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import androidx.navigation.NavBackStackEntry
-import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.crazylegend.retrofit.retrofitResult.handle
-import com.crazylegend.retrofit.retryOnConnectedToInternet
-import com.crazylegend.retrofit.throwables.NoConnectionException
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.appendState
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
-import com.funkymuse.aurora.loading.LoadingAnimation
-import com.funkymuse.composed.core.stateWhenStarted
+import com.funkymuse.aurora.paging.PagingProviderViewModel
+import com.funkymuse.aurora.prependState
+import com.funkymuse.aurora.refreshState
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LatestBooks(
-    navBackStackEntry: NavBackStackEntry,
+    latestBooksVM: LatestBooksVM = hiltNavGraphViewModel(),
+    pagingUIProvider: PagingProviderViewModel = hiltNavGraphViewModel(),
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
-    val internetDetectorVM = hiltNavGraphViewModel<InternetDetectorViewModel>()
-    val latestBooksVM = hiltNavGraphViewModel<LatestBooksVM>(navBackStackEntry)
+    var progressVisibility by rememberBooleanDefaultFalse()
+
+    val pagingItems = latestBooksVM.pagingData.collectAsLazyPagingItems()
+
     val scope = rememberCoroutineScope()
-    val list by stateWhenStarted(flow = latestBooksVM.booksData, initial = RetrofitResult.Loading)
-    list.handle(
-        loading = {
-            LoadingAnimation.CardListShimmer()
-        },
-        emptyData = {
-            ErrorWithRetry(R.string.no_books_loaded) {
-                latestBooksVM.refresh()
+
+    progressVisibility =
+        pagingUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+    val retry = {
+        latestBooksVM.refresh()
+        pagingItems.refresh()
+    }
+    pagingUIProvider.onPaginationReachedError(
+        pagingItems.appendState,
+        R.string.no_more_latest_books
+    )
+
+    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+        val (loading) = createRefs()
+        AnimatedVisibility(visible = progressVisibility, modifier = Modifier
+            .constrainAs(loading) {
+                top.linkTo(parent.top)
+                centerHorizontallyTo(parent)
             }
-        },
-        callError = { throwable ->
-            if (throwable is NoConnectionException) {
-                retryOnConnectedToInternet(
-                    internetDetectorVM,
-                    scope
-                ) {
-                    latestBooksVM.refresh()
-                }
+            .wrapContentSize()
+            .systemBarsPadding()
+            .padding(top = 4.dp)
+            .zIndex(2f)) {
+            CircularProgressIndicator()
+        }
+
+        pagingUIProvider.OnError(
+            refresh = pagingItems.refreshState,
+            append = pagingItems.appendState,
+            prepend = pagingItems.prependState,
+            pagingItems = pagingItems,
+            scope = scope,
+            noInternetUI = {
                 ErrorMessage(R.string.no_books_loaded_no_connect)
-            } else {
+            },
+            errorUI = {
                 ErrorWithRetry(R.string.no_books_loaded) {
-                    latestBooksVM.refresh()
+                    retry()
                 }
             }
-        },
-        apiError = { _, _ ->
-            ErrorWithRetry(R.string.no_latest_books) {
-                latestBooksVM.refresh()
-            }
-        },
-        success = {
+        )
+
+        val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
+        SwipeRefresh(
+            state = swipeToRefreshState, onRefresh = {
+                swipeToRefreshState.isRefreshing = true
+                retry()
+                swipeToRefreshState.isRefreshing = false
+            },
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
             ShowBooks(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 56.dp),
-                list = this
+                list = pagingItems
             ) { item ->
                 val bookID = item.id?.toInt() ?: return@ShowBooks
                 onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
             }
         }
-    )
+
+    }
+
 }
 
 
 @Composable
 fun ShowBooks(
     modifier: Modifier = Modifier,
-    list: List<Book>,
+    list: LazyPagingItems<Book>,
     onBookClicked: (Book) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()
     ) {
-        items(list, key = { it.id.toString() }) { item ->
+        items(list) { item ->
+            item ?: return@items
             Book(item) {
                 onBookClicked(item)
             }

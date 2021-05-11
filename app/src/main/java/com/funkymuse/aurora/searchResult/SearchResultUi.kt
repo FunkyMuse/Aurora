@@ -1,5 +1,7 @@
 package com.funkymuse.aurora.searchResult
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,30 +21,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.crazylegend.retrofit.retrofitResult.handle
-import com.crazylegend.retrofit.retrofitResult.retryWhenInternetIsAvailable
-import com.crazylegend.retrofit.retryOnConnectedToInternet
-import com.crazylegend.retrofit.throwables.NoConnectionException
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.funkymuse.aurora.R
+import com.funkymuse.aurora.appendState
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
-import com.funkymuse.aurora.loading.LoadingAnimation
+import com.funkymuse.aurora.paging.PagingProviderViewModel
+import com.funkymuse.aurora.prependState
+import com.funkymuse.aurora.refreshState
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
-import com.funkymuse.composed.core.stateWhenStarted
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsPadding
-import com.google.accompanist.insets.toPaddingValues
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
+import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
+import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
+import com.google.accompanist.insets.*
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
 
 /**
@@ -57,31 +59,44 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
     "$SEARCH_RESULT_ROUTE/{$SEARCH_PARAM}/{$SEARCH_IN_FIELDS_PARAM}/{$SEARCH_WITH_MASK_WORD_PARAM}"
 
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SearchResult(
+    searchResultViewModel: SearchResultViewModel = hiltNavGraphViewModel(),
+    pagingUIProvider: PagingProviderViewModel = hiltNavGraphViewModel(),
     onBackClicked: () -> Unit,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
-    val searchResultViewModel = hiltNavGraphViewModel<SearchResultViewModel>()
-    val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
-    var checkedSortPosition by rememberSaveable { mutableStateOf(0) }
-    var filtersVisible by rememberSaveable { mutableStateOf(false) }
+    var checkedSortPosition by rememberIntSaveableDefaultZero()
+    var filtersVisible by rememberBooleanSaveableDefaultFalse()
 
     var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModel.searchInFieldsCheckedPosition) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModel.searchWithMaskWord) }
 
+    var progressVisibility by rememberBooleanDefaultFalse()
+
+    val pagingItems = searchResultViewModel.booksData.collectAsLazyPagingItems()
+
     val scope = rememberCoroutineScope()
 
-    val retry = { searchResultViewModel.refresh() }
-    val list by stateWhenStarted(
-        flow = searchResultViewModel.booksData,
-        initial = RetrofitResult.Loading
+    progressVisibility =
+        pagingUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+
+    filtersVisible = !pagingUIProvider.isDataEmptyWithError(
+        pagingItems.refreshState,
+        pagingItems.appendState,
+        pagingItems.prependState,
+        pagingItems.itemCount
+    )
+    pagingUIProvider.onPaginationReachedError(
+        pagingItems.appendState,
+        R.string.no_more_latest_books
     )
 
-    list.retryWhenInternetIsAvailable(internetDetectorViewModel, scope) {
-        retry()
+    val retry = {
+        searchResultViewModel.refresh()
+        pagingItems.refresh()
     }
-    filtersVisible = list is RetrofitResult.Success
 
     ScaffoldWithBackFiltersAndContent(
         checkedSortPosition,
@@ -92,45 +107,58 @@ fun SearchResult(
         onSortPositionClicked = {
             checkedSortPosition = it
             searchResultViewModel.sortByPosition(it)
+            pagingItems.refresh()
         },
         onSearchInFieldsCheckedPosition = {
             searchInFieldsCheckedPosition = it
             searchResultViewModel.searchInFieldsByPosition(it)
+            pagingItems.refresh()
         },
         onSearchWithMaskWord = {
             searchWithMaskWord = it
             searchResultViewModel.searchWithMaskedWord(it)
+            pagingItems.refresh()
         }) {
-        list.handle(
-            loading = {
-                LoadingAnimation.CardListShimmer(false)
-            },
-            emptyData = {
-                ErrorWithRetry(R.string.no_books_loaded_search) {
-                    retry()
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (loading) = createRefs()
+            AnimatedVisibility(visible = progressVisibility, modifier = Modifier
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
                 }
-            },
-            callError = { throwable ->
-                if (throwable is NoConnectionException) {
-                    retryOnConnectedToInternet(
-                        internetDetectorViewModel,
-                        scope
-                    ) {
-                        retry()
-                    }
+                .wrapContentSize()
+                .padding(top = 4.dp)
+                .zIndex(2f)) {
+                CircularProgressIndicator()
+            }
+
+            pagingUIProvider.OnError(
+                refresh = pagingItems.refreshState,
+                append = pagingItems.appendState,
+                prepend = pagingItems.prependState,
+                pagingItems = pagingItems,
+                scope = scope,
+                noInternetUI = {
                     ErrorMessage(R.string.no_books_loaded_no_connect)
-                } else {
+                },
+                errorUI = {
                     ErrorWithRetry(R.string.no_books_loaded_search) {
                         retry()
                     }
                 }
-            },
-            apiError = { _, _ ->
-                ErrorWithRetry(R.string.no_books_loaded_search) {
+            )
+
+            val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
+            SwipeRefresh(
+                state = swipeToRefreshState, onRefresh = {
+                    swipeToRefreshState.isRefreshing = true
                     retry()
-                }
-            },
-            success = {
+                    swipeToRefreshState.isRefreshing = false
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -138,7 +166,9 @@ fun SearchResult(
                         additionalBottom = 64.dp
                     )
                 ) {
-                    items(this@handle, key = { it.id.toString() }) { item ->
+                    items(pagingItems) { item ->
+                        item ?: return@items
+
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
                             onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
@@ -146,10 +176,10 @@ fun SearchResult(
                     }
                 }
             }
-        )
+
+        }
     }
 }
-
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

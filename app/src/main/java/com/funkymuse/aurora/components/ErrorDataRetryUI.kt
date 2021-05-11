@@ -7,7 +7,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Replay
@@ -140,7 +139,7 @@ fun ErrorWithRetry() {
 @Preview
 fun RetryOption(onRetryClicked: () -> Unit = {}) {
     Column(modifier = Modifier
-        .clickable {
+        .clickable(true) {
             onRetryClicked()
         }
         .padding(top = 16.dp)) {

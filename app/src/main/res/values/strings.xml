@@ -111,4 +111,6 @@
     <string name="tags">Tags</string>
     <string name="extension">Extension</string>
     <string name="md5">MD5</string>
+    <string name="no_more_latest_books">No more latest books available to load!</string>
+    <string name="generic_error">An error has occurred, try again later!</string>
 </resources>

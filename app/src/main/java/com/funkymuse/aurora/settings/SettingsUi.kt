@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
@@ -42,7 +43,6 @@ fun SettingsItem(item: @Composable (BoxScope) -> Unit) {
 }
 
 @Composable
-@Preview
 fun DarkTheme() {
     val viewModel = hiltNavGraphViewModel<SettingsViewModel>()
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
@@ -56,6 +56,15 @@ fun DarkTheme() {
     }
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsItemPreview() {
+    CheckBoxWithText(text = com.funkymuse.aurora.R.string.dark_theme,
+        isChecked = false,
+        checkChanged = {})
+}
+
 @Composable
 fun CheckBoxWithText(
     @StringRes text: Int,
@@ -65,19 +74,20 @@ fun CheckBoxWithText(
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 6.dp)
+            .padding(vertical = 6.dp)
     ) {
         val (textWidget, checkboxWidget) = createRefs()
         Text(
             text = stringResource(id = text),
             modifier = Modifier
+                .fillMaxWidth()
                 .constrainAs(textWidget) {
                     start.linkTo(parent.start)
                     end.linkTo(checkboxWidget.start)
+                    width = Dimension.fillToConstraints
                     centerVerticallyTo(parent)
                 }
-                .padding(start = 8.dp, end = 8.dp)
-                .fillMaxWidth(),
+                .padding(start = 8.dp, end = 4.dp),
             textAlign = TextAlign.Start
         )
 
@@ -88,7 +98,7 @@ fun CheckBoxWithText(
                     centerVerticallyTo(parent)
                     end.linkTo(parent.end)
                 }
-                .padding(start = 8.dp)
+                .padding(start = 8.dp, end = 4.dp)
         )
     }
 }

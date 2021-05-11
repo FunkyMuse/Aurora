@@ -1,26 +1,12 @@
 package com.funkymuse.aurora.searchResult
 
 import android.app.Application
-import androidx.compose.runtime.mutableStateListOf
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.viewModelScope
-import com.crazylegend.kotlinextensions.context.isOnline
 import com.crazylegend.kotlinextensions.livedata.context
-import com.crazylegend.kotlinextensions.log.debug
-import com.crazylegend.retrofit.retrofitResult.*
-import com.crazylegend.retrofit.throwables.NoConnectionException
+import com.funkymuse.aurora.abstracts.AbstractPagingSourceViewModel
 import com.funkymuse.aurora.consts.*
-import com.funkymuse.aurora.dto.Book
+import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -30,13 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchResultViewModel @Inject constructor(
     application: Application,
-    private val savedStateHandle: SavedStateHandle,
-) : AndroidViewModel(application) {
-
-    private val searchQuery get() = savedStateHandle.get<String>(SEARCH_PARAM)
-    val searchInFieldsCheckedPosition get() = savedStateHandle.get<Int>(SEARCH_IN_FIELDS_PARAM) ?: 0
-    val searchWithMaskWord
-        get() = savedStateHandle.get<Boolean>(SEARCH_WITH_MASK_WORD_PARAM) ?: false
+    savedStateHandle: SavedStateHandle,
+) : AbstractPagingSourceViewModel(application, savedStateHandle) {
 
     private companion object {
         private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"
@@ -45,171 +26,72 @@ class SearchResultViewModel @Inject constructor(
         private const val SORT_TYPE_KEY = "sortType"
     }
 
-    private val booksDataHolder: MutableStateFlow<RetrofitResult<List<Book>>> =
-        MutableStateFlow(RetrofitResult.EmptyData)
-    val booksData = booksDataHolder.asStateFlow()
 
-    private var page = 1
-    private var canLoadMore = true
-    private val adapterList = mutableStateListOf<Book>()
+    private val searchResultDataSource
+        get() = SearchResultDataSource(
+            context,
+            searchQuery ?: "",
+            searchInFieldsPosition ?: searchInFieldsCheckedPosition,
+            sortQuery ?: "",
+            maskWord ?: searchWithMaskWord,
+            sortType ?: ""
+        )
+    val booksData = providePagingData { searchResultDataSource }
 
-    private var searchInFieldsPosition
-        get() = savedStateHandle[SEARCH_IN_FIELDS_CHECKED_POSITION_KEY]
-            ?: searchInFieldsCheckedPosition
-        set(value) {
-            setSearchInFieldPositionState(value)
-        }
+    private val searchQuery: String? by stateHandleDelegate(SEARCH_PARAM)
 
-    private fun setSearchInFieldPositionState(value: Int) {
-        savedStateHandle[SEARCH_IN_FIELDS_CHECKED_POSITION_KEY] = value
-    }
-
-    private var maskWord
-        get() = savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] ?: searchWithMaskWord
-        set(value) {
-            setMaskWordHandle(value)
-        }
-
-    private fun setMaskWordHandle(value: Boolean) {
-        savedStateHandle[SEARCH_WITH_MASKED_WORD_KEY] = value
-    }
-
-    private var sortType
-        get() = savedStateHandle[SORT_TYPE_KEY] ?: ""
-        set(value) {
-            setSortTypeHandle(value)
-        }
-
-    private fun setSortTypeHandle(type: String) {
-        savedStateHandle[SORT_TYPE_KEY] = type
-    }
-
-    private var sortQuery
-        get() = savedStateHandle[SORT_QUERY_KEY] ?: ""
-        set(value) {
-            setSortQueryHandle(value)
-        }
-
-    private fun setSortQueryHandle(query: String) {
-        savedStateHandle[SORT_QUERY_KEY] = query
-    }
+    val searchInFieldsCheckedPosition get() = savedStateHandle.get<Int>(SEARCH_IN_FIELDS_PARAM) ?: 0
+    val searchWithMaskWord
+        get() = savedStateHandle.get<Boolean>(SEARCH_WITH_MASK_WORD_PARAM) ?: false
 
 
-    init {
-        searchForBook()
-    }
+    private var searchInFieldsPosition by stateHandleDelegate<Int>(
+        SEARCH_IN_FIELDS_CHECKED_POSITION_KEY
+    )
 
-    fun searchForBook() {
-        if (canLoadMore) {
-            booksDataHolder.loading()
-            if (context.isOnline) {
-                viewModelScope.launch {
-                    try {
-                        val it = withContext(Dispatchers.Default) { getData() }
-                        if (it == null) {
-                            booksDataHolder.emptyData()
-                        } else {
-                            val list = processDocument(it)
-                            if (list.isNullOrEmpty()) {
-                                booksDataHolder.emptyData()
-                            } else {
-                                adapterList += list
-                                booksDataHolder.success(adapterList)
-                            }
-                        }
-                    } catch (t: Throwable) {
-                        booksDataHolder.callError(t)
-                    }
-                }
-            } else {
-                booksDataHolder.callError(NoConnectionException())
-            }
-        }
-    }
+    private var maskWord by stateHandleDelegate<Boolean>(SEARCH_WITH_MASKED_WORD_KEY)
 
-    private fun getData(): Document? {
-        debug("SORT BY $sortQuery")
-        val jsoup = Jsoup.connect(SEARCH_BASE_URL)
-            .timeout(DEFAULT_API_TIMEOUT)
-            .data(REQ_CONST, searchQuery)
-            .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(COLUM_QUERY, getFieldParamByPosition(searchInFieldsPosition))
-            .data(SEARCH_WITH_MASK, if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
-            .data(RES_CONST, PAGE_SIZE)
-            .data(SORT_QUERY, sortQuery)
-            .data(SORT_TYPE, sortType)
-            .data(PAGE_CONST, page.toString())
+    private var sortType by stateHandleDelegate<String>(SORT_TYPE_KEY)
 
-        val req = jsoup.get()
-        debug("URL ${req.location()}")
-        return req
-    }
+    private var sortQuery by stateHandleDelegate<String>(SORT_QUERY_KEY)
 
-
-    private fun processDocument(doc: Document?): List<Book>? {
-        return doc?.let { document ->
-
-            val trs = document.select("table")[2].select("tr")
-            trs.removeAt(0)
-
-            if (trs.size < PAGE_SIZE.toInt()) {
-                //cant load more
-                canLoadMore = false
-            } else {
-                page++
-                //has more pages
-            }
-
-            return@let trs.map {
-                return@map Book(it)
-            }
-        }
-    }
 
     private fun resetOnSort() {
-        adapterList.clear()
         sortQuery = ""
         sortType = ""
-        page = 1
-        canLoadMore = true
+        searchResultDataSource.canLoadMore = true
     }
 
     private fun sortByYearDESC() {
         resetOnSort()
         sortQuery = SORT_YEAR_CONST
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
 
     private fun sortByYearASC() {
         resetOnSort()
         sortQuery = SORT_YEAR_CONST
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     private fun sortByDefault() {
         resetOnSort()
-        searchForBook()
     }
 
     private fun sortBySizeDESC() {
         resetOnSort()
         sortQuery = SORT_SIZE
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
 
     private fun sortBySizeASC() {
         resetOnSort()
         sortQuery = SORT_SIZE
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     fun refresh() {
         resetOnSort()
-        searchForBook()
     }
 
     /**
@@ -250,68 +132,59 @@ class SearchResultViewModel @Inject constructor(
         resetOnSort()
         sortQuery = SORT_PUBLISHER
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     private fun sortByPublisherDESC() {
         resetOnSort()
         sortQuery = SORT_PUBLISHER
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
 
     private fun sortByExtensionASC() {
         resetOnSort()
         sortQuery = SORT_EXTENSION
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     private fun sortByExtensionDESC() {
         resetOnSort()
         sortQuery = SORT_EXTENSION
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
 
     private fun sortByTitleASC() {
         resetOnSort()
         sortQuery = SORT_TITLE
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     private fun sortByTitleDESC() {
         resetOnSort()
         sortQuery = SORT_TITLE
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
 
     private fun sortByAuthorDESC() {
         resetOnSort()
         sortQuery = SORT_AUTHOR
         sortType = SORT_TYPE_DESC
-        searchForBook()
     }
+
 
     private fun sortByAuthorASC() {
         resetOnSort()
         sortQuery = SORT_AUTHOR
         sortType = SORT_TYPE_ASC
-        searchForBook()
     }
 
     fun searchWithMaskedWord(maskedWord: Boolean) {
         resetOnSort()
         maskWord = maskedWord
-        searchForBook()
     }
 
     fun searchInFieldsByPosition(position: Int) {
         resetOnSort()
         searchInFieldsPosition = position
-        searchForBook()
     }
 
 

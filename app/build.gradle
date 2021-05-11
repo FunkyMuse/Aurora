@@ -92,6 +92,7 @@ dependencies {
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
 
     //dagger
     implementation "com.google.dagger:dagger:$daggerVersion"
