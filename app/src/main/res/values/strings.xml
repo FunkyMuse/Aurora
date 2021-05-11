@@ -114,4 +114,5 @@
     <string name="no_more_latest_books">No more latest books available to load!</string>
     <string name="generic_error">An error has occurred, try again later!</string>
     <string name="no_more_favorite_books">No more favorite books to load!</string>
+    <string name="go_back_to_top">Scroll back to top</string>
 </resources>

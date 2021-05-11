@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
-import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
@@ -66,7 +65,9 @@ fun Search(
     }
 
     ModalBottomSheetLayout(
-        modifier = Modifier.navigationBarsPadding().zIndex(zIndex),
+        modifier = Modifier
+            .navigationBarsPadding()
+            .zIndex(zIndex),
         sheetState = state,
         sheetShape = BottomSheetShapes.large,
         sheetContent = {
@@ -106,7 +107,11 @@ fun Search(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.navigationBarsPadding().padding(bottom = 36.dp))
+                    Spacer(
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .padding(bottom = 36.dp)
+                    )
                 }
             }
         }
@@ -115,10 +120,8 @@ fun Search(
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (searchInput, searchInputExplanation, filter) = createRefs()
             Box(modifier = Modifier.constrainAs(searchInput) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
+                centerHorizontallyTo(parent)
+                centerVerticallyTo(parent)
             }) {
                 SearchInput() {
                     onInputText(
@@ -130,8 +133,7 @@ fun Search(
             }
             Box(modifier = Modifier.constrainAs(searchInputExplanation) {
                 top.linkTo(searchInput.bottom)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
+                centerHorizontallyTo(parent)
             }) {
                 SearchInputExplained()
             }
@@ -140,8 +142,7 @@ fun Search(
                 modifier = Modifier
                     .constrainAs(filter) {
                         bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
+                        centerHorizontallyTo(parent)
                     }
                     .padding(bottom = 64.dp)
             ) {
@@ -172,7 +173,9 @@ fun RadioButtonWithText(
             .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
         RadioButton(
-            selected = isChecked, onClick = onRadioButtonClicked, modifier = Modifier.align(Alignment.CenterVertically)
+            selected = isChecked,
+            onClick = onRadioButtonClicked,
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Text(
             text = stringResource(id = text), modifier = Modifier
