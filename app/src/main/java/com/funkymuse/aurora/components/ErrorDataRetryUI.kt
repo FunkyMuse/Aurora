@@ -29,7 +29,7 @@ import com.funkymuse.aurora.ui.theme.Secondary
  * Created by Hristijan, date 3/3/21
  */
 @Composable
-fun ErrorWidget(modifier: Modifier = Modifier) {
+fun ErrorAnimation(modifier: Modifier = Modifier) {
 
     val infiniteTransition = rememberInfiniteTransition()
 
@@ -101,7 +101,7 @@ fun ErrorWithRetry(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ErrorWidget(Modifier.size(width = 250.dp, 250.dp))
+        ErrorAnimation(Modifier.size(width = 250.dp, 250.dp))
         Text(
             text = stringResource(id = text),
             textAlign = TextAlign.Center, fontSize = 24.sp,
@@ -120,7 +120,7 @@ fun ErrorMessage(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ErrorWidget(Modifier.size(width = 250.dp, 250.dp))
+        ErrorAnimation(Modifier.size(width = 250.dp, 250.dp))
         Text(
             text = stringResource(id = text),
             textAlign = TextAlign.Center, fontSize = 24.sp,

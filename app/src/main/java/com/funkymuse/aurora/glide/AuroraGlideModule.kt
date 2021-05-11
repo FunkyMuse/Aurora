@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.extensions
+package com.funkymuse.aurora.glide
 
 import android.content.Context
 import com.bumptech.glide.GlideBuilder

@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.extensions
+package com.funkymuse.aurora.glide
 
 import androidx.compose.ui.graphics.ImageBitmap
 

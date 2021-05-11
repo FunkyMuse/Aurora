@@ -21,6 +21,8 @@ class PagingUIProvider @Inject constructor(
     private val internetDetector: InternetDetector
 ) : PagingUIProviderContract {
 
+    override fun <T : Any> isDataEmpty(pagingItems: LazyPagingItems<T>): Boolean =
+        pagingItems.itemCount == 0
 
     override fun isDataEmptyWithError(
         append: LoadState,

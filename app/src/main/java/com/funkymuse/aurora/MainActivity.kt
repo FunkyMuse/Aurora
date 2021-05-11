@@ -83,7 +83,7 @@ fun AuroraScaffold() {
                     }
                 }
                 composable(BottomNavScreen.Favorites.route) {
-                    Favorites(it) { id, mirrors ->
+                    Favorites { id, mirrors ->
                         it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }

@@ -18,6 +18,8 @@ interface PagingUIProviderContract {
         itemCount: Int
     ): Boolean
 
+    fun <T : Any> isDataEmpty(pagingItems: LazyPagingItems<T>): Boolean
+
     fun isDataEmptyWithError(
         refresh: LoadState,
         append: LoadState,
@@ -40,7 +42,7 @@ interface PagingUIProviderContract {
         prepend: LoadState,
         scope: CoroutineScope,
         pagingItems: LazyPagingItems<T>,
-        noInternetUI: @Composable () -> Unit,
+        noInternetUI: @Composable () -> Unit = {},
         errorUI: @Composable () -> Unit
     )
 

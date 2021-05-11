@@ -58,10 +58,13 @@ fun LatestBooks(
         latestBooksVM.refresh()
         pagingItems.refresh()
     }
-    pagingUIProvider.onPaginationReachedError(
-        pagingItems.appendState,
-        R.string.no_more_latest_books
-    )
+
+    if (!pagingUIProvider.isDataEmpty(pagingItems)) {
+        pagingUIProvider.onPaginationReachedError(
+            pagingItems.appendState,
+            R.string.no_more_latest_books
+        )
+    }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()
@@ -137,3 +140,4 @@ fun ShowBooks(
         }
     }
 }
+

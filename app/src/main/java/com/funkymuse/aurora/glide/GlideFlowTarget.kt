@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.extensions
+package com.funkymuse.aurora.glide
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable

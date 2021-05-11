@@ -1,6 +1,5 @@
 package com.funkymuse.aurora.bookDetails
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -43,8 +42,8 @@ import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.GlideImageState
 import com.funkymuse.aurora.extensions.loadPicture
+import com.funkymuse.aurora.glide.GlideImageState
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.LoadingAnimation
 import com.funkymuse.aurora.ui.theme.CardBackground
@@ -64,11 +63,12 @@ const val BOOK_ID_PARAM = "book"
 const val BOOK_MIRRORS_PARAM = "mirrors"
 const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 
-@SuppressLint("RestrictedApi")
 @Composable
 fun ShowDetailedBook(
     id: Int?,
     mirrors: Mirrors?,
+    bookDetailsViewModel: BookDetailsViewModel = hiltNavGraphViewModel(),
+    internetDetectorViewModel: InternetDetectorViewModel = hiltNavGraphViewModel(),
     onBackClicked: () -> Unit,
 ) {
     if (id == null) {
@@ -76,8 +76,6 @@ fun ShowDetailedBook(
         return
     }
 
-    val bookDetailsViewModel = hiltNavGraphViewModel<BookDetailsViewModel>()
-    val internetDetectorViewModel = hiltNavGraphViewModel<InternetDetectorViewModel>()
     val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 
@@ -140,7 +138,6 @@ fun ShowDetailedBook(
             }
         )
     }
-
 
 }
 
