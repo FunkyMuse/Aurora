@@ -29,8 +29,8 @@ class BookDetailsViewModel @Inject constructor(
 
     private val id get() = savedStateHandle.get<Int>(BOOK_ID_PARAM)!!
 
-    private val booksData = retrofitStateInitialLoading<List<DetailedBookModel>>()
-    val book = booksData.asStateFlow()
+    private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
+    val book = bookData.asStateFlow()
 
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)
     val favoriteBook = favoriteBookData.asStateFlow()
@@ -41,10 +41,10 @@ class BookDetailsViewModel @Inject constructor(
 
     private fun loadBook() {
         viewModelScope.launch {
-            val books = async { libgenAPI.getDetailedBook(id) }
+            val detailedBook = async { libgenAPI.getDetailedBook(id) }
             val favorite = async { favoritesDAO.getFavoriteById(id) }
             favorite.await().onEach { favoriteBookData.value = it }.launchIn(viewModelScope)
-            booksData.value = books.await()
+            bookData.value = detailedBook.await()
         }
     }
 
