@@ -32,5 +32,4 @@ class DefaultPreferences @Inject constructor(@ApplicationContext private val con
     override suspend fun changeTheme(isDarkThemeEnabled: Boolean) {
         context.dataStore.edit { it[darkThemeKey] = isDarkThemeEnabled }
     }
-
 }

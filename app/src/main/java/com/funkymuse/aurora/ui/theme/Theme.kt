@@ -52,6 +52,7 @@ fun AuroraTheme(content: @Composable () -> Unit) {
         initial = isSystemInDark
     )
 
+
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -65,3 +66,4 @@ fun AuroraTheme(content: @Composable () -> Unit) {
         content = content
     )
 }
+

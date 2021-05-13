@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import com.funkymuse.aurora.R
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.toPaddingValues
@@ -23,17 +24,18 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Settings() {
-    LazyColumn(modifier = Modifier.fillMaxSize(),
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()
+    ) {
         item { DarkTheme() }
     }
 }
 
-
 @Composable
-fun SettingsItem(item: @Composable (BoxScope) -> Unit) {
+fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> Unit) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(8.dp)
@@ -43,12 +45,13 @@ fun SettingsItem(item: @Composable (BoxScope) -> Unit) {
 }
 
 @Composable
-fun DarkTheme() {
-    val viewModel = hiltNavGraphViewModel<SettingsViewModel>()
+fun DarkTheme(
+    viewModel: SettingsViewModel = hiltNavGraphViewModel()
+) {
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
     val scope = rememberCoroutineScope()
     SettingsItem {
-        CheckBoxWithText(text = com.funkymuse.aurora.R.string.dark_theme,
+        CheckBoxWithText(text = R.string.dark_theme,
             isChecked = darkTheme,
             checkChanged = {
                 scope.launch { viewModel.changeTheme(it) }
@@ -60,7 +63,7 @@ fun DarkTheme() {
 @Preview(showBackground = true)
 @Composable
 fun SettingsItemPreview() {
-    CheckBoxWithText(text = com.funkymuse.aurora.R.string.dark_theme,
+    CheckBoxWithText(text = R.string.dark_theme,
         isChecked = false,
         checkChanged = {})
 }

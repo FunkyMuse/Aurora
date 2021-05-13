@@ -12,4 +12,5 @@ interface DefaultPrefsContract {
     companion object{
         const val DARK_THEME_KEY = "dark_theme"
     }
+
 }

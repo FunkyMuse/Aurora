@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +19,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
+import com.funkymuse.aurora.components.ConfirmationDialog
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
@@ -125,28 +123,13 @@ fun DeleteBook(
         title = "My favorite book"
     ), onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
 ) {
-    AlertDialog(
-        title = {
-            Text(text = stringResource(R.string.remove_book_from_favs, it.title.toString()))
-        },
-        onDismissRequest = {
-            onDismiss()
-        },
-        confirmButton = {
-            Button(onClick = {
-                onConfirm(it.id)
-                onDismiss()
-            }, modifier = Modifier.padding(horizontal = 4.dp)) {
-                Text(text = stringResource(id = R.string.remove))
-            }
-        },
-        dismissButton = {
-            Button(onClick = {
-                onDismiss()
-            }, modifier = Modifier.padding(horizontal = 4.dp)) {
-                Text(text = stringResource(id = android.R.string.cancel))
-            }
-        },
+    ConfirmationDialog(
+        title = stringResource(
+            R.string.remove_book_from_favs,
+            it.title.toString()
+        ), onDismiss = onDismiss, onConfirm = {
+            onConfirm(it.id)
+        }, confirmText = stringResource(id = R.string.remove)
     )
 }
 

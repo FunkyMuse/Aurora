@@ -73,7 +73,7 @@ fun AuroraScaffold() {
             startDestination = BottomNavScreen.Search.route,
             builder = {
                 composable(BottomNavScreen.Search.route) {
-                    Search() { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
+                    Search { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
                         openSearchResult(
                             navController,
                             inputText.trim(),

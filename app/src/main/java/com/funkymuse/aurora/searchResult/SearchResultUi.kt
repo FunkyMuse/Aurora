@@ -39,6 +39,7 @@ import com.funkymuse.aurora.search.SearchViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.aurora.ui.theme.PrimaryVariant
 import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
@@ -90,7 +91,7 @@ fun SearchResult(
     )
     pagingUIProvider.onPaginationReachedError(
         pagingItems.appendState,
-        R.string.no_more_latest_books
+        R.string.no_more_books_by_query_to_load
     )
 
     val retry = {
@@ -120,7 +121,7 @@ fun SearchResult(
             pagingItems.refresh()
         }) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (loading) = createRefs()
+            val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
                 .constrainAs(loading) {
                     top.linkTo(parent.top)
@@ -148,6 +149,33 @@ fun SearchResult(
                 }
             )
 
+            val columnState = rememberLazyListState()
+
+            val lastVisibleIndex = columnState.lastVisibleIndex()
+            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
+                modifier = Modifier
+                    .constrainAs(backToTop) {
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 12.dp, end = 4.dp)
+                    .zIndex(2f)) {
+
+                Box {
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .navigationBarsPadding(),
+                        onClick = { scope.launch { columnState.scrollToItem(0) } },
+                    ) {
+                        Icon(
+                            Icons.Filled.ArrowUpward,
+                            contentDescription = stringResource(id = R.string.go_back_to_top),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+
             val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
             SwipeRefresh(
                 state = swipeToRefreshState, onRefresh = {
@@ -160,6 +188,7 @@ fun SearchResult(
             ) {
 
                 LazyColumn(
+                    state = columnState,
                     modifier = Modifier
                         .fillMaxSize(),
                     contentPadding = LocalWindowInsets.current.navigationBars.toPaddingValues(
@@ -292,7 +321,7 @@ fun ScaffoldWithBackFiltersAndContent(
 
                         DropdownMenu(expanded = dropDownMenuExpanded,
                             modifier = Modifier.fillMaxWidth(),
-                            offset = DpOffset(32.dp, 16.dp),
+                            offset = DpOffset(32.dp, 32.dp),
                             onDismissRequest = { dropDownMenuExpanded = false }) {
                             searchViewModel.sortList.forEach {
                                 DropdownMenuItem(onClick = {

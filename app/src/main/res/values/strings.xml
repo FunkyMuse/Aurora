@@ -47,16 +47,9 @@
     <string name="dark_theme">Dark theme</string>
     <string name="no_favorites_expl">You haven\'t any favorite books, try adding some by searching…</string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="delete_cache">Delete application cache</string>
-    <string name="cache_expl">This doesn\'t delete any personal data, clears files that are unnecessary clutter sometimes</string>
     <string name="delete_successfully_or_not">Deletion has been %1$s</string>
     <string name="successful">successful</string>
     <string name="unsuccessful">unsuccessful</string>
-    <string name="do_not_show_at_start_up">Do not show at start up ?</string>
-    <string name="this_app_is_using_https_libgen_is_to_show_the_data_it_is_not_affiliated_in_anyway_with_the_website">This app is using https://libgen.is to show the data, it is not affiliated in anyway with the website.</string>
-    <string name="sometimes_you_would_get_server_error_5_6_maybe_even_10_times_before_it_loads_that_s_not_the_application_s_fault_it_s_coming_from_libgen">Sometimes you would get server error 5–6 maybe even 10 times before it loads, that\'s not the application\'s fault, it\'s coming from libgen.</string>
-    <string name="vpn_expl">Some countries may have blocked an access to the site, in case you\'re getting a lot of server error messages then it means you should consider using a VPN.</string>
-    <string name="owners_expl">•All PDFs are provided by the public third-party service https://libgen.is\n•All trademarks and copyrights belong to their respective owners and are used here under the terms of Fair Use and the Digital Millennium Copyrights Act (DMCA)</string>
     <string name="default_sort">Default</string>
     <string name="size_asc">Size ASC</string>
     <string name="size_desc">Size DESC</string>
@@ -72,15 +65,8 @@
     <string name="latest_books">Latest books</string>
     <string name="version">Version</string>
     <string name="book_details">Book details</string>
-    <string name="reading_book">I\'m currently reading %1$s \n\nUsing this cool application %2$s</string>
-    <string name="this_shouldnt_happen">This shouldn\'t happen, re-open this book if this error shows again !</string>
     <string name="my_other_apps">My other apps</string>
     <string name="no_latest_books">Couldn\'t load latest books, seems like there\'s a problem with the server, the server can handle up to 40 simultaneous connections, try again later.</string>
-    <string name="change_vpn">Change your VPN, it seems that this one is not receiving a secure connection.</string>
-    <string name="modified_apps">You have installed an app modifier that is harmful for this application, uninstall %1$s, the app will close in 4 seconds.</string>
-    <string name="search_history_expl">Remember search history</string>
-    <string name="search_history_summary">Enable this option if you want the app to remember up to 5 of your last searches.</string>
-    <string name="delete_search_history">Delete search history</string>
     <string name="deleted">Deleted</string>
     <string name="launch_on_click">Launch on history click</string>
     <string name="launch_on_click_expl">Whenever you click on the history word, it\'ll automatically search for it.</string>
@@ -115,4 +101,5 @@
     <string name="generic_error">An error has occurred, try again later!</string>
     <string name="no_more_favorite_books">No more favorite books to load!</string>
     <string name="go_back_to_top">Scroll back to top</string>
+    <string name="no_more_books_by_query_to_load">No more books are available to be loaded by your search terms!</string>
 </resources>
