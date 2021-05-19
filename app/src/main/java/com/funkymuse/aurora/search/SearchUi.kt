@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
@@ -55,7 +55,7 @@ fun Search(
 
     var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
-    val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
+    val searchViewModel = hiltViewModel<SearchViewModel>()
 
 
     val zIndex = if (state.targetValue == ModalBottomSheetValue.Hidden) {
@@ -227,7 +227,7 @@ fun SearchInputExplained() {
 fun SearchInput(
     onInputText: (inputText: String) -> Unit = {}
 ) {
-    val viewModel = hiltNavGraphViewModel<ToasterViewModel>()
+    val viewModel = hiltViewModel<ToasterViewModel>()
 
     val keyboardController = LocalSoftwareKeyboardController.current
     var inputText by rememberSaveable { mutableStateOf("") }

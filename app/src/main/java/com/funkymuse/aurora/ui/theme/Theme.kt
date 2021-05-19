@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+
 import com.funkymuse.aurora.settings.SettingsViewModel
 import com.funkymuse.composed.core.stateWhenStarted
 import kotlinx.coroutines.flow.firstOrNull
@@ -39,7 +40,7 @@ onSurface = Color.Black,
 
 @Composable
 fun AuroraTheme(content: @Composable () -> Unit) {
-    val settingsViewModel = hiltNavGraphViewModel<SettingsViewModel>()
+    val settingsViewModel = hiltViewModel<SettingsViewModel>()
     val scope = rememberCoroutineScope()
     var isSystemInDark = isSystemInDarkTheme()
 

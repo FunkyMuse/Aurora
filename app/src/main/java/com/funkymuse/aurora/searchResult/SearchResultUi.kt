@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
@@ -63,8 +63,8 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SearchResult(
-    searchResultViewModel: SearchResultViewModel = hiltNavGraphViewModel(),
-    pagingUIProvider: PagingProviderViewModel = hiltNavGraphViewModel(),
+    searchResultViewModel: SearchResultViewModel = hiltViewModel(),
+    pagingUIProvider: PagingProviderViewModel = hiltViewModel(),
     onBackClicked: () -> Unit,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
@@ -227,7 +227,7 @@ fun ScaffoldWithBackFiltersAndContent(
     val state = rememberBottomSheetState(BottomSheetValue.Collapsed)
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
     val scope = rememberCoroutineScope()
-    val searchViewModel = hiltNavGraphViewModel<SearchViewModel>()
+    val searchViewModel = hiltViewModel<SearchViewModel>()
 
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
 

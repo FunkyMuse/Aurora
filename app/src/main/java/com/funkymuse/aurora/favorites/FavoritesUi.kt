@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
@@ -41,8 +41,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Favorites(
-    viewModel: FavoritesViewModel = hiltNavGraphViewModel(),
-    pagingProviderViewModel: PagingProviderViewModel = hiltNavGraphViewModel(),
+    viewModel: FavoritesViewModel = hiltViewModel(),
+    pagingProviderViewModel: PagingProviderViewModel = hiltViewModel(),
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()

@@ -8,17 +8,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
@@ -48,8 +45,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LatestBooks(
-    latestBooksVM: LatestBooksVM = hiltNavGraphViewModel(),
-    pagingUIProvider: PagingProviderViewModel = hiltNavGraphViewModel(),
+    latestBooksVM: LatestBooksVM = hiltViewModel(),
+    pagingUIProvider: PagingProviderViewModel = hiltViewModel(),
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()

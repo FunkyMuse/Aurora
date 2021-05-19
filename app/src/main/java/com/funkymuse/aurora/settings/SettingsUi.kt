@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.R
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
@@ -46,7 +46,7 @@ fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> 
 
 @Composable
 fun DarkTheme(
-    viewModel: SettingsViewModel = hiltNavGraphViewModel()
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
     val scope = rememberCoroutineScope()

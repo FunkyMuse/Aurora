@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltNavGraphViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
 import com.crazylegend.kotlinextensions.intent.openWebPage
 import com.crazylegend.kotlinextensions.string.clearHtmlTags
@@ -67,8 +67,8 @@ const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
 fun ShowDetailedBook(
     id: Int?,
     mirrors: Mirrors?,
-    bookDetailsViewModel: BookDetailsViewModel = hiltNavGraphViewModel(),
-    internetDetectorViewModel: InternetDetectorViewModel = hiltNavGraphViewModel(),
+    bookDetailsViewModel: BookDetailsViewModel = hiltViewModel(),
+    internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel(),
     onBackClicked: () -> Unit,
 ) {
     if (id == null) {

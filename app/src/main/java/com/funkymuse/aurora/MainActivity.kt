@@ -175,7 +175,7 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
 
     var hideBottomNav by rememberBooleanSaveableDefaultFalse()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
+    val currentRoute = navBackStackEntry?.destination?.route
     navBackStackEntry?.debug { "CURRENT ROUTE $currentRoute" }
 
     val size = if (hideBottomNav) {
@@ -194,7 +194,10 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
                 alwaysShowLabel = false,
                 onClick = {
                     navController.navigate(bottomEntry.screen.route) {
-                        popUpTo = navController.graph.startDestination
+                        restoreState = true
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
                         launchSingleTop = true
                     }
                 },
