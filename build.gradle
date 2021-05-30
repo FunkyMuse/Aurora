@@ -5,7 +5,7 @@ buildscript {
         room = "2.4.0-alpha02"
         KAHelpers = '2.2.16'
         moshi = "1.12.0"
-        daggerVersion = '2.35.1'
+        daggerVersion = '2.36'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
         glide = "4.12.0"
@@ -18,7 +18,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-beta01'
+        classpath 'com.android.tools.build:gradle:7.0.0-beta03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
 
