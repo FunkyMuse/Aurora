@@ -91,7 +91,7 @@ fun LatestBooks(
                     bottom.linkTo(parent.bottom)
                     centerHorizontallyTo(parent)
                 }
-                .navigationBarsPadding(left = false, right = false)
+                .navigationBarsPadding(start = false, end = false)
                 .padding(bottom = 64.dp)
                 .zIndex(2f)) {
 

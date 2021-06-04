@@ -1,15 +1,15 @@
 buildscript {
     ext {
-        compose_version = '1.0.0-beta07'
-        kotlin_version = '1.4.32'
+        compose_version = '1.0.0-beta08'
+        kotlin_version = '1.5.10'
         room = "2.4.0-alpha02"
-        KAHelpers = '2.2.16'
+        KAHelpers = '2.2.17'
         moshi = "1.12.0"
         daggerVersion = '2.36'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
         glide = "4.12.0"
-        accompanist = "0.10.0"
+        accompanist = "0.11.1"
         lifecycle = '2.4.0-alpha01'
         composed = '0.0.7'
     }
