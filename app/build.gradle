@@ -56,6 +56,9 @@ android {
         correctErrorTypes = true
         useBuildCache = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
 }
 
 dependencies {
