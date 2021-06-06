@@ -18,6 +18,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.ErrorMessage
@@ -29,10 +30,7 @@ import com.funkymuse.aurora.extensions.refreshState
 import com.funkymuse.aurora.paging.PagingProviderViewModel
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.systemBarsPadding
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -49,6 +47,7 @@ fun LatestBooks(
     pagingUIProvider: PagingProviderViewModel = hiltViewModel(),
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
+    latestBooksVM.debug { "FUNCTION COMPOSED" }
     var progressVisibility by rememberBooleanDefaultFalse()
     val pagingItems = latestBooksVM.pagingData.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
@@ -84,8 +83,17 @@ fun LatestBooks(
         }
 
 
-        val lastVisibleIndex = columnState.lastVisibleIndex()
-        AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
+        val lastVisibleIndexState by remember {
+            derivedStateOf {
+                columnState.lastVisibleIndex()
+            }
+        }
+
+        val isButtonVisible = lastVisibleIndexState?.let {
+            it > 20
+        } ?: false
+
+        AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
                 .constrainAs(backToTop) {
                     bottom.linkTo(parent.bottom)
@@ -126,6 +134,8 @@ fun LatestBooks(
         )
 
 
+        val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
+
         SwipeRefresh(
             state = swipeToRefreshState, onRefresh = {
                 swipeToRefreshState.isRefreshing = true
@@ -141,7 +151,7 @@ fun LatestBooks(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 56.dp),
-                contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()
+                contentPadding = listInsets
             ) {
                 items(pagingItems) { item ->
                     item ?: return@items
