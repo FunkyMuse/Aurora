@@ -87,11 +87,11 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha03"
     implementation "androidx.paging:paging-compose:1.0.0-alpha10"
-    implementation 'androidx.activity:activity-compose:1.3.0-beta01'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha07"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha06'
+    implementation 'androidx.activity:activity-compose:1.3.0-beta02'
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
@@ -107,13 +107,13 @@ dependencies {
 
     //hilt jetpack
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha02"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"
     implementation "androidx.hilt:hilt-work:$hiltJetpackVersion"
     implementation "androidx.hilt:hilt-navigation:$hiltJetpackVersion"
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //data store
-    implementation "androidx.datastore:datastore-preferences:1.0.0-beta01"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-beta02"
 
 
     //lifecycle
