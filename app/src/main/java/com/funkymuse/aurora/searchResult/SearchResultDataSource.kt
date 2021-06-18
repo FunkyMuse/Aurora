@@ -38,27 +38,35 @@ class SearchResultDataSource(
             try {
                 val it = withContext(Dispatchers.IO) { getData(page) }
                 if (it == null) {
-                    return canNotLoadMoreBooks()
+                    canNotLoadMoreBooks()
                 } else {
-                    if (canLoadMore) {
-                        val list = processDocument(it)
-                        if (list.isNullOrEmpty()) {
-                            return canNotLoadMoreBooks()
-                        } else {
-                            val prevKey =
-                                if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
-                            val nextKey = if (list.count() == 0) null else page.plus(1)
-                            LoadResult.Page(list, prevKey, nextKey)
-                        }
-                    } else {
-                        canNotLoadMoreBooks()
-                    }
+                    tryToLoadBooks(page, it)
                 }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
         } else {
             return LoadResult.Error(NoConnectionException())
+        }
+    }
+
+    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, Book> {
+        return if (canLoadMore) {
+            loadBooks(it, page)
+        } else {
+            canNotLoadMoreBooks()
+        }
+    }
+
+    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, Book> {
+        val list = processDocument(it)
+        return if (list.isNullOrEmpty()) {
+            canNotLoadMoreBooks()
+        } else {
+            val prevKey =
+                if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
+            val nextKey = if (list.count() == 0) null else page.plus(1)
+            LoadResult.Page(list, prevKey, nextKey)
         }
     }
 
