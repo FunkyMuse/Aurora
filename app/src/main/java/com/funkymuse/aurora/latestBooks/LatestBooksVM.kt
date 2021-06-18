@@ -1,13 +1,16 @@
 package com.funkymuse.aurora.latestBooks
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.livedata.context
-import com.funkymuse.aurora.abstracts.AbstractPagingSourceViewModel
 import com.funkymuse.aurora.consts.SORT_SIZE
 import com.funkymuse.aurora.consts.SORT_TYPE_ASC
 import com.funkymuse.aurora.consts.SORT_TYPE_DESC
 import com.funkymuse.aurora.consts.SORT_YEAR_CONST
+import com.funkymuse.aurora.paging.data.PagingDataProvider
+import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
 import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,8 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
     application: Application,
-    savedStateHandle: SavedStateHandle,
-) : AbstractPagingSourceViewModel(application, savedStateHandle) {
+    override val savedStateHandle: SavedStateHandle,
+    dataProvider: PagingDataProvider
+) : AndroidViewModel(application), PagingDataSourceHandle {
 
     private companion object {
         private const val SORT_QUERY_KEY = "sortQuery"
@@ -25,7 +29,7 @@ class LatestBooksVM @Inject constructor(
 
     private val latestBooksDataSource get() = LatestBooksDataSource(context)
 
-    val pagingData = providePagingData { latestBooksDataSource }
+    val pagingData = dataProvider.providePagingData(viewModelScope) { latestBooksDataSource }
 
     private var sortType by stateHandleDelegate<String>(SORT_TYPE_KEY)
     private var sortQuery by stateHandleDelegate<String>(SORT_QUERY_KEY)

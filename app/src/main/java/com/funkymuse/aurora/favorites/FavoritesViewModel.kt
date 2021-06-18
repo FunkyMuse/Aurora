@@ -1,9 +1,9 @@
 package com.funkymuse.aurora.favorites
 
-import android.app.Application
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.funkymuse.aurora.abstracts.AbstractPagingViewModel
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.paging.data.PagingDataProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,11 +14,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val favoritesDAO: FavoritesDAO,
-    application: Application
-) :
-    AbstractPagingViewModel(application) {
+    pagingDataProvider: PagingDataProvider
+) : ViewModel() {
 
-    val favoritesData = providePagingData { favoritesDAO.getAllFavorites() }
+    val favoritesData =
+        pagingDataProvider.providePagingData(viewModelScope) { favoritesDAO.getAllFavorites() }
 
     fun removeFromFavorites(id: Int) {
         viewModelScope.launch { favoritesDAO.deleteFromFavoritesByID(id) }

@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.paging
+package com.funkymuse.aurora.paging.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

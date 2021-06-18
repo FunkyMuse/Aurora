@@ -21,18 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.appendState
-import com.funkymuse.aurora.extensions.prependState
-import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingProviderViewModel
+import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
@@ -63,8 +58,8 @@ const val SEARCH_ROUTE_BOTTOM_NAV =
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SearchResult(
-    searchResultViewModel: SearchResultViewModel = hiltViewModel(),
-    pagingUIProvider: PagingProviderViewModel = hiltViewModel(),
+    searchResultViewModel: SearchResultHandleData = hiltViewModel(),
+    pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
     onBackClicked: () -> Unit,
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
@@ -81,15 +76,15 @@ fun SearchResult(
     val scope = rememberCoroutineScope()
 
     progressVisibility =
-        pagingUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+        pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
 
-    filtersVisible = !pagingUIProvider.isDataEmptyWithError(
+    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(
         pagingItems.refreshState,
         pagingItems.appendState,
         pagingItems.prependState,
         pagingItems.itemCount
     )
-    pagingUIProvider.onPaginationReachedError(
+    pagingUIUIProvider.onPaginationReachedError(
         pagingItems.appendState,
         R.string.no_more_books_by_query_to_load
     )
@@ -133,7 +128,7 @@ fun SearchResult(
                 CircularProgressIndicator()
             }
 
-            pagingUIProvider.OnError(
+            pagingUIUIProvider.OnError(
                 refresh = pagingItems.refreshState,
                 append = pagingItems.appendState,
                 prepend = pagingItems.prependState,

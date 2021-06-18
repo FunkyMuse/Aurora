@@ -16,18 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.appendState
-import com.funkymuse.aurora.extensions.prependState
-import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingProviderViewModel
+import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
@@ -44,7 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LatestBooks(
     latestBooksVM: LatestBooksVM = hiltViewModel(),
-    pagingUIProvider: PagingProviderViewModel = hiltViewModel(),
+    pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
     onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
     latestBooksVM.debug { "FUNCTION COMPOSED" }
@@ -55,14 +50,14 @@ fun LatestBooks(
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     progressVisibility =
-        pagingUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+        pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
     val retry = {
         latestBooksVM.refresh()
         pagingItems.refresh()
     }
 
-    if (!pagingUIProvider.isDataEmpty(pagingItems)) {
-        pagingUIProvider.onPaginationReachedError(
+    if (!pagingUIUIProvider.isDataEmpty(pagingItems)) {
+        pagingUIUIProvider.onPaginationReachedError(
             pagingItems.appendState,
             R.string.no_more_latest_books
         )
@@ -70,15 +65,16 @@ fun LatestBooks(
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading, backToTop) = createRefs()
-        AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-            .constrainAs(loading) {
-                top.linkTo(parent.top)
-                centerHorizontallyTo(parent)
-            }
-            .wrapContentSize()
-            .systemBarsPadding()
-            .padding(top = 4.dp)
-            .zIndex(2f)) {
+        AnimatedVisibility(
+            visible = progressVisibility, modifier = Modifier
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .systemBarsPadding()
+                .padding(top = 4.dp)
+                .zIndex(2f)) {
             CircularProgressIndicator()
         }
 
@@ -117,7 +113,7 @@ fun LatestBooks(
             }
         }
 
-        pagingUIProvider.OnError(
+        pagingUIUIProvider.OnError(
             refresh = pagingItems.refreshState,
             append = pagingItems.appendState,
             prepend = pagingItems.prependState,

@@ -1,10 +1,13 @@
 package com.funkymuse.aurora.searchResult
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.livedata.context
-import com.funkymuse.aurora.abstracts.AbstractPagingSourceViewModel
 import com.funkymuse.aurora.consts.*
+import com.funkymuse.aurora.paging.data.PagingDataProvider
+import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
 import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -14,10 +17,11 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class SearchResultViewModel @Inject constructor(
+class SearchResultHandleData @Inject constructor(
     application: Application,
-    savedStateHandle: SavedStateHandle,
-) : AbstractPagingSourceViewModel(application, savedStateHandle) {
+    override val savedStateHandle: SavedStateHandle,
+    dataProvider: PagingDataProvider
+) : AndroidViewModel(application), PagingDataSourceHandle {
 
     private companion object {
         private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"
@@ -36,7 +40,7 @@ class SearchResultViewModel @Inject constructor(
             maskWord ?: searchWithMaskWord,
             sortType ?: ""
         )
-    val booksData = providePagingData { searchResultDataSource }
+    val booksData = dataProvider.providePagingData(viewModelScope) { searchResultDataSource }
 
     private val searchQuery: String? by stateHandleDelegate(SEARCH_PARAM)
 

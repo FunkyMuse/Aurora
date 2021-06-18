@@ -25,7 +25,7 @@ import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.appendState
 import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingProviderViewModel
+import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.systemBarsPadding
@@ -42,7 +42,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @Composable
 fun Favorites(
     viewModel: FavoritesViewModel = hiltViewModel(),
-    pagingProviderViewModel: PagingProviderViewModel = hiltViewModel(),
+    pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel(),
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
@@ -55,7 +55,10 @@ fun Favorites(
     }
 
     progressVisibility =
-        pagingProviderViewModel.progressBarVisibility(favorites.appendState, favorites.refreshState)
+        pagingUIProviderViewModel.progressBarVisibility(
+            favorites.appendState,
+            favorites.refreshState
+        )
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()
@@ -71,10 +74,10 @@ fun Favorites(
             CircularProgressIndicator()
         }
 
-        if (pagingProviderViewModel.isDataEmpty(favorites)) {
+        if (pagingUIProviderViewModel.isDataEmpty(favorites)) {
             ErrorMessage(text = R.string.no_favorites_expl)
         } else {
-            pagingProviderViewModel.onPaginationReachedError(
+            pagingUIProviderViewModel.onPaginationReachedError(
                 favorites.appendState,
                 R.string.no_more_favorite_books
             )
