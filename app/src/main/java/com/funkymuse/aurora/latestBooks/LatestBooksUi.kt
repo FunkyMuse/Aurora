@@ -16,12 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
+import com.funkymuse.aurora.extensions.appendState
+import com.funkymuse.aurora.extensions.prependState
+import com.funkymuse.aurora.extensions.refreshState
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
