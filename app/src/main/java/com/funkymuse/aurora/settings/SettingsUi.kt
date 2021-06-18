@@ -19,14 +19,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.R
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.launch
 
 @Composable
 fun Settings() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = LocalWindowInsets.current.systemBars.toPaddingValues()
+        contentPadding = rememberInsetsPaddingValues(
+            insets = LocalWindowInsets.current.systemBars
+        )
     ) {
         item { DarkTheme() }
     }
