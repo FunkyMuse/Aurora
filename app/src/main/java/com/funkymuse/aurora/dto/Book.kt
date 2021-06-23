@@ -1,7 +1,7 @@
 package com.funkymuse.aurora.dto
 
 import android.os.Parcelable
-import com.crazylegend.kotlinextensions.tryOrNull
+import com.crazylegend.common.tryOrNull
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.RawValue
 import org.jsoup.nodes.Element

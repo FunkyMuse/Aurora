@@ -1,8 +1,8 @@
 package com.funkymuse.aurora
 
 import androidx.lifecycle.ViewModel
-import com.crazylegend.kotlinextensions.toaster.Toaster
-import com.crazylegend.kotlinextensions.toaster.ToasterContract
+import com.crazylegend.toaster.Toaster
+import com.crazylegend.toaster.ToasterContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

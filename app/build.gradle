@@ -29,9 +29,9 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled false
+            minifyEnabled true
             crunchPngs false
-            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -74,8 +74,16 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
 
     //helpers
-    implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:internetDetector:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:string:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:collections:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:lifecycle:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:database:$KAHelpers"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"

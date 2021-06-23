@@ -3,8 +3,8 @@ package com.funkymuse.aurora.searchResult
 import android.content.Context
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
-import com.crazylegend.kotlinextensions.context.isOnline
+import com.crazylegend.collections.isNotNullOrEmpty
+import com.crazylegend.common.isOnline
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book

@@ -191,7 +191,8 @@ fun SearchResult(
                     state = columnState,
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentPadding = LocalWindowInsets.current.navigationBars.toPaddingValues(
+                    contentPadding = rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.navigationBars,
                         additionalBottom = 64.dp
                     )
                 ) {

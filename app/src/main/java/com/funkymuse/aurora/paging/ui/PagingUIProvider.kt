@@ -4,18 +4,18 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
-import com.crazylegend.kotlinextensions.toaster.Toaster
+import com.crazylegend.internetdetector.InternetDetector
 import com.crazylegend.retrofit.retryOnConnectedToInternet
+import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.R
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by funkymuse on 5/10/21 to long live and prosper !
  */
-@Singleton
+@ViewModelScoped
 class PagingUIProvider @Inject constructor(
     private val toaster: Toaster,
     private val internetDetector: InternetDetector
@@ -38,6 +38,8 @@ class PagingUIProvider @Inject constructor(
     ): Boolean =
         ((append is LoadState.Error || refresh is LoadState.Error || prepend is LoadState.Error) && itemCount == 0)
 
+
+    private var isToastShown = false
 
     @Composable
     override fun <T : Any> OnError(
@@ -74,7 +76,10 @@ class PagingUIProvider @Inject constructor(
 
     override fun onPaginationReachedError(append: LoadState, @StringRes errorMessage: Int) {
         if (append.endOfPaginationReached) {
-            toaster.shortToast(errorMessage)
+            if (!isToastShown) {
+                toaster.shortToast(errorMessage)
+                isToastShown = true
+            }
         }
     }
 

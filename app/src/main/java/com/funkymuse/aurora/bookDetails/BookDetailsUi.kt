@@ -25,14 +25,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.crazylegend.kotlinextensions.collections.isNotNullOrEmpty
-import com.crazylegend.kotlinextensions.intent.openWebPage
-import com.crazylegend.kotlinextensions.string.clearHtmlTags
-import com.crazylegend.kotlinextensions.string.isNotNullOrEmpty
+import com.crazylegend.collections.isNotNullOrEmpty
+import com.crazylegend.intent.openWebPage
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.crazylegend.retrofit.retrofitResult.handle
 import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
+import com.crazylegend.string.clearHtmlTags
+import com.crazylegend.string.isNotNullOrEmpty
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
@@ -297,7 +297,7 @@ fun DetailedBook(
         }
 
 
-        book.extension?.toUpperCase(Locale.ROOT)?.apply {
+        book.extension?.uppercase()?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
                     alignment,

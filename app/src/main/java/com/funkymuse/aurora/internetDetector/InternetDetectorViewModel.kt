@@ -1,7 +1,7 @@
 package com.funkymuse.aurora.internetDetector
 
 import androidx.lifecycle.ViewModel
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
+import com.crazylegend.internetdetector.InternetDetector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

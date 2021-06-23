@@ -27,7 +27,9 @@ class BookDetailsViewModel @Inject constructor(
     private val favoritesDAO: FavoritesDAO,
 ) : ViewModel() {
 
-    private val id get() = savedStateHandle.get<Int>(BOOK_ID_PARAM)!!
+    private val id
+        get() = savedStateHandle.get<Int>(BOOK_ID_PARAM)
+            ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()

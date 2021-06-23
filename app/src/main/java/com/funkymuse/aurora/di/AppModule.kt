@@ -1,11 +1,11 @@
 package com.funkymuse.aurora.di
 
 import android.content.Context
-import com.crazylegend.kotlinextensions.internetdetector.InternetDetector
-import com.crazylegend.kotlinextensions.toaster.Toaster
+import com.crazylegend.internetdetector.InternetDetector
 import com.crazylegend.retrofit.RetrofitClient
 import com.crazylegend.retrofit.adapter.RetrofitResultAdapterFactory
 import com.crazylegend.retrofit.interceptors.ConnectivityInterceptor
+import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.BuildConfig
 import com.funkymuse.aurora.api.LibgenAPI
 import com.funkymuse.aurora.consts.LIBGEN_BASE_URL

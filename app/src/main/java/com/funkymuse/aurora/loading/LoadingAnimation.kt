@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.funkymuse.aurora.R
 import com.funkymuse.composed.core.density
 import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.toPaddingValues
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 /**
  * Created by Hristijan, date 4/14/21
@@ -152,7 +152,7 @@ object LoadingAnimation {
                 )
             )
             val paddingValues =
-                if (enableTopPadding) LocalWindowInsets.current.systemBars.toPaddingValues() else PaddingValues(
+                if (enableTopPadding) rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars) else PaddingValues(
                     0.dp
                 )
             LazyColumn(contentPadding = paddingValues) {

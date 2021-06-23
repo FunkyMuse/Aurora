@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.crazylegend.kotlinextensions.livedata.context
+import com.crazylegend.kotlinextensions.viewmodel.context
 import com.funkymuse.aurora.consts.SORT_SIZE
 import com.funkymuse.aurora.consts.SORT_TYPE_ASC
 import com.funkymuse.aurora.consts.SORT_TYPE_DESC

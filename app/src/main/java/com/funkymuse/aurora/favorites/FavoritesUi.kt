@@ -28,8 +28,8 @@ import com.funkymuse.aurora.extensions.refreshState
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
-import com.google.accompanist.insets.toPaddingValues
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -98,8 +98,9 @@ fun Favorites(
                 modifier = Modifier
                     .fillMaxSize()
                     .systemBarsPadding(),
-                contentPadding = LocalWindowInsets.current.navigationBars.toPaddingValues(
-                    top = false,
+                contentPadding = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.navigationBars,
+                    applyTop = false,
                     additionalBottom = 16.dp
                 )
             ) {
