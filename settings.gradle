@@ -9,7 +9,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Aurora"
 include ':app'
-include ':style'
 include ':style:color'
 include ':style:shape'
 include ':style:typography'
