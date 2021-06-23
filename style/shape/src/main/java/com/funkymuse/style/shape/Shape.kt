@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.ui.theme
+package com.funkymuse.style.shape
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

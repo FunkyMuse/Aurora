@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.style.shape.Shapes
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !

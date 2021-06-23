@@ -34,7 +34,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.ToasterViewModel
-import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.funkymuse.style.shape.BottomSheetShapes
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 

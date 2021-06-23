@@ -46,11 +46,11 @@ import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.glide.GlideImageState
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.LoadingAnimation
-import com.funkymuse.aurora.ui.theme.CardBackground
-import com.funkymuse.aurora.ui.theme.PrimaryVariant
-import com.funkymuse.aurora.ui.theme.Shapes
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
+import com.funkymuse.style.color.CardBackground
+import com.funkymuse.style.color.PrimaryVariant
+import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 

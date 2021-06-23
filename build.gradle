@@ -12,6 +12,16 @@ buildscript {
         accompanist = "0.12.0"
         lifecycle = '2.4.0-alpha02'
         composed = '0.0.10'
+
+        //compilation
+        compileVersion = 30
+        minVersion = 21
+
+        //updatable
+        verCode = 1
+        verName = "1.0.0"
+
+        testRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     repositories {
         google()
@@ -26,4 +36,118 @@ buildscript {
 }
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+subprojects {
+
+    switch (it.name) {
+        case "app":
+            apply plugin: 'com.android.application'
+            apply plugin: 'kotlin-android'
+            apply plugin: 'kotlin-kapt'
+            apply plugin: 'kotlin-parcelize'
+            apply plugin: 'dagger.hilt.android.plugin'
+            applyAndroid(it, true)
+            break
+
+        case []:
+            apply plugin: 'java-library'
+            apply plugin: 'kotlin'
+            applyKotlinModule(it)
+            break
+
+        default:
+            //setup gradle for libraries
+            apply plugin: 'com.android.library'
+            apply plugin: 'kotlin-android'
+            applyAndroid(it, false)
+            break
+    }
+
+}
+
+def applyKotlinModule(project) {
+    project.java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    project.dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    }
+}
+
+def applyAndroid(project, buildConfigCase) {
+    project.android {
+        compileSdkVersion compileVersion
+
+        defaultConfig {
+            minSdkVersion minVersion
+            targetSdkVersion compileVersion
+            versionCode verCode
+            versionName verName
+            testInstrumentationRunner testRunner
+        }
+
+        compileOptions {
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
+
+        kotlinOptions {
+            jvmTarget = "1.8"
+            useIR = true
+        }
+
+        testOptions.unitTests {
+            includeAndroidResources = true
+        }
+
+        buildFeatures {
+            compose true
+        }
+        composeOptions {
+            kotlinCompilerExtensionVersion compose_version
+        }
+
+        buildFeatures {
+            aidl = false
+            renderScript = false
+            resValues = false
+            shaders = false
+            buildConfig = buildConfigCase
+        }
+    }
+
+}
+
+
+void applyRoomDeps(project) {
+    project.dependencies {
+        //room
+        implementation "androidx.room:room-ktx:$room"
+        kapt "androidx.room:room-compiler:$room"
+    }
+}
+
+void applyDaggerDeps(project){
+    project.dependencies {
+        //dagger
+        implementation "com.google.dagger:dagger:$daggerVersion"
+        kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    }
+}
+
+void applyHiltDeps(project){
+    project.dependencies {
+        //hilt
+        implementation "com.google.dagger:hilt-android:$daggerVersion"
+        kapt "com.google.dagger:hilt-android-compiler:$daggerVersion"
+    }
+}
+
+void applyComposeUIDeps(project){
+    project.dependencies {
+        implementation "androidx.compose.ui:ui:$compose_version"
+        implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    }
 }

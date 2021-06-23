@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.ui.theme
+package com.funkymuse.style.color
 
 import androidx.compose.ui.graphics.Color
 

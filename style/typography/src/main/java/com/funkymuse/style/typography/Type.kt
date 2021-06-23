@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.ui.theme
+package com.funkymuse.style.typography
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

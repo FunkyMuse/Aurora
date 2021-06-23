@@ -1,0 +1,5 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation "androidx.compose.material:material:$compose_version"
+}

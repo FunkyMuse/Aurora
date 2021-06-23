@@ -34,8 +34,8 @@ import androidx.constraintlayout.compose.Dimension
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.dto.GeneralBook
-import com.funkymuse.aurora.ui.theme.CardBackground
-import com.funkymuse.aurora.ui.theme.Shapes
+import com.funkymuse.style.color.CardBackground
+import com.funkymuse.style.shape.Shapes
 import org.jsoup.nodes.Element
 import org.jsoup.parser.Tag
 

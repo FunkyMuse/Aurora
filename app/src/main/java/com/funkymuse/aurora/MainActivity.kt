@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -35,9 +36,10 @@ import com.funkymuse.aurora.searchResult.SearchResult
 import com.funkymuse.aurora.searchResult.createSearchRoute
 import com.funkymuse.aurora.searchResult.searchResultArguments
 import com.funkymuse.aurora.settings.Settings
-import com.funkymuse.aurora.ui.theme.AuroraTheme
-import com.funkymuse.aurora.ui.theme.BottomSheetShapes
+import com.funkymuse.aurora.settings.SettingsViewModel
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
+import com.funkymuse.style.shape.BottomSheetShapes
+import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            AuroraTheme {
+            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     Surface(color = MaterialTheme.colors.background) {
                         AuroraScaffold()

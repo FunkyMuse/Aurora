@@ -22,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.ui.theme.Primary
-import com.funkymuse.aurora.ui.theme.Secondary
+import com.funkymuse.style.color.Primary
+import com.funkymuse.style.color.Secondary
 
 /**
  * Created by Hristijan, date 3/3/21

@@ -36,13 +36,13 @@ import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
-import com.funkymuse.aurora.ui.theme.BottomSheetShapes
-import com.funkymuse.aurora.ui.theme.PrimaryVariant
-import com.funkymuse.aurora.ui.theme.Shapes
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
 import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
+import com.funkymuse.style.color.PrimaryVariant
+import com.funkymuse.style.shape.BottomSheetShapes
+import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
