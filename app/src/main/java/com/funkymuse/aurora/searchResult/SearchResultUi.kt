@@ -51,13 +51,6 @@ import kotlinx.coroutines.launch
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
-const val SEARCH_RESULT_ROUTE = "search_result"
-const val SEARCH_PARAM = "query"
-const val SEARCH_IN_FIELDS_PARAM = "searchInFieldsCheckedPosition"
-const val SEARCH_WITH_MASK_WORD_PARAM = "searchWithMaskWord"
-
-const val SEARCH_ROUTE_BOTTOM_NAV =
-    "$SEARCH_RESULT_ROUTE/{$SEARCH_PARAM}/{$SEARCH_IN_FIELDS_PARAM}/{$SEARCH_WITH_MASK_WORD_PARAM}"
 
 
 @OptIn(ExperimentalAnimationApi::class)

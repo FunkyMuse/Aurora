@@ -6,6 +6,10 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import com.funkymuse.aurora.bookDetails.BOOK_DETAILS_BOTTOM_NAV_ROUTE
+import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
 import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
 
 /**
@@ -16,19 +20,19 @@ object BottomNav {
     val bottomNavigationEntries =
         listOf(
             BottomEntry(
-                BottomNavScreen.Search,
+                SearchBottomNavRoute,
                 Icons.Filled.Search
             ),
             BottomEntry(
-                BottomNavScreen.Favorites,
+                FavoritesBottomNavRoute,
                 Icons.Filled.Favorite
             ),
             BottomEntry(
-                BottomNavScreen.LatestBooks,
+                LatestBooksBottomNavRoute,
                 Icons.Filled.List
             ),
             BottomEntry(
-                BottomNavScreen.Settings,
+                SettingsBottomNavRoute,
                 Icons.Filled.Settings
             ),
         )

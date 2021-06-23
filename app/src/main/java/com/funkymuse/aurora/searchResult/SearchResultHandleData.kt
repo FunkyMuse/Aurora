@@ -8,6 +8,7 @@ import com.crazylegend.kotlinextensions.viewmodel.context
 import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
+import com.funkymuse.aurora.stateHandleArgument
 import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -44,9 +45,8 @@ class SearchResultHandleData @Inject constructor(
 
     private val searchQuery: String? by stateHandleDelegate(SEARCH_PARAM)
 
-    val searchInFieldsCheckedPosition get() = savedStateHandle.get<Int>(SEARCH_IN_FIELDS_PARAM) ?: 0
-    val searchWithMaskWord
-        get() = savedStateHandle.get<Boolean>(SEARCH_WITH_MASK_WORD_PARAM) ?: false
+    val searchInFieldsCheckedPosition by stateHandleArgument(SEARCH_IN_FIELDS_PARAM, 0)
+    val searchWithMaskWord by stateHandleArgument(SEARCH_WITH_MASK_WORD_PARAM, false)
 
 
     private var searchInFieldsPosition by stateHandleDelegate<Int>(

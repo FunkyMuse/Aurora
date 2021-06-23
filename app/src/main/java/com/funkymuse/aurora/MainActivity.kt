@@ -3,7 +3,6 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.size
@@ -24,21 +23,25 @@ import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bookDetails.*
 import com.funkymuse.aurora.bottomnavigation.BottomEntry
 import com.funkymuse.aurora.bottomnavigation.BottomNav
-import com.funkymuse.aurora.bottomnavigation.BottomNavScreen
+import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
 import com.funkymuse.aurora.favorites.Favorites
 import com.funkymuse.aurora.latestBooks.LatestBooks
 import com.funkymuse.aurora.search.Search
-import com.funkymuse.aurora.searchResult.*
+import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
+import com.funkymuse.aurora.searchResult.SearchResult
+import com.funkymuse.aurora.searchResult.createSearchRoute
+import com.funkymuse.aurora.searchResult.searchResultArguments
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.ui.theme.AuroraTheme
 import com.funkymuse.aurora.ui.theme.BottomSheetShapes
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
-import com.google.accompanist.insets.ExperimentalAnimatedInsets
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalAnimatedInsets
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -57,7 +60,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AuroraScaffold() {
 
@@ -70,9 +72,9 @@ fun AuroraScaffold() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = BottomNavScreen.Search.route,
+            startDestination = SearchBottomNavRoute.route,
             builder = {
-                composable(BottomNavScreen.Search.route) {
+                composable(SearchBottomNavRoute.route) {
                     Search { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
                         openSearchResult(
                             navController,
@@ -82,19 +84,19 @@ fun AuroraScaffold() {
                         )
                     }
                 }
-                composable(BottomNavScreen.Favorites.route) {
+                composable(FavoritesBottomNavRoute.route) {
                     Favorites { id, mirrors ->
                         it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }
                 }
-                composable(BottomNavScreen.LatestBooks.route) {
+                composable(LatestBooksBottomNavRoute.route) {
                     LatestBooks() { id, mirrors ->
                         it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
                         openDetailedBook(navController, id)
                     }
                 }
-                composable(BottomNavScreen.Settings.route) {
+                composable(SettingsBottomNavRoute.route) {
                     Settings()
                 }
                 addSearchResult(navController)
@@ -110,7 +112,14 @@ fun openSearchResult(
     searchInFieldsCheckedPosition: Int,
     searchWithMaskWord: Boolean
 ) {
-    navController.navigate("$SEARCH_RESULT_ROUTE/$inputText/$searchInFieldsCheckedPosition/$searchWithMaskWord") {
+
+    navController.navigate(
+        createSearchRoute(
+            inputText,
+            searchInFieldsCheckedPosition,
+            searchWithMaskWord
+        )
+    ) {
         launchSingleTop = true
     }
 }
@@ -126,17 +135,7 @@ private fun NavGraphBuilder.addSearchResult(
 ) {
     composable(
         SEARCH_ROUTE_BOTTOM_NAV,
-        arguments = listOf(
-            navArgument(SEARCH_PARAM) { type = NavType.StringType },
-            navArgument(SEARCH_IN_FIELDS_PARAM) {
-                type = NavType.IntType
-                defaultValue = 0
-            },
-            navArgument(SEARCH_WITH_MASK_WORD_PARAM) {
-                type = NavType.BoolType
-                defaultValue = false
-            }
-        )
+        searchResultArguments
     ) {
         SearchResult(onBackClicked = {
             navController.navigateUp()
@@ -162,7 +161,7 @@ private fun NavGraphBuilder.addBookDetails(
             ShowDetailedBook(
                 getInt(BOOK_ID_PARAM),
                 navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
-            ){
+            ) {
                 navController.navigateUp()
             }
         }
@@ -184,9 +183,11 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
         Modifier
     }
 
-    BottomNavigation(modifier = size
-        .clip(BottomSheetShapes.large)
-        .navigationBarsPadding()) {
+    BottomNavigation(
+        modifier = size
+            .clip(BottomSheetShapes.large)
+            .navigationBarsPadding()
+    ) {
         hideBottomNav = currentRoute in BottomNav.hideBottomNavOnDestinations
         bottomNavList.forEach { bottomEntry ->
             BottomNavigationItem(
