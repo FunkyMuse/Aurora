@@ -5,13 +5,14 @@ package com.funkymuse.aurora.consts
  * Created by FunkyMuse on 10/21/19 to long live and prosper !
  */
 
-const val SEARCH_BASE_URL = "https://libgen.is/search.php"
+private const val BASE_URL = "https://libgen.is/"
+const val SEARCH_BASE_URL = "${BASE_URL}search.php"
 const val DEFAULT_API_TIMEOUT = 10000
 const val RES_CONST = "res"
 const val REQ_CONST = "req"
 const val PAGE_CONST = "page"
 const val PAGE_SIZE = "100"
-const val LIBGEN_COVER_IMAGE_URL = "https://libgen.is/covers/"
+const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}covers/"
 
 const val LIBGEN_BASE_URL = "http://gen.lib.rus.ec/"
 
@@ -71,3 +72,5 @@ const val SORT_PUBLISHER = "publisher"
 
 const val LAST_MODE = "mode"
 const val LAST_QUERY = "last"
+
+fun torrentDownloadURL(md5: String) = "${BASE_URL}book/index.php?md5=$md5&oftorrent="

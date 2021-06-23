@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.crazylegend.kotlinextensions.singleton.ParameterizedSingleton
-import com.funkymuse.aurora.consts.FAVORITES_DB_NAME
 import com.funkymuse.aurora.dto.ArrayListStringConverter
 import com.funkymuse.aurora.dto.FavoriteBook
 
@@ -14,6 +13,8 @@ import com.funkymuse.aurora.dto.FavoriteBook
 /**
  * Created by FunkyMuse, date 3/3/21
  */
+
+const val FAVORITES_DB_NAME = "favorites-db"
 
 
 @Database(entities = [FavoriteBook::class], version = 1, exportSchema = false)
