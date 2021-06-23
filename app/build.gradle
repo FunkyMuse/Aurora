@@ -27,6 +27,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+        useBuildCache = true
+    }
 }
 
 applyRoomDeps(this)
