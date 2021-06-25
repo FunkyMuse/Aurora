@@ -19,6 +19,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
+import com.funkymuse.aurora.bookDetails.BookDetailsDestination
 import com.funkymuse.aurora.components.ConfirmationDialog
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.dto.FavoriteBook
@@ -42,7 +43,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 fun Favorites(
         viewModel: FavoritesViewModel = hiltViewModel(),
         pagingUIProviderViewModel: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
-        onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
+        onBookClicked: (mirrors: Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
@@ -109,7 +110,8 @@ fun Favorites(
                         Book(it, onLongClick = {
                             longClickedBook.value = it
                         }) {
-                            onBookClicked(it.id, Mirrors(it.mirrors ?: emptyList()))
+                            onBookClicked(Mirrors(it.mirrors ?: emptyList()))
+                            viewModel.navigate(BookDetailsDestination.bookDetailsRoute(it.id))
                         }
                     }
                 }

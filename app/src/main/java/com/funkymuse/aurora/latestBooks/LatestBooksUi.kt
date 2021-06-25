@@ -20,6 +20,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
+import com.funkymuse.aurora.bookDetails.BookDetailsDestination
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
@@ -43,7 +44,7 @@ import kotlinx.coroutines.launch
 fun LatestBooks(
         latestBooksVM: LatestBooksVM = hiltViewModel(),
         pagingUIUIProvider: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
-        onBookClicked: (id: Int, Mirrors) -> Unit
+        onBookClicked: (Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
     val pagingItems = latestBooksVM.pagingData.collectAsLazyPagingItems()
@@ -155,7 +156,8 @@ fun LatestBooks(
                     item ?: return@items
                     Book(item) {
                         val bookID = item.id?.toInt() ?: return@Book
-                        onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
+                        onBookClicked(Mirrors(item.mirrors?.toList() ?: emptyList()))
+                        latestBooksVM.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
                     }
                 }
             }

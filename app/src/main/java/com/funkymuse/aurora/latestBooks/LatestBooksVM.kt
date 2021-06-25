@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.viewmodel.context
+import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
 import com.funkymuse.aurora.serverconstants.SORT_SIZE
@@ -17,10 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
-    application: Application,
-    override val savedStateHandle: SavedStateHandle,
-    dataProvider: PagingDataProvider
-) : AndroidViewModel(application), PagingDataSourceHandle {
+        application: Application,
+        override val savedStateHandle: SavedStateHandle,
+        dataProvider: PagingDataProvider,
+        private val navigator: Navigator
+) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
 
     private companion object {
         private const val SORT_QUERY_KEY = "sortQuery"

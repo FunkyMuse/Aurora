@@ -14,6 +14,8 @@ buildscript {
         composed = '0.0.10'
         paging_compose = '1.0.0-alpha10'
         paging_runtime = '3.0.0'
+        navigation = '2.4.0-alpha03'
+
         //compilation
         compileVersion = 30
         minVersion = 21

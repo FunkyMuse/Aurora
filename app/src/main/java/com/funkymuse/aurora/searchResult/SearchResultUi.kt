@@ -27,10 +27,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
+import com.funkymuse.aurora.bookDetails.BookDetailsDestination
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.Mirrors
+import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
 import com.funkymuse.aurora.paging.prependState
 import com.funkymuse.aurora.paging.refreshState
@@ -56,9 +58,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchResult(
         searchResultViewModel: SearchResultHandleData = hiltViewModel(),
-        pagingUIUIProvider: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
-        onBackClicked: () -> Unit,
-        onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
+        pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
+        onBookClicked: (mirrors: Mirrors) -> Unit
 ) {
     var checkedSortPosition by rememberIntSaveableDefaultZero()
     var filtersVisible by rememberBooleanSaveableDefaultFalse()
@@ -97,7 +98,7 @@ fun SearchResult(
             searchInFieldsCheckedPosition,
             searchWithMaskWord,
             filtersVisible,
-            onBackClicked = onBackClicked,
+            onBackClicked = { searchResultViewModel.navigateUp() },
             onSortPositionClicked = {
                 checkedSortPosition = it
                 searchResultViewModel.sortByPosition(it)
@@ -194,7 +195,8 @@ fun SearchResult(
 
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
-                            onBookClicked(bookID, Mirrors(item.mirrors?.toList() ?: emptyList()))
+                            onBookClicked(Mirrors(item.mirrors?.toList() ?: emptyList()))
+                            searchResultViewModel.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
                         }
                     }
                 }
