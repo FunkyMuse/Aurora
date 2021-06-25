@@ -85,7 +85,6 @@ fun AuroraScaffold(navigator: Navigator) {
     val navController = rememberNavController()
 
     navigator.destinations.collectAsState(initial = null).value?.apply {
-        debug { "NAVIGATOR EVENT $this" }
         when (this) {
             is NavigatorEvent.NavigateUp -> navController.navigateUp()
             is NavigatorEvent.Directions -> navController.navigate(destination.route()) { launchSingleTop = true }
