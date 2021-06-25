@@ -1,5 +1,7 @@
 package com.funkymuse.aurora.searchResult
 
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -42,6 +44,7 @@ import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
@@ -68,6 +71,7 @@ fun SearchResult(
     val pagingItems = searchResultViewModel.booksData.collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
+
 
     progressVisibility =
             pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
@@ -201,6 +205,18 @@ fun SearchResult(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
+private inline fun backButtonLogic(bottomSheetState: BottomSheetState,
+                                   scope: CoroutineScope, dropDownMenuExpanded: Boolean, onDropDownSetFalse: () -> Unit, onBackClicked: () -> Unit) {
+    when {
+        bottomSheetState.isExpanded -> {
+            scope.launch { bottomSheetState.collapse() }
+        }
+        dropDownMenuExpanded -> onDropDownSetFalse()
+        else -> onBackClicked()
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScaffoldWithBackFiltersAndContent(
         checkedSortPosition: Int,
@@ -220,6 +236,18 @@ fun ScaffoldWithBackFiltersAndContent(
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
+
+    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val lifecycleOwnerLocal = lifecycleOwner
+    DisposableEffect(dispatcher) {
+        dispatcher?.addCallback(lifecycleOwnerLocal, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, { dropDownMenuExpanded = false }, onBackClicked)
+            }
+        })
+
+        onDispose { }
+    }
 
     BottomSheetScaffold(
             sheetContent = {
@@ -281,14 +309,7 @@ fun ScaffoldWithBackFiltersAndContent(
                                             bottom.linkTo(parent.bottom)
                                         }
                                         .padding(8.dp), onClick = {
-
-                            when {
-                                bottomSheetState.isExpanded -> {
-                                    scope.launch { bottomSheetState.collapse() }
-                                }
-                                dropDownMenuExpanded -> dropDownMenuExpanded = false
-                                else -> onBackClicked()
-                            }
+                            backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, { dropDownMenuExpanded = false }, onBackClicked)
                         }
                         )
 
