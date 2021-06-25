@@ -12,6 +12,7 @@ buildscript {
         accompanist = "0.12.0"
         lifecycle = '2.4.0-alpha02'
         composed = '0.0.10'
+        paging = '1.0.0-alpha10'
 
         //compilation
         compileVersion = 30
@@ -51,8 +52,8 @@ subprojects {
             break
 
 
-    //ignore parent folders
-        case ["style"]:
+        //ignore parent folders
+        case ["style", "resources"]:
             break
 
         case ["serverconstants"]:

@@ -1,0 +1,15 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation "androidx.paging:paging-compose:$paging"
+    implementation "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:internetDetector:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    implementation project(path: ':resources:strings')
+
+}

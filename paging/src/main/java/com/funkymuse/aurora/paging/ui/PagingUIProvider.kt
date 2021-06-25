@@ -2,14 +2,15 @@ package com.funkymuse.aurora.paging.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.crazylegend.internetdetector.InternetDetector
-import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.toaster.Toaster
-import com.funkymuse.aurora.R
+import com.funkymuse.aurora.paging.R
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 /**
@@ -62,8 +63,10 @@ class PagingUIProvider @Inject constructor(
                 toaster.longToast(R.string.no_connection_message_will_load_on_connection_achieved)
             }
 
-            retryOnConnectedToInternet(internetDetector.state, scope) {
-                pagingItems.retry()
+            LaunchedEffect(scope) {
+                internetDetector.state.collectLatest {
+                    if (it) pagingItems.retry()
+                }
             }
 
         } else {

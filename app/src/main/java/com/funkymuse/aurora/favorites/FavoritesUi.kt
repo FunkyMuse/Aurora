@@ -26,7 +26,6 @@ import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.appendState
 import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.lifecycleOwner
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
@@ -43,9 +42,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Favorites(
-    viewModel: FavoritesViewModel = hiltViewModel(),
-    pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel(),
-    onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
+        viewModel: FavoritesViewModel = hiltViewModel(),
+        pagingUIProviderViewModel: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
+        onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.flowWithLifecycle(lifecycleOwner.lifecycle).collectAsLazyPagingItems()

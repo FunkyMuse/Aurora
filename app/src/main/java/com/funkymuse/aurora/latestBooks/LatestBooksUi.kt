@@ -28,7 +28,6 @@ import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.appendState
 import com.funkymuse.aurora.extensions.prependState
 import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.lifecycleOwner
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
@@ -45,9 +44,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LatestBooks(
-    latestBooksVM: LatestBooksVM = hiltViewModel(),
-    pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
-    onBookClicked: (id: Int, Mirrors) -> Unit
+        latestBooksVM: LatestBooksVM = hiltViewModel(),
+        pagingUIUIProvider: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
+        onBookClicked: (id: Int, Mirrors) -> Unit
 ) {
     latestBooksVM.debug { "FUNCTION COMPOSED" }
     var progressVisibility by rememberBooleanDefaultFalse()

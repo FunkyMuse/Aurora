@@ -33,7 +33,6 @@ import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.appendState
 import com.funkymuse.aurora.extensions.prependState
 import com.funkymuse.aurora.extensions.refreshState
-import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
@@ -55,7 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SearchResult(
         searchResultViewModel: SearchResultHandleData = hiltViewModel(),
-        pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
+        pagingUIUIProvider: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
         onBackClicked: () -> Unit,
         onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
