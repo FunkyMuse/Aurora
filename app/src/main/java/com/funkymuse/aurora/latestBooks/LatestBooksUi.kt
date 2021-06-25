@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.flowWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.crazylegend.kotlinextensions.log.debug
@@ -29,6 +30,7 @@ import com.funkymuse.aurora.extensions.prependState
 import com.funkymuse.aurora.extensions.refreshState
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.composed.core.lastVisibleIndex
+import com.funkymuse.composed.core.lifecycleOwner
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -49,7 +51,7 @@ fun LatestBooks(
 ) {
     latestBooksVM.debug { "FUNCTION COMPOSED" }
     var progressVisibility by rememberBooleanDefaultFalse()
-    val pagingItems = latestBooksVM.pagingData.collectAsLazyPagingItems()
+    val pagingItems = latestBooksVM.pagingData.flowWithLifecycle(lifecycleOwner.lifecycle).collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
@@ -96,13 +98,13 @@ fun LatestBooks(
 
         AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
-                .constrainAs(backToTop) {
-                    bottom.linkTo(parent.bottom)
-                    centerHorizontallyTo(parent)
-                }
-                .navigationBarsPadding(start = false, end = false)
-                .padding(bottom = 64.dp)
-                .zIndex(2f)) {
+                    .constrainAs(backToTop) {
+                        bottom.linkTo(parent.bottom)
+                        centerHorizontallyTo(parent)
+                    }
+                    .navigationBarsPadding(start = false, end = false)
+                    .padding(bottom = 64.dp)
+                    .zIndex(2f)) {
 
             Box {
                 FloatingActionButton(
@@ -150,8 +152,8 @@ fun LatestBooks(
             LazyColumn(
                 state = columnState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 56.dp),
+                        .fillMaxSize()
+                        .padding(bottom = 56.dp),
                 contentPadding = listInsets
             ) {
                 items(pagingItems) { item ->

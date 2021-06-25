@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.flowWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
@@ -36,10 +37,7 @@ import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
-import com.funkymuse.composed.core.lastVisibleIndex
-import com.funkymuse.composed.core.rememberBooleanDefaultFalse
-import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
-import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
+import com.funkymuse.composed.core.*
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.funkymuse.style.shape.Shapes
@@ -69,7 +67,7 @@ fun SearchResult(
 
     var progressVisibility by rememberBooleanDefaultFalse()
 
-    val pagingItems = searchResultViewModel.booksData.collectAsLazyPagingItems()
+    val pagingItems = searchResultViewModel.booksData.flowWithLifecycle(lifecycleOwner.lifecycle).collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
 
@@ -116,13 +114,13 @@ fun SearchResult(
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                .constrainAs(loading) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                }
-                .wrapContentSize()
-                .padding(top = 4.dp)
-                .zIndex(2f)) {
+                    .constrainAs(loading) {
+                        top.linkTo(parent.top)
+                        centerHorizontallyTo(parent)
+                    }
+                    .wrapContentSize()
+                    .padding(top = 4.dp)
+                    .zIndex(2f)) {
                 CircularProgressIndicator()
             }
 
@@ -147,12 +145,12 @@ fun SearchResult(
             val lastVisibleIndex = columnState.lastVisibleIndex()
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
                 modifier = Modifier
-                    .constrainAs(backToTop) {
-                        bottom.linkTo(parent.bottom)
-                        end.linkTo(parent.end)
-                    }
-                    .padding(bottom = 12.dp, end = 4.dp)
-                    .zIndex(2f)) {
+                        .constrainAs(backToTop) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(bottom = 12.dp, end = 4.dp)
+                        .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
@@ -279,12 +277,12 @@ fun ScaffoldWithBackFiltersAndContent(
                     val (backButton, filter) = createRefs()
                     BackButton(
                         modifier = Modifier
-                            .constrainAs(backButton) {
-                                start.linkTo(parent.start)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            }
-                            .padding(8.dp), onClick = onBackClicked
+                                .constrainAs(backButton) {
+                                    start.linkTo(parent.start)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                }
+                                .padding(8.dp), onClick = onBackClicked
                     )
 
                     if (filtersVisible) {
@@ -300,12 +298,12 @@ fun ScaffoldWithBackFiltersAndContent(
                             shape = Shapes.large,
                             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                             modifier = Modifier
-                                .constrainAs(filter) {
-                                    end.linkTo(parent.end)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                }
-                                .padding(8.dp)
+                                    .constrainAs(filter) {
+                                        end.linkTo(parent.end)
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .padding(8.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.FilterAlt,
@@ -340,34 +338,34 @@ fun ScaffoldWithBackFiltersAndContent(
             //add scrim
             if (state.isExpanded) {
                 Box(modifier = Modifier
-                    .fillMaxSize()
-                    .clickable(
-                        indication = null,
-                        interactionSource = MutableInteractionSource()
-                    ) {
-                        scope.launch { state.collapse() }
-                    }
-                    .background(brush = SolidColor(Color.Black), alpha = 0.5f)
-                    .zIndex(0.5f))
+                        .fillMaxSize()
+                        .clickable(
+                                indication = null,
+                                interactionSource = MutableInteractionSource()
+                        ) {
+                            scope.launch { state.collapse() }
+                        }
+                        .background(brush = SolidColor(Color.Black), alpha = 0.5f)
+                        .zIndex(0.5f))
             }
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(if (state.isExpanded) 0.2f else 0f)
+                        .fillMaxSize()
+                        .zIndex(if (state.isExpanded) 0.2f else 0f)
             ) {
                 content(it)
             }
 
             Box(
                 modifier = Modifier
-                    .constrainAs(filter) {
-                        bottom.linkTo(parent.bottom)
-                        start.linkTo(parent.start)
-                        end.linkTo(parent.end)
-                    }
-                    .padding(bottom = 12.dp)
-                    .zIndex(0.3f)
+                        .constrainAs(filter) {
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(bottom = 12.dp)
+                        .zIndex(0.3f)
             ) {
                 if (filtersVisible) {
                     FloatingActionButton(

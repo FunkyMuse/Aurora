@@ -40,7 +40,7 @@ applyHiltDeps(this)
 
 dependencies {
 
-    //local
+    //style
     implementation project(path: ':style:theme')
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')

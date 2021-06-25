@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.flowWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
@@ -26,6 +27,7 @@ import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.appendState
 import com.funkymuse.aurora.extensions.refreshState
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
+import com.funkymuse.composed.core.lifecycleOwner
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -46,7 +48,7 @@ fun Favorites(
     onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
-    val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
+    val favorites = viewModel.favoritesData.flowWithLifecycle(lifecycleOwner.lifecycle).collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
     longClickedBook.value?.apply {
         DeleteBook(it = this,
@@ -63,14 +65,14 @@ fun Favorites(
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()
         AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-            .constrainAs(loading) {
-                top.linkTo(parent.top)
-                centerHorizontallyTo(parent)
-            }
-            .wrapContentSize()
-            .systemBarsPadding()
-            .padding(top = 4.dp)
-            .zIndex(2f)) {
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .systemBarsPadding()
+                .padding(top = 4.dp)
+                .zIndex(2f)) {
             CircularProgressIndicator()
         }
 
@@ -95,14 +97,14 @@ fun Favorites(
         ) {
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .systemBarsPadding(),
-                contentPadding = rememberInsetsPaddingValues(
-                    insets = LocalWindowInsets.current.navigationBars,
-                    applyTop = false,
-                    additionalBottom = 16.dp
-                )
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .systemBarsPadding(),
+                    contentPadding = rememberInsetsPaddingValues(
+                            insets = LocalWindowInsets.current.navigationBars,
+                            applyTop = false,
+                            additionalBottom = 16.dp
+                    )
             ) {
 
                 items(favorites) { book ->
