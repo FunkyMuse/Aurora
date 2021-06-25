@@ -19,3 +19,5 @@ include ':serverconstants'
 include ':paging'
 
 include ':resources:strings'
+include ':resources:drawables'
+include ':resources:colors'

@@ -53,7 +53,7 @@ subprojects {
             break
 
         //disable compose
-        case ["paging", "strings"]:
+        case ["paging", "strings", "colors", "drawables"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
