@@ -10,6 +10,11 @@ import com.funkymuse.aurora.navigator.NavigationDestination
  */
 object BookDetailsDestination {
 
+    private const val BOOK_DETAILS_ROUTE = "book_details"
+    const val BOOK_ID_PARAM = "book"
+    const val BOOK_MIRRORS_PARAM = "mirrors"
+    private const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
+
     val destination = object : NavigationDestination {
         override fun route(): String = BOOK_DETAILS_BOTTOM_NAV_ROUTE
 

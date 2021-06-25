@@ -8,6 +8,9 @@ import com.crazylegend.kotlinextensions.viewmodel.context
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
+import com.funkymuse.aurora.searchResult.SearchResultDestination.SEARCH_IN_FIELDS_PARAM
+import com.funkymuse.aurora.searchResult.SearchResultDestination.SEARCH_PARAM
+import com.funkymuse.aurora.searchResult.SearchResultDestination.SEARCH_WITH_MASK_WORD_PARAM
 import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.aurora.stateHandleArgument
 import com.funkymuse.aurora.stateHandleDelegate

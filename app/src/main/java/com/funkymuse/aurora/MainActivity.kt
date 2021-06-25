@@ -22,9 +22,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.crazylegend.kotlinextensions.log.debug
-import com.funkymuse.aurora.bookDetails.BOOK_ID_PARAM
-import com.funkymuse.aurora.bookDetails.BOOK_MIRRORS_PARAM
 import com.funkymuse.aurora.bookDetails.BookDetailsDestination
+import com.funkymuse.aurora.bookDetails.BookDetailsDestination.BOOK_MIRRORS_PARAM
 import com.funkymuse.aurora.bookDetails.ShowDetailedBook
 import com.funkymuse.aurora.bottomnavigation.BottomEntry
 import com.funkymuse.aurora.bottomnavigation.BottomNav
@@ -37,10 +36,7 @@ import com.funkymuse.aurora.latestBooks.LatestBooks
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.navigator.NavigatorEvent
 import com.funkymuse.aurora.search.Search
-import com.funkymuse.aurora.searchResult.SEARCH_ROUTE_BOTTOM_NAV
-import com.funkymuse.aurora.searchResult.SearchResult
-import com.funkymuse.aurora.searchResult.createSearchRoute
-import com.funkymuse.aurora.searchResult.searchResultArguments
+import com.funkymuse.aurora.searchResult.*
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.settings.SettingsViewModel
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
@@ -50,6 +46,7 @@ import com.google.accompanist.coil.LocalImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -84,13 +81,18 @@ fun AuroraScaffold(navigator: Navigator) {
 
     val navController = rememberNavController()
 
-    navigator.destinations.collectAsState(initial = null).value?.apply {
-        when (this) {
-            is NavigatorEvent.NavigateUp -> navController.navigateUp()
-            is NavigatorEvent.Directions -> navController.navigate(destination.route()) { launchSingleTop = true }
+    navigator.destinations.collectAsState()
+    LaunchedEffect(key1 = rememberCoroutineScope()) {
+        navigator.destinations.collectLatest {
+            val event = it ?: return@collectLatest
+
+            debug { "NAVIGATOR EVENT $this" }
+            when (event) {
+                is NavigatorEvent.NavigateUp -> navController.navigateUp()
+                is NavigatorEvent.Directions -> navController.navigate(event.destination.route()) { launchSingleTop = true }
+            }
         }
     }
-
 
     Scaffold(
             bottomBar = {
@@ -102,14 +104,7 @@ fun AuroraScaffold(navigator: Navigator) {
                 startDestination = SearchBottomNavRoute.route,
                 builder = {
                     composable(SearchBottomNavRoute.route) {
-                        Search { inputText, searchInFieldsCheckedPosition, searchWithMaskWord ->
-                            openSearchResult(
-                                    navController,
-                                    inputText.trim(),
-                                    searchInFieldsCheckedPosition,
-                                    searchWithMaskWord
-                            )
-                        }
+                        Search()
                     }
                     composable(FavoritesBottomNavRoute.route) {
                         Favorites { mirrors ->
@@ -131,31 +126,11 @@ fun AuroraScaffold(navigator: Navigator) {
     }
 }
 
-fun openSearchResult(
-        navController: NavHostController,
-        inputText: String,
-        searchInFieldsCheckedPosition: Int,
-        searchWithMaskWord: Boolean
-) {
-
-    navController.navigate(
-            createSearchRoute(
-                    inputText,
-                    searchInFieldsCheckedPosition,
-                    searchWithMaskWord
-            )
-    ) {
-        launchSingleTop = true
-    }
-}
-
 
 private fun NavGraphBuilder.addSearchResult() {
-    composable(
-            SEARCH_ROUTE_BOTTOM_NAV,
-            searchResultArguments
-    ) {
-        SearchResult() { mirrors ->
+    val destination = SearchResultDestination.destination
+    composable(destination.route(), destination.arguments) {
+        SearchResult { mirrors ->
             it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
         }
     }
@@ -167,12 +142,8 @@ private fun NavGraphBuilder.addBookDetails(
     val destination = BookDetailsDestination.destination
     composable(destination.route(), destination.arguments) {
         it.arguments?.apply {
-            ShowDetailedBook(
-                    getInt(BOOK_ID_PARAM),
-                    navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM),
-            ) {
-                navController.navigateUp()
-            }
+            //workaround since we can't pass parcelable as nav arguments :(
+            ShowDetailedBook(navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM))
         }
     }
 }

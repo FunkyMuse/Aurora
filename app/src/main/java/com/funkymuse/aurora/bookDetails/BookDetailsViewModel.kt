@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.retrofit.retrofitStateInitialLoading
 import com.funkymuse.aurora.api.LibgenAPI
+import com.funkymuse.aurora.bookDetails.BookDetailsDestination.BOOK_ID_PARAM
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,14 +24,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private val libgenAPI: LibgenAPI,
-    private val favoritesDAO: FavoritesDAO,
-) : ViewModel() {
+        private val savedStateHandle: SavedStateHandle,
+        private val libgenAPI: LibgenAPI,
+        private val favoritesDAO: FavoritesDAO,
+        private val navigator: Navigator
+) : ViewModel(), Navigator by navigator {
 
-    private val id
+    val id
         get() = savedStateHandle.get<Int>(BOOK_ID_PARAM)
-            ?: throw IllegalStateException("Parameter book ID must not be null!")
+                ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()

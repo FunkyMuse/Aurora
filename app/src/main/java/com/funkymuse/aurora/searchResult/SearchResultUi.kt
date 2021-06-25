@@ -1,7 +1,6 @@
 package com.funkymuse.aurora.searchResult
 
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -207,8 +206,8 @@ fun SearchResult(
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-private inline fun backButtonLogic(bottomSheetState: BottomSheetState,
-                                   scope: CoroutineScope, dropDownMenuExpanded: Boolean, onDropDownSetFalse: () -> Unit, onBackClicked: () -> Unit) {
+private fun backButtonLogic(bottomSheetState: BottomSheetState,
+                            scope: CoroutineScope, dropDownMenuExpanded: Boolean, onDropDownSetFalse: () -> Unit, onBackClicked: () -> Unit) {
     when {
         bottomSheetState.isExpanded -> {
             scope.launch { bottomSheetState.collapse() }
@@ -238,17 +237,14 @@ fun ScaffoldWithBackFiltersAndContent(
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
+    val collapseDropDownMenu = { dropDownMenuExpanded = false }
 
-    val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val lifecycleOwnerLocal = lifecycleOwner
-    DisposableEffect(dispatcher) {
-        dispatcher?.addCallback(lifecycleOwnerLocal, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, { dropDownMenuExpanded = false }, onBackClicked)
-            }
-        })
+    val onBack = {
+        backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, collapseDropDownMenu, onBackClicked)
+    }
 
-        onDispose { }
+    BackHandler(true) {
+        onBack()
     }
 
     BottomSheetScaffold(
@@ -311,7 +307,7 @@ fun ScaffoldWithBackFiltersAndContent(
                                             bottom.linkTo(parent.bottom)
                                         }
                                         .padding(8.dp), onClick = {
-                            backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, { dropDownMenuExpanded = false }, onBackClicked)
+                            onBack()
                         }
                         )
 
@@ -344,11 +340,11 @@ fun ScaffoldWithBackFiltersAndContent(
                             DropdownMenu(expanded = dropDownMenuExpanded,
                                     modifier = Modifier.fillMaxWidth(),
                                     offset = DpOffset(32.dp, 32.dp),
-                                    onDismissRequest = { dropDownMenuExpanded = false }) {
+                                    onDismissRequest = collapseDropDownMenu) {
                                 searchViewModel.sortList.forEach {
                                     DropdownMenuItem(onClick = {
                                         onSortPositionClicked(it.first)
-                                        dropDownMenuExpanded = false
+                                        collapseDropDownMenu()
                                     }) {
                                         RadioButtonWithTextNotClickable(
                                                 text = it.second,

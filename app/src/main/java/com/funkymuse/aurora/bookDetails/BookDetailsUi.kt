@@ -59,24 +59,18 @@ import java.util.*
  * Created by FunkyMuse, date 2/27/21
  */
 
-const val BOOK_DETAILS_ROUTE = "book_details"
-const val BOOK_ID_PARAM = "book"
-const val BOOK_MIRRORS_PARAM = "mirrors"
-const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
+
 
 @Composable
 fun ShowDetailedBook(
-    id: Int?,
-    mirrors: Mirrors?,
-    bookDetailsViewModel: BookDetailsViewModel = hiltViewModel(),
-    internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel(),
-    onBackClicked: () -> Unit,
+        mirrors: Mirrors?,
+        bookDetailsViewModel: BookDetailsViewModel = hiltViewModel(),
+        internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel(),
 ) {
-    if (id == null) {
-        onBackClicked()
-        return
-    }
 
+    val onBackClicked = {
+        bookDetailsViewModel.navigateUp()
+    }
     val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
 
