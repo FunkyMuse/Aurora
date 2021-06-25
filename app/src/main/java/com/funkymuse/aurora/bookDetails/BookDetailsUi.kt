@@ -40,8 +40,6 @@ import com.funkymuse.aurora.components.ErrorWithRetry
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.extensions.loadPicture
-import com.funkymuse.aurora.glide.GlideImageState
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.CardShimmer
 import com.funkymuse.aurora.loading.LoadingBubbles
@@ -52,6 +50,8 @@ import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.Shapes
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 
@@ -212,40 +212,32 @@ fun DetailedBook(
 
         val alignment = Modifier.align(Alignment.Start)
         val imageModifier = Modifier
-            .padding(top = 16.dp)
+                .padding(top = 16.dp)
 
-        when (val res = loadPicture(imageUrl)) {
-            is GlideImageState.Failure -> {
-                res.errorDrawable?.let {
-                    Image(
-                        bitmap = it,
-                        contentDescription = stringResource(id = R.string.book_details)
-                    )
-                }
-            }
-            GlideImageState.Loading -> {
+        val painter = rememberCoilPainter(imageUrl)
+        when (painter.loadState) {
+            is ImageLoadState.Loading -> {
                 CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
             }
-            is GlideImageState.Success -> {
+            is ImageLoadState.Success, is ImageLoadState.Error -> {
                 Card(shape = Shapes.large, modifier = imageModifier) {
-                    res.imageBitmap?.let {
-                        Image(
-                            bitmap = it,
+                    Image(
+                            painter = painter,
                             contentDescription = stringResource(id = R.string.book_details)
-                        )
-                    }
+                    )
                 }
             }
         }
 
+
         Text(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-            text = book.author ?: stringResource(id = R.string.not_available),
-            style = TextStyle(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
+                modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                text = book.author ?: stringResource(id = R.string.not_available),
+                style = TextStyle(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
             )
         )
 

@@ -1,12 +1,15 @@
 package com.funkymuse.aurora.di
 
 import android.content.Context
+import coil.ImageLoader
+import coil.request.CachePolicy
 import com.crazylegend.internetdetector.InternetDetector
 import com.crazylegend.retrofit.RetrofitClient
 import com.crazylegend.retrofit.adapter.RetrofitResultAdapterFactory
 import com.crazylegend.retrofit.interceptors.ConnectivityInterceptor
 import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.BuildConfig
+import com.funkymuse.aurora.R
 import com.funkymuse.aurora.api.LibgenAPI
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.favorites.db.FavoritesDatabase
@@ -26,6 +29,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun imageLoader(@ApplicationContext context: Context): ImageLoader = ImageLoader.Builder(context)
+            .error(R.drawable.ic_logo)
+            .crossfade(true)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .fallback(R.drawable.ic_logo)
+            .build()
 
     @Provides
     @Singleton

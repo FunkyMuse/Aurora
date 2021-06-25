@@ -12,8 +12,8 @@ buildscript {
         accompanist = "0.12.0"
         lifecycle = '2.4.0-alpha02'
         composed = '0.0.10'
-        paging = '1.0.0-alpha10'
-
+        paging_compose = '1.0.0-alpha10'
+        paging_runtime = '3.0.0'
         //compilation
         compileVersion = 30
         minVersion = 21
@@ -53,7 +53,7 @@ subprojects {
             break
 
         //disable compose
-        case ["paging", "strings", "colors", "drawables"]:
+        case ["strings", "colors", "drawables"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
