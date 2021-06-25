@@ -50,7 +50,12 @@ subprojects {
             applyAndroid(it, true)
             break
 
-        case []:
+
+    //ignore parent folders
+        case ["style"]:
+            break
+
+        case ["serverconstants"]:
             apply plugin: 'java-library'
             apply plugin: 'kotlin'
             applyKotlinModule(it)
@@ -129,7 +134,7 @@ void applyRoomDeps(project) {
     }
 }
 
-void applyDaggerDeps(project){
+void applyDaggerDeps(project) {
     project.dependencies {
         //dagger
         implementation "com.google.dagger:dagger:$daggerVersion"
@@ -137,7 +142,7 @@ void applyDaggerDeps(project){
     }
 }
 
-void applyHiltDeps(project){
+void applyHiltDeps(project) {
     project.dependencies {
         //hilt
         implementation "com.google.dagger:hilt-android:$daggerVersion"
@@ -145,7 +150,7 @@ void applyHiltDeps(project){
     }
 }
 
-void applyComposeUIDeps(project){
+void applyComposeUIDeps(project) {
     project.dependencies {
         implementation "androidx.compose.ui:ui:$compose_version"
         implementation "androidx.compose.ui:ui-tooling:$compose_version"

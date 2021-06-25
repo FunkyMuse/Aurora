@@ -5,9 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.viewmodel.context
-import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
+import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.aurora.stateHandleArgument
 import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel

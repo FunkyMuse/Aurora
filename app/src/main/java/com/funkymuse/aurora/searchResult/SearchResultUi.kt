@@ -54,10 +54,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SearchResult(
-    searchResultViewModel: SearchResultHandleData = hiltViewModel(),
-    pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
-    onBackClicked: () -> Unit,
-    onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
+        searchResultViewModel: SearchResultHandleData = hiltViewModel(),
+        pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
+        onBackClicked: () -> Unit,
+        onBookClicked: (id: Int, mirrors: Mirrors) -> Unit
 ) {
     var checkedSortPosition by rememberIntSaveableDefaultZero()
     var filtersVisible by rememberBooleanSaveableDefaultFalse()
@@ -72,17 +72,17 @@ fun SearchResult(
     val scope = rememberCoroutineScope()
 
     progressVisibility =
-        pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+            pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
 
     filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(
-        pagingItems.refreshState,
-        pagingItems.appendState,
-        pagingItems.prependState,
-        pagingItems.itemCount
+            pagingItems.refreshState,
+            pagingItems.appendState,
+            pagingItems.prependState,
+            pagingItems.itemCount
     )
     pagingUIUIProvider.onPaginationReachedError(
-        pagingItems.appendState,
-        R.string.no_more_books_by_query_to_load
+            pagingItems.appendState,
+            R.string.no_more_books_by_query_to_load
     )
 
     val retry = {
@@ -91,26 +91,26 @@ fun SearchResult(
     }
 
     ScaffoldWithBackFiltersAndContent(
-        checkedSortPosition,
-        searchInFieldsCheckedPosition,
-        searchWithMaskWord,
-        filtersVisible,
-        onBackClicked = onBackClicked,
-        onSortPositionClicked = {
-            checkedSortPosition = it
-            searchResultViewModel.sortByPosition(it)
-            pagingItems.refresh()
-        },
-        onSearchInFieldsCheckedPosition = {
-            searchInFieldsCheckedPosition = it
-            searchResultViewModel.searchInFieldsByPosition(it)
-            pagingItems.refresh()
-        },
-        onSearchWithMaskWord = {
-            searchWithMaskWord = it
-            searchResultViewModel.searchWithMaskedWord(it)
-            pagingItems.refresh()
-        }) {
+            checkedSortPosition,
+            searchInFieldsCheckedPosition,
+            searchWithMaskWord,
+            filtersVisible,
+            onBackClicked = onBackClicked,
+            onSortPositionClicked = {
+                checkedSortPosition = it
+                searchResultViewModel.sortByPosition(it)
+                pagingItems.refresh()
+            },
+            onSearchInFieldsCheckedPosition = {
+                searchInFieldsCheckedPosition = it
+                searchResultViewModel.searchInFieldsByPosition(it)
+                pagingItems.refresh()
+            },
+            onSearchWithMaskWord = {
+                searchWithMaskWord = it
+                searchResultViewModel.searchWithMaskedWord(it)
+                pagingItems.refresh()
+            }) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
@@ -125,43 +125,43 @@ fun SearchResult(
             }
 
             pagingUIUIProvider.OnError(
-                refresh = pagingItems.refreshState,
-                append = pagingItems.appendState,
-                prepend = pagingItems.prependState,
-                pagingItems = pagingItems,
-                scope = scope,
-                noInternetUI = {
-                    ErrorMessage(R.string.no_books_loaded_no_connect)
-                },
-                errorUI = {
-                    ErrorWithRetry(R.string.no_books_loaded_search) {
-                        retry()
+                    refresh = pagingItems.refreshState,
+                    append = pagingItems.appendState,
+                    prepend = pagingItems.prependState,
+                    pagingItems = pagingItems,
+                    scope = scope,
+                    noInternetUI = {
+                        ErrorMessage(R.string.no_books_loaded_no_connect)
+                    },
+                    errorUI = {
+                        ErrorWithRetry(R.string.no_books_loaded_search) {
+                            retry()
+                        }
                     }
-                }
             )
 
             val columnState = rememberLazyListState()
 
             val lastVisibleIndex = columnState.lastVisibleIndex()
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
-                modifier = Modifier
-                        .constrainAs(backToTop) {
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                        }
-                        .padding(bottom = 12.dp, end = 4.dp)
-                        .zIndex(2f)) {
+                    modifier = Modifier
+                            .constrainAs(backToTop) {
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                            }
+                            .padding(bottom = 12.dp, end = 4.dp)
+                            .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
-                        modifier = Modifier
-                            .navigationBarsPadding(),
-                        onClick = { scope.launch { columnState.scrollToItem(0) } },
+                            modifier = Modifier
+                                    .navigationBarsPadding(),
+                            onClick = { scope.launch { columnState.scrollToItem(0) } },
                     ) {
                         Icon(
-                            Icons.Filled.ArrowUpward,
-                            contentDescription = stringResource(id = R.string.go_back_to_top),
-                            tint = Color.White
+                                Icons.Filled.ArrowUpward,
+                                contentDescription = stringResource(id = R.string.go_back_to_top),
+                                tint = Color.White
                         )
                     }
                 }
@@ -169,23 +169,23 @@ fun SearchResult(
 
             val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
             SwipeRefresh(
-                state = swipeToRefreshState, onRefresh = {
-                    swipeToRefreshState.isRefreshing = true
-                    retry()
-                    swipeToRefreshState.isRefreshing = false
-                },
-                modifier = Modifier
-                    .fillMaxSize()
+                    state = swipeToRefreshState, onRefresh = {
+                swipeToRefreshState.isRefreshing = true
+                retry()
+                swipeToRefreshState.isRefreshing = false
+            },
+                    modifier = Modifier
+                            .fillMaxSize()
             ) {
 
                 LazyColumn(
-                    state = columnState,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = rememberInsetsPaddingValues(
-                        insets = LocalWindowInsets.current.navigationBars,
-                        additionalBottom = 64.dp
-                    )
+                        state = columnState,
+                        modifier = Modifier
+                                .fillMaxSize(),
+                        contentPadding = rememberInsetsPaddingValues(
+                                insets = LocalWindowInsets.current.navigationBars,
+                                additionalBottom = 64.dp
+                        )
                 ) {
                     items(pagingItems) { item ->
                         item ?: return@items
@@ -205,178 +205,187 @@ fun SearchResult(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScaffoldWithBackFiltersAndContent(
-    checkedSortPosition: Int,
-    searchInFieldsCheckedPosition: Int,
-    searchWithMaskWord: Boolean,
-    filtersVisible: Boolean,
-    onBackClicked: () -> Unit,
-    onSortPositionClicked: (Int) -> Unit,
-    onSearchInFieldsCheckedPosition: (Int) -> Unit,
-    onSearchWithMaskWord: (Boolean) -> Unit,
-    content: @Composable (PaddingValues) -> Unit
+        checkedSortPosition: Int,
+        searchInFieldsCheckedPosition: Int,
+        searchWithMaskWord: Boolean,
+        filtersVisible: Boolean,
+        onBackClicked: () -> Unit,
+        onSortPositionClicked: (Int) -> Unit,
+        onSearchInFieldsCheckedPosition: (Int) -> Unit,
+        onSearchWithMaskWord: (Boolean) -> Unit,
+        content: @Composable (PaddingValues) -> Unit
 ) {
 
-    val state = rememberBottomSheetState(BottomSheetValue.Collapsed)
-    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = state)
+    val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
     val scope = rememberCoroutineScope()
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
     var dropDownMenuExpanded by remember { mutableStateOf(false) }
 
     BottomSheetScaffold(
-        sheetContent = {
-            LazyColumn {
+            sheetContent = {
+                LazyColumn {
 
-                item {
-                    Text(
-                        text = stringResource(R.string.search_in_fields), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    )
-                }
+                    item {
+                        Text(
+                                text = stringResource(R.string.search_in_fields), modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                        )
+                    }
 
-                itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
-                    RadioButtonWithText(
-                        text = item.title,
-                        isChecked = searchInFieldsCheckedPosition == index,
-                        onRadioButtonClicked = {
-                            onSearchInFieldsCheckedPosition(index)
-                            scope.launch { state.collapse() }
-                        })
-                }
+                    itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
+                        RadioButtonWithText(
+                                text = item.title,
+                                isChecked = searchInFieldsCheckedPosition == index,
+                                onRadioButtonClicked = {
+                                    onSearchInFieldsCheckedPosition(index)
+                                    scope.launch { bottomSheetState.collapse() }
+                                })
+                    }
 
-                item {
-                    Text(
-                        text = stringResource(R.string.mask_word), modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    )
-                }
+                    item {
+                        Text(
+                                text = stringResource(R.string.mask_word), modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                        )
+                    }
 
-                item {
-                    RadioButtonWithText(
-                        text = R.string.search_with_mask_word,
-                        isChecked = searchWithMaskWord,
-                        onRadioButtonClicked = {
-                            onSearchWithMaskWord(!searchWithMaskWord)
-                        })
-                }
+                    item {
+                        RadioButtonWithText(
+                                text = R.string.search_with_mask_word,
+                                isChecked = searchWithMaskWord,
+                                onRadioButtonClicked = {
+                                    onSearchWithMaskWord(!searchWithMaskWord)
+                                })
+                    }
 
-                item {
-                    Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                    item {
+                        Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                    }
                 }
-            }
-        },
-        sheetPeekHeight = 0.dp,
-        modifier = Modifier.fillMaxSize(),
-        scaffoldState = scaffoldState,
-        sheetShape = BottomSheetShapes.large,
-        topBar = {
-            TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
-                ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                    val (backButton, filter) = createRefs()
-                    BackButton(
-                        modifier = Modifier
-                                .constrainAs(backButton) {
-                                    start.linkTo(parent.start)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
+            },
+            sheetPeekHeight = 0.dp,
+            modifier = Modifier.fillMaxSize(),
+            scaffoldState = scaffoldState,
+            sheetShape = BottomSheetShapes.large,
+            topBar = {
+                TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
+                    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                        val (backButton, filter) = createRefs()
+                        BackButton(
+                                modifier = Modifier
+                                        .constrainAs(backButton) {
+                                            start.linkTo(parent.start)
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        }
+                                        .padding(8.dp), onClick = {
+
+                            when {
+                                bottomSheetState.isExpanded -> {
+                                    scope.launch { bottomSheetState.collapse() }
                                 }
-                                .padding(8.dp), onClick = onBackClicked
-                    )
-
-                    if (filtersVisible) {
-                        Button(
-                            onClick = {
-                                dropDownMenuExpanded = !dropDownMenuExpanded
-                                scope.launch {
-                                    if (!state.isCollapsed) {
-                                        state.collapse()
-                                    }
-                                } // only the filter menu is visible since it takes almost the whole screen
-                            },
-                            shape = Shapes.large,
-                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
-                            modifier = Modifier
-                                    .constrainAs(filter) {
-                                        end.linkTo(parent.end)
-                                        top.linkTo(parent.top)
-                                        bottom.linkTo(parent.bottom)
-                                    }
-                                    .padding(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FilterAlt,
-                                contentDescription = stringResource(id = R.string.title_favorites)
-                            )
+                                dropDownMenuExpanded -> dropDownMenuExpanded = false
+                                else -> onBackClicked()
+                            }
                         }
+                        )
 
-                        DropdownMenu(expanded = dropDownMenuExpanded,
-                            modifier = Modifier.fillMaxWidth(),
-                            offset = DpOffset(32.dp, 32.dp),
-                            onDismissRequest = { dropDownMenuExpanded = false }) {
-                            searchViewModel.sortList.forEach {
-                                DropdownMenuItem(onClick = {
-                                    onSortPositionClicked(it.first)
-                                    dropDownMenuExpanded = false
-                                }) {
-                                    RadioButtonWithTextNotClickable(
-                                        text = it.second,
-                                        isChecked = checkedSortPosition == it.first
-                                    )
+                        if (filtersVisible) {
+                            Button(
+                                    onClick = {
+                                        dropDownMenuExpanded = !dropDownMenuExpanded
+                                        scope.launch {
+                                            if (!bottomSheetState.isCollapsed) {
+                                                bottomSheetState.collapse()
+                                            }
+                                        } // only the filter menu is visible since it takes almost the whole screen
+                                    },
+                                    shape = Shapes.large,
+                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+                                    modifier = Modifier
+                                            .constrainAs(filter) {
+                                                end.linkTo(parent.end)
+                                                top.linkTo(parent.top)
+                                                bottom.linkTo(parent.bottom)
+                                            }
+                                            .padding(8.dp)
+                            ) {
+                                Icon(
+                                        imageVector = Icons.Default.FilterAlt,
+                                        contentDescription = stringResource(id = R.string.title_favorites)
+                                )
+                            }
+
+                            DropdownMenu(expanded = dropDownMenuExpanded,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    offset = DpOffset(32.dp, 32.dp),
+                                    onDismissRequest = { dropDownMenuExpanded = false }) {
+                                searchViewModel.sortList.forEach {
+                                    DropdownMenuItem(onClick = {
+                                        onSortPositionClicked(it.first)
+                                        dropDownMenuExpanded = false
+                                    }) {
+                                        RadioButtonWithTextNotClickable(
+                                                text = it.second,
+                                                isChecked = checkedSortPosition == it.first
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        }) {
+            }) {
 
         ConstraintLayout {
             val filter = createRef()
 
             //add scrim
-            if (state.isExpanded) {
+            if (bottomSheetState.isExpanded) {
                 Box(modifier = Modifier
                         .fillMaxSize()
                         .clickable(
                                 indication = null,
                                 interactionSource = MutableInteractionSource()
                         ) {
-                            scope.launch { state.collapse() }
+                            scope.launch { bottomSheetState.collapse() }
                         }
                         .background(brush = SolidColor(Color.Black), alpha = 0.5f)
                         .zIndex(0.5f))
             }
 
             Box(
-                modifier = Modifier
-                        .fillMaxSize()
-                        .zIndex(if (state.isExpanded) 0.2f else 0f)
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .zIndex(if (bottomSheetState.isExpanded) 0.2f else 0f)
             ) {
                 content(it)
             }
 
             Box(
-                modifier = Modifier
-                        .constrainAs(filter) {
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }
-                        .padding(bottom = 12.dp)
-                        .zIndex(0.3f)
+                    modifier = Modifier
+                            .constrainAs(filter) {
+                                bottom.linkTo(parent.bottom)
+                                start.linkTo(parent.start)
+                                end.linkTo(parent.end)
+                            }
+                            .padding(bottom = 12.dp)
+                            .zIndex(0.3f)
             ) {
                 if (filtersVisible) {
                     FloatingActionButton(
-                        modifier = Modifier
-                            .navigationBarsPadding(),
-                        onClick = { scope.launch { state.expand() } },
+                            modifier = Modifier
+                                    .navigationBarsPadding(),
+                            onClick = { scope.launch { bottomSheetState.expand() } },
                     ) {
                         Icon(
-                            Icons.Filled.FilterList,
-                            contentDescription = stringResource(id = R.string.filter),
-                            tint = Color.White
+                                Icons.Filled.FilterList,
+                                contentDescription = stringResource(id = R.string.filter),
+                                tint = Color.White
                         )
                     }
                 }

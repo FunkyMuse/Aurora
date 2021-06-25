@@ -5,12 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.kotlinextensions.viewmodel.context
-import com.funkymuse.aurora.consts.SORT_SIZE
-import com.funkymuse.aurora.consts.SORT_TYPE_ASC
-import com.funkymuse.aurora.consts.SORT_TYPE_DESC
-import com.funkymuse.aurora.consts.SORT_YEAR_CONST
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
+import com.funkymuse.aurora.serverconstants.SORT_SIZE
+import com.funkymuse.aurora.serverconstants.SORT_TYPE_ASC
+import com.funkymuse.aurora.serverconstants.SORT_TYPE_DESC
+import com.funkymuse.aurora.serverconstants.SORT_YEAR_CONST
 import com.funkymuse.aurora.stateHandleDelegate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

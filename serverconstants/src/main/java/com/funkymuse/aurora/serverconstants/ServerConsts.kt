@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.consts
+package com.funkymuse.aurora.serverconstants
 
 
 /**

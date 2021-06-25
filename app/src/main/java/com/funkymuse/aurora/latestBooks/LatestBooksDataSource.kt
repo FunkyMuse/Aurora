@@ -6,9 +6,9 @@ import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
 import com.crazylegend.retrofit.throwables.NoConnectionException
-import com.funkymuse.aurora.consts.*
 import com.funkymuse.aurora.dto.Book
 import com.funkymuse.aurora.extensions.canNotLoadMoreBooks
+import com.funkymuse.aurora.serverconstants.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

@@ -37,8 +37,6 @@ import com.funkymuse.aurora.R
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
-import com.funkymuse.aurora.consts.LIBGEN_COVER_IMAGE_URL
-import com.funkymuse.aurora.consts.torrentDownloadURL
 import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
@@ -46,6 +44,8 @@ import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.glide.GlideImageState
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.LoadingAnimation
+import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
+import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground
@@ -204,8 +204,8 @@ fun DetailedBook(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState),
+                .fillMaxSize()
+                .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -239,8 +239,8 @@ fun DetailedBook(
 
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
             text = book.author ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.SemiBold,
@@ -250,8 +250,8 @@ fun DetailedBook(
 
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             text = book.title ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
@@ -420,23 +420,23 @@ fun TopAppBarBookDetails(
             val (backButton, favorites) = createRefs()
             BackButton(
                 modifier = Modifier
-                    .constrainAs(backButton) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-                    .padding(8.dp), onClick = onBackClicked
+                        .constrainAs(backButton) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .padding(8.dp), onClick = onBackClicked
             )
 
             if (showFavoritesButton) {
                 AddToFavorites(
-                    Modifier
-                        .constrainAs(favorites) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
-                        .padding(8.dp), isInFavorites, onFavoritesClicked
+                        Modifier
+                                .constrainAs(favorites) {
+                                    end.linkTo(parent.end)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                }
+                                .padding(8.dp), isInFavorites, onFavoritesClicked
                 )
             }
         }
@@ -471,9 +471,9 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         elevation = 2.dp,
         shape = Shapes.medium,
         modifier = modifier
-            .padding(start = 22.dp)
-            .offset(y = 16.dp)
-            .zIndex(2f)
+                .padding(start = 22.dp)
+                .offset(y = 16.dp)
+                .zIndex(2f)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
@@ -488,16 +488,16 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
     }
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         shape = Shapes.large,
         backgroundColor = CardBackground
     ) {
         Column {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
                 text = text,
                 fontSize = 18.sp
             )

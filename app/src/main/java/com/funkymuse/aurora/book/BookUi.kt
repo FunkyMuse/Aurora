@@ -55,9 +55,9 @@ fun Book(
     Card(
         shape = Shapes.large,
         modifier = Modifier
-            .padding(16.dp, 8.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
+                .padding(16.dp, 8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
         backgroundColor = CardBackground
     ) {
         ConstraintLayout(
@@ -97,10 +97,10 @@ fun LoadingBook(book: Book = Book(Element(Tag.valueOf("div"), "test"))) {
     Card(
         shape = Shapes.large,
         modifier = Modifier
-            .padding(16.dp, 8.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .alpha(alpha),
+                .padding(16.dp, 8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .alpha(alpha),
         backgroundColor = Color.LightGray
     ) {
         ConstraintLayout {
@@ -178,13 +178,13 @@ private fun ConstraintLayoutScope.AddYearNumberOfPagesAndFileFormat(
         textAlign = TextAlign.Center,
     )
     Text(
-        text = fileFormatText?.toUpperCase() ?: stringResource(id = R.string.not_available),
-        modifier = Modifier
-            .constrainAs(fileFormat) {
-                start.linkTo(fileFormatTitle.start)
-                top.linkTo(fileFormatTitle.bottom, 4.dp)
-                centerHorizontallyTo(fileFormatTitle)
-            }
+            text = fileFormatText?.uppercase() ?: stringResource(id = R.string.not_available),
+            modifier = Modifier
+                    .constrainAs(fileFormat) {
+                        start.linkTo(fileFormatTitle.start)
+                        top.linkTo(fileFormatTitle.bottom, 4.dp)
+                        centerHorizontallyTo(fileFormatTitle)
+                    }
     )
 
 
@@ -242,11 +242,11 @@ private fun ConstraintLayoutScope.addStaticImage(): ConstrainedLayoutReference {
             id = R.string.book_details
         ),
         modifier = Modifier
-            .size(35.dp, 30.dp)
-            .constrainAs(image) {
-                top.linkTo(parent.top, margin = 16.dp)
-                start.linkTo(parent.start, margin = 16.dp)
-            }
+                .size(35.dp, 30.dp)
+                .constrainAs(image) {
+                    top.linkTo(parent.top, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                }
     )
     return image
 }

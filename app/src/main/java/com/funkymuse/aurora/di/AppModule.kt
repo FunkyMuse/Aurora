@@ -8,9 +8,9 @@ import com.crazylegend.retrofit.interceptors.ConnectivityInterceptor
 import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.BuildConfig
 import com.funkymuse.aurora.api.LibgenAPI
-import com.funkymuse.aurora.consts.LIBGEN_BASE_URL
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
 import com.funkymuse.aurora.favorites.db.FavoritesDatabase
+import com.funkymuse.aurora.serverconstants.LIBGEN_BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
