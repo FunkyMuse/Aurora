@@ -33,7 +33,6 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 /**
  * Created by Hristijan, date 4/14/21
  */
-object LoadingAnimation {
 
 
     @Composable
@@ -306,5 +305,3 @@ object LoadingAnimation {
             delayMillis = shimmerDelayDuration
         )
     }
-
-}

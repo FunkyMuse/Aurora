@@ -43,7 +43,8 @@ import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.extensions.loadPicture
 import com.funkymuse.aurora.glide.GlideImageState
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
-import com.funkymuse.aurora.loading.LoadingAnimation
+import com.funkymuse.aurora.loading.CardShimmer
+import com.funkymuse.aurora.loading.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.composed.core.context
@@ -98,7 +99,7 @@ fun ShowDetailedBook(
     ) {
         book.handle(
             loading = {
-                LoadingAnimation.LoadingBubbles()
+                LoadingBubbles()
             },
             emptyData = {
                 ErrorWithRetry(R.string.no_book_loaded) {
@@ -223,7 +224,7 @@ fun DetailedBook(
                 }
             }
             GlideImageState.Loading -> {
-                LoadingAnimation.CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
+                CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
             }
             is GlideImageState.Success -> {
                 Card(shape = Shapes.large, modifier = imageModifier) {
