@@ -9,11 +9,13 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Aurora"
 include ':app'
-include ':resources'
+
 include ':style:color'
 include ':style:shape'
 include ':style:typography'
 include ':style:theme'
+
 include ':serverconstants'
 include ':paging'
+
 include ':resources:strings'

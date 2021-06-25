@@ -41,6 +41,7 @@ task clean(type: Delete) {
 
 subprojects {
 
+    println it.name
     switch (it.name) {
         case "app":
             apply plugin: 'com.android.application'
@@ -48,9 +49,16 @@ subprojects {
             apply plugin: 'kotlin-kapt'
             apply plugin: 'kotlin-parcelize'
             apply plugin: 'dagger.hilt.android.plugin'
-            applyAndroid(it, true)
+            applyAndroid(it, true, true)
             break
 
+        //disable compose
+        case ["paging", "strings"]:
+            //setup gradle for libraries
+            apply plugin: 'com.android.library'
+            apply plugin: 'kotlin-android'
+            applyAndroid(it, false, false)
+            break
 
         //ignore parent folders
         case ["style", "resources"]:
@@ -66,7 +74,7 @@ subprojects {
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
-            applyAndroid(it, false)
+            applyAndroid(it, false, true)
             break
     }
 
@@ -82,8 +90,9 @@ def applyKotlinModule(project) {
     }
 }
 
-def applyAndroid(project, buildConfigCase) {
+def applyAndroid(project, buildConfigCase, enableCompose) {
     project.android {
+
         compileSdkVersion compileVersion
 
         defaultConfig {
@@ -109,10 +118,13 @@ def applyAndroid(project, buildConfigCase) {
         }
 
         buildFeatures {
-            compose true
+            compose enableCompose
         }
-        composeOptions {
-            kotlinCompilerExtensionVersion compose_version
+
+        if (enableCompose){
+            composeOptions {
+                kotlinCompilerExtensionVersion compose_version
+            }
         }
 
         buildFeatures {

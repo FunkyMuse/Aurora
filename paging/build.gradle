@@ -3,7 +3,6 @@ plugins {
 }
 
 applyHiltDeps(this)
-applyComposeUIDeps(this)
 
 dependencies {
     implementation "androidx.paging:paging-compose:$paging"
