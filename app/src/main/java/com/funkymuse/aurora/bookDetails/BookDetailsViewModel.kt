@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.retrofit.retrofitStateInitialLoading
-import com.funkymuse.aurora.api.LibgenAPI
 import com.funkymuse.aurora.bookDetails.BookDetailsDestination.BOOK_ID_PARAM
-import com.funkymuse.aurora.dto.DetailedBookModel
+import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.libgenapi.LibgenAPI
 import com.funkymuse.aurora.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async

@@ -35,6 +35,4 @@ data class FavoriteBook(
     @ColumnInfo(name = "mirrors")
     @TypeConverters(ArrayListStringConverter::class)
     val mirrors: List<String>? = null
-) : GeneralBook {
-
-}
+) : GeneralBook

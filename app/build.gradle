@@ -38,12 +38,18 @@ android {
     }
 }
 
-applyRoomDeps(this)
+hilt { enableAggregatingTask = true }
+
 applyRoomDeps(this)
 applyDaggerDeps(this)
 applyHiltDeps(this)
+applyMoshiDeps(this)
+applyComposeUIDeps(this)
 
 dependencies {
+
+    implementation project(path: ':retrofit:libgenapi')
+    implementation project(path: ':features:bookdetails:bookdetailsmodel')
 
 
     //style
@@ -70,7 +76,6 @@ dependencies {
 
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:internetDetector:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
@@ -81,7 +86,6 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:database:$KAHelpers"
-    kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
 
     implementation "com.github.FunkyMuse:Composed:$composed"
 
@@ -91,14 +95,12 @@ dependencies {
 
 
     //compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.navigation:navigation-compose:$navigation"
-    implementation 'androidx.activity:activity-compose:1.3.0-beta02'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha08"
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    implementation "androidx.activity:activity-compose:$activity"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
@@ -106,10 +108,11 @@ dependencies {
     implementation "com.google.accompanist:accompanist-coil:$accompanist"
 
     //hilt jetpack
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$lifecycle_viewmodel"
+    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
     implementation "androidx.hilt:hilt-navigation:$hiltJetpackVersion"
     implementation "androidx.hilt:hilt-work:$hiltJetpackVersion"
+
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //data store

@@ -1,0 +1,36 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+
+applyComposeUIDeps(this)
+applyHiltDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+
+    implementation project(path: ':style:shape')
+    implementation project(path: ':style:color')
+    
+    implementation project(path: ':serverconstants')
+    implementation project(path: ':features:bookdetails:bookdetailsmodel')
+
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
+
+    implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:string:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:collections:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
+
+    implementation "com.github.FunkyMuse:Composed:$composed"
+    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+
+
+    implementation "com.google.accompanist:accompanist-coil:$accompanist"
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+
+}

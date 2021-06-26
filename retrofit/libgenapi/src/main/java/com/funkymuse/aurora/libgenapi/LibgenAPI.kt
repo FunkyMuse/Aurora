@@ -1,7 +1,7 @@
-package com.funkymuse.aurora.api
+package com.funkymuse.aurora.libgenapi
 
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.funkymuse.aurora.dto.DetailedBookModel
+import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY_CONST
 import com.funkymuse.aurora.serverconstants.IDS_QUERY_CONST

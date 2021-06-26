@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.bookDetails
+package com.funkymuse.aurora.bookdetailsui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -33,11 +33,10 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
-import com.funkymuse.aurora.R
+import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
-import com.funkymuse.aurora.dto.DetailedBookModel
 import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
@@ -137,10 +136,10 @@ fun ShowDetailedBook(
 }
 
 private fun favoritesClick(
-    favoritesBook: FavoriteBook?,
-    detailedBook: DetailedBookModel?,
-    bookDetailsViewModel: BookDetailsViewModel,
-    mirrors: Mirrors?
+        favoritesBook: FavoriteBook?,
+        detailedBook: DetailedBookModel?,
+        bookDetailsViewModel: BookDetailsViewModel,
+        mirrors: Mirrors?
 ) {
     if (favoritesBook == null) {
         detailedBook?.let { bookModel ->
@@ -190,8 +189,8 @@ fun BookPreview() {
 
 @Composable
 fun DetailedBook(
-    book: DetailedBookModel,
-    dlMirrors: List<String>? = null
+        book: DetailedBookModel,
+        dlMirrors: List<String>? = null
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl

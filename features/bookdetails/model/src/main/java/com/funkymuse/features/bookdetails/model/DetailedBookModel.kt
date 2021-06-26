@@ -1,11 +1,11 @@
-package com.funkymuse.aurora.dto
+package com.funkymuse.features.bookdetails.model
 
 
 import android.os.Parcelable
-import com.crazylegend.common.randomUUIDstring
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -53,24 +53,24 @@ data class DetailedBookModel(
 ) : Parcelable{
         companion object{
                 val testBook = DetailedBookModel(
-                        author = randomUUIDstring,
-                        coverurl = randomUUIDstring,
-                        descr = randomUUIDstring,
-                        edition = randomUUIDstring,
-                        extension = randomUUIDstring,
-                        id = randomUUIDstring,
-                        language = randomUUIDstring,
-                        md5 = randomUUIDstring,
-                        pages = randomUUIDstring,
-                        periodical = randomUUIDstring,
-                        publisher = randomUUIDstring,
-                        series = randomUUIDstring,
-                        timeadded = randomUUIDstring,
-                        timelastmodified = randomUUIDstring,
-                        title = randomUUIDstring,
-                        torrent = randomUUIDstring,
-                        volumeinfo = randomUUIDstring,
-                        year = randomUUIDstring
+                        author = UUID.randomUUID().toString(),
+                        coverurl = UUID.randomUUID().toString(),
+                        descr = UUID.randomUUID().toString(),
+                        edition = UUID.randomUUID().toString(),
+                        extension = UUID.randomUUID().toString(),
+                        id = UUID.randomUUID().toString(),
+                        language = UUID.randomUUID().toString(),
+                        md5 = UUID.randomUUID().toString(),
+                        pages = UUID.randomUUID().toString(),
+                        periodical = UUID.randomUUID().toString(),
+                        publisher = UUID.randomUUID().toString(),
+                        series = UUID.randomUUID().toString(),
+                        timeadded = UUID.randomUUID().toString(),
+                        timelastmodified = UUID.randomUUID().toString(),
+                        title = UUID.randomUUID().toString(),
+                        torrent = UUID.randomUUID().toString(),
+                        volumeinfo = UUID.randomUUID().toString(),
+                        year = UUID.randomUUID().toString()
                 )
         }
 }

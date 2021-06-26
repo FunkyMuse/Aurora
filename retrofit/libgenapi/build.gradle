@@ -1,0 +1,10 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+    implementation project(path: ':features:bookdetails:bookdetailsmodel')
+    implementation project(path: ':retrofit:networking')
+}

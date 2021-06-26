@@ -21,4 +21,12 @@ include ':paging'
 include ':resources:strings'
 include ':resources:drawables'
 include ':resources:colors'
+
+
 include ':navigator'
+
+include ':features:bookdetails'
+include ':retrofit:libgenapi'
+include ':retrofit:networking'
+include ':features:bookdetails:bookdetailsmodel'
+include ':features:bookdetails:bookdetailsui'
