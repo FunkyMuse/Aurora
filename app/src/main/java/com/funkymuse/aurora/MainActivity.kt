@@ -22,9 +22,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.crazylegend.kotlinextensions.log.debug
-import com.funkymuse.aurora.bookDetails.BookDetailsDestination
-import com.funkymuse.aurora.bookDetails.BookDetailsDestination.BOOK_MIRRORS_PARAM
 import com.funkymuse.aurora.bookDetails.ShowDetailedBook
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_MIRRORS_PARAM
 import com.funkymuse.aurora.bottomnavigation.BottomEntry
 import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
@@ -139,7 +139,7 @@ private fun NavGraphBuilder.addSearchResult() {
 private fun NavGraphBuilder.addBookDetails(
         navController: NavHostController,
 ) {
-    val destination = BookDetailsDestination.destination
+    val destination = com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.destination
     composable(destination.route(), destination.arguments) {
         it.arguments?.apply {
             //workaround since we can't pass parcelable as nav arguments :(

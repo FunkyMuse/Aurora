@@ -1,0 +1,19 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+dependencies {
+    implementation project(path: ':retrofit:libgenapi')
+    implementation project(path: ':features:bookdetails:bookdetailsmodel')
+    implementation project(path: ':features:bookdetails:bookdetailsdestination')
+    implementation project(path: ':favoritebook:favoritebookdb')
+
+    implementation project(path: ':navigator')
+
+    implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
+
+
+}

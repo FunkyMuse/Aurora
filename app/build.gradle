@@ -65,10 +65,14 @@ dependencies {
     
     implementation project(path: ':paging')
     implementation project(path: ':navigator')
+    implementation project(path: ':generalbook')
+
+
+    implementation project(path: ':internetdetector')
 
 
     //core
-    implementation 'androidx.core:core-ktx:1.6.0-rc01'
+    implementation "androidx.core:core-ktx:$coreKTX"
     implementation 'androidx.appcompat:appcompat:1.3.0'
 
     //material

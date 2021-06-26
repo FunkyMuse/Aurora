@@ -33,7 +33,6 @@ import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.dto.Book
-import com.funkymuse.aurora.dto.GeneralBook
 import com.funkymuse.style.color.CardBackground
 import com.funkymuse.style.shape.Shapes
 import org.jsoup.nodes.Element
@@ -48,9 +47,9 @@ import org.jsoup.parser.Tag
 @Composable
 @Preview(showSystemUi = true, showBackground = true, device = Devices.PIXEL_4)
 fun Book(
-    book: GeneralBook = Book(Element(Tag.valueOf("div"), "test")),
-    onLongClick: (() -> Unit)? = null,
-    onClick: () -> Unit = {}
+        book: com.funkymuse.aurora.generalbook.GeneralBook = Book(Element(Tag.valueOf("div"), "test")),
+        onLongClick: (() -> Unit)? = null,
+        onClick: () -> Unit = {}
 ) {
     Card(
         shape = Shapes.large,

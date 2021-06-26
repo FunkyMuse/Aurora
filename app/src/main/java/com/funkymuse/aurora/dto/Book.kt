@@ -13,17 +13,17 @@ import org.jsoup.nodes.TextNode
  */
 
 @Parcelize
-class Book(private val element: @RawValue Element) : Parcelable, GeneralBook {
+class Book(private val element: @RawValue Element) : Parcelable, com.funkymuse.aurora.generalbook.GeneralBook {
 
     val generateFavoriteBook
-        get() = FavoriteBook(
-            id.toString().toInt(),
-            title,
-            year,
-            pages,
-            extension,
-            author,
-            mirrors
+        get() = com.funkymuse.aurora.favoritebookdb.FavoriteBook(
+                id.toString().toInt(),
+                title,
+                year,
+                pages,
+                extension,
+                author,
+                mirrors
         )
 
     val id: String?

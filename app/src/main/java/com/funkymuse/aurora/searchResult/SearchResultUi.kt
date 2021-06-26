@@ -26,7 +26,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
-import com.funkymuse.aurora.bookDetails.BookDetailsDestination
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
@@ -195,7 +195,7 @@ fun SearchResult(
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
                             onBookClicked(Mirrors(item.mirrors?.toList() ?: emptyList()))
-                            searchResultViewModel.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
+                            searchResultViewModel.navigate(com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.bookDetailsRoute(bookID))
                         }
                     }
                 }

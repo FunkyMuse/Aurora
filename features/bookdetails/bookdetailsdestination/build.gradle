@@ -1,0 +1,8 @@
+
+
+dependencies {
+
+    implementation project(path: ':navigator')
+    implementation "androidx.navigation:navigation-compose:$navigation"
+
+}

@@ -1,0 +1,17 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyRoomDeps(this)
+applyHiltDeps(this)
+applyMoshiDeps(this)
+
+dependencies {
+    implementation project(path: ':paging')
+    implementation project(path: ':navigator')
+    implementation project(path: ':generalbook')
+    implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
+    implementation "androidx.paging:paging-compose:$paging_compose"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
+}

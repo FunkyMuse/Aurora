@@ -3,11 +3,10 @@ package com.funkymuse.aurora.di
 import android.content.Context
 import coil.ImageLoader
 import coil.request.CachePolicy
-import com.crazylegend.internetdetector.InternetDetector
 import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.favorites.db.FavoritesDAO
-import com.funkymuse.aurora.favorites.db.FavoritesDatabase
+import com.funkymuse.aurora.favoritebookdb.db.FavoritesDAO
+import com.funkymuse.aurora.favoritebookdb.db.FavoritesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,10 +34,6 @@ object AppModule {
     @Singleton
     fun favoritesDBDao(@ApplicationContext context: Context): FavoritesDAO =
         FavoritesDatabase.getInstance(context).dao()
-
-    @Provides
-    @Singleton
-    fun internetDetector(@ApplicationContext context: Context) = InternetDetector(context)
 
     @Provides
     @Singleton

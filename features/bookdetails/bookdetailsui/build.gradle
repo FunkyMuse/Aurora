@@ -14,6 +14,10 @@ dependencies {
     
     implementation project(path: ':serverconstants')
     implementation project(path: ':features:bookdetails:bookdetailsmodel')
+    implementation project(path: ':features:bookdetails:bookdetailsdata')
+    implementation project(path: ':favoritebook:favoritebookdb')
+
+    implementation project(path: ':internetdetector')
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"

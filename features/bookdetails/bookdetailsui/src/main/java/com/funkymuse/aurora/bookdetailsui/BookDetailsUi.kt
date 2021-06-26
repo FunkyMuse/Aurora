@@ -33,13 +33,14 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
+import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
 import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
-import com.funkymuse.aurora.dto.FavoriteBook
 import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.internetDetector.InternetDetectorViewModel
+import com.funkymuse.aurora.favoritebookdb.FavoriteBook
+import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.CardShimmer
 import com.funkymuse.aurora.loading.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL

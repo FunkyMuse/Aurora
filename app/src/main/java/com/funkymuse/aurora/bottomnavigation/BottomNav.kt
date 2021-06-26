@@ -5,7 +5,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import com.funkymuse.aurora.bookDetails.BookDetailsDestination
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
@@ -38,7 +38,7 @@ object BottomNav {
         )
 
     val hideBottomNavOnDestinations = listOf(
-            BookDetailsDestination.destination.route(),
+            com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.destination.route(),
             SearchResultDestination.destination.route()
     )
 
