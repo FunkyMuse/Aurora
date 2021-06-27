@@ -10,7 +10,6 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -22,6 +21,7 @@ import com.funkymuse.aurora.bookui.Book
 import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.favoritebookdb.FavoritesViewModel
+import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
 import com.funkymuse.aurora.paging.refreshState
@@ -31,6 +31,7 @@ import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.flow.conflate
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
@@ -40,19 +41,24 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Favorites(
-
         onBookClicked: (mirrors: List<String>) -> Unit
 ) {
     val viewModel: FavoritesViewModel = hiltViewModel()
     val pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
-    val longClickedBook = remember { mutableStateOf<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>(null) }
+    val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
+
+    var isDatabaseEmpty by rememberBooleanDefaultFalse()
     longClickedBook.value?.apply {
         DeleteBook(it = this,
                 onConfirm = { viewModel.removeFromFavorites(it) },
                 onDismiss = { longClickedBook.value = null })
     }
+
+    //we trick the paging library to not spam the UI with empty data first
+    isDatabaseEmpty = viewModel.count.conflate()
+            .collectAsState(1).value == 0
 
     progressVisibility =
             pagingUIProviderViewModel.progressBarVisibility(
@@ -74,7 +80,7 @@ fun Favorites(
             CircularProgressIndicator()
         }
 
-        if (pagingUIProviderViewModel.isDataEmpty(favorites)) {
+        if (isDatabaseEmpty && !progressVisibility) {
             ErrorMessage(text = R.string.no_favorites_expl)
         } else {
             pagingUIProviderViewModel.onPaginationReachedError(
@@ -90,8 +96,7 @@ fun Favorites(
             favorites.refresh()
             swipeToRefreshState.isRefreshing = false
         },
-                modifier = Modifier
-                        .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
         ) {
 
             LazyColumn(
@@ -117,16 +122,13 @@ fun Favorites(
                 }
             }
         }
-
     }
 }
 
 @Composable
-@Preview
 fun DeleteBook(
-        it: com.funkymuse.aurora.favoritebookmodel.FavoriteBook = com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
-                title = "My favorite book"
-        ), onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
+        it: FavoriteBook = FavoriteBook(),
+        onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
 ) {
     ConfirmationDialog(
             title = stringResource(

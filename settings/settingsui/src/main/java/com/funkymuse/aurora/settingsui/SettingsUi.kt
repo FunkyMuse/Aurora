@@ -1,6 +1,7 @@
 package com.funkymuse.aurora.settingsui
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
@@ -82,6 +83,9 @@ fun CheckBoxWithText(
         modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp)
+                .clickable {
+                    checkChanged(!isChecked)
+                }
     ) {
         val (textWidget, checkboxWidget) = createRefs()
         Text(

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Aurora</string>
+    <string name="aurora_app_name">Aurora</string>
     <string name="no_connection_message">No internet connection available !</string>
     <string name="search_input">Search…</string>
     <string name="search_text">Search by a book name, author or ISBN</string>

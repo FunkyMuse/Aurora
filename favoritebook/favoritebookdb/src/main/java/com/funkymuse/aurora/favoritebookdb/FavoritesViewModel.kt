@@ -25,6 +25,8 @@ class FavoritesViewModel @Inject constructor(
     val favoritesData =
             pagingDataProvider.providePagingData(viewModelScope, ioDispatcher) { favoritesDAO.getAllFavorites() }
 
+    val count = favoritesDAO.favoriteItemsCount()
+
     fun removeFromFavorites(id: Int) {
         viewModelScope.launch(ioDispatcher) { favoritesDAO.deleteFromFavoritesByID(id) }
     }

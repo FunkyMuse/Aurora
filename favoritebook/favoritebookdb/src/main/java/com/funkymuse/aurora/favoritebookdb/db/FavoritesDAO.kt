@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,17 +18,20 @@ import kotlinx.coroutines.flow.Flow
 interface FavoritesDAO {
 
     @Query("select * from favoriteBooks")
-    fun getAllFavorites(): PagingSource<Int, com.funkymuse.aurora.favoritebookmodel.FavoriteBook>
+    fun getAllFavorites(): PagingSource<Int, FavoriteBook>
+
+    @Query("select count(*) from favoriteBooks")
+    fun favoriteItemsCount(): Flow<Int>
 
     @Delete
-    suspend fun deleteFromFavorites(favoriteBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook)
+    suspend fun deleteFromFavorites(favoriteBook: FavoriteBook)
 
     @Query("delete from favoriteBooks where id =:favID")
     suspend fun deleteFromFavoritesByID(favID: Int)
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertIntoFavorites(favoriteBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook)
+    suspend fun insertIntoFavorites(favoriteBook: FavoriteBook)
 
     @Query("select * from favoriteBooks where id =:bookID limit 1")
-    fun getFavoriteById(bookID: Int): Flow<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>
+    fun getFavoriteById(bookID: Int): Flow<FavoriteBook?>
 }
