@@ -17,5 +17,6 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:collections:$KAHelpers"
+    implementation project(path: ':coroutines:dispatchers')
 
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
@@ -14,6 +15,7 @@ import com.funkymuse.aurora.searchresultdestination.SearchResultDestination.SEAR
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination.SEARCH_WITH_MASK_WORD_PARAM
 import com.funkymuse.aurora.serverconstants.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -21,11 +23,12 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class SearchResultHandleData @Inject constructor(
+class SearchResultHandleDataViewModel @Inject constructor(
         application: Application,
         override val savedStateHandle: SavedStateHandle,
         dataProvider: PagingDataProvider,
-        private val navigator: Navigator
+        private val navigator: Navigator,
+        @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
 
     private companion object {
@@ -34,7 +37,6 @@ class SearchResultHandleData @Inject constructor(
         private const val SORT_QUERY_KEY = "sortQuery"
         private const val SORT_TYPE_KEY = "sortType"
     }
-
 
     private val searchResultDataSource
         get() = SearchResultDataSource(
@@ -45,7 +47,7 @@ class SearchResultHandleData @Inject constructor(
                 maskWord ?: searchWithMaskWord,
                 sortType ?: ""
         )
-    val booksData = dataProvider.providePagingData(viewModelScope) { searchResultDataSource }
+    val booksData = dataProvider.providePagingData(viewModelScope, ioDispatcher) { searchResultDataSource }
 
     private val searchQuery: String? by stateHandleDelegate(SEARCH_PARAM)
 

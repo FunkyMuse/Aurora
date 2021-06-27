@@ -13,4 +13,5 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
     api project(path: ':favoritebook:favoritebookmodel')
+    implementation project(path: ':coroutines:dispatchers')
 }

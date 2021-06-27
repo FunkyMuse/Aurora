@@ -36,7 +36,7 @@ import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.radiobutton.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.searchdata.SearchViewModel
-import com.funkymuse.aurora.searchresultdata.SearchResultHandleData
+import com.funkymuse.aurora.searchresultdata.SearchResultHandleDataViewModel
 import com.funkymuse.composed.core.*
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.BottomSheetShapes
@@ -57,17 +57,17 @@ import kotlinx.coroutines.launch
 fun SearchResult(
         onBookClicked: (mirrors: List<String>) -> Unit
 ) {
-    val searchResultViewModel: SearchResultHandleData = hiltViewModel()
+    val searchResultViewModelViewModel: SearchResultHandleDataViewModel = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
     var checkedSortPosition by rememberIntSaveableDefaultZero()
     var filtersVisible by rememberBooleanSaveableDefaultFalse()
 
-    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModel.searchInFieldsCheckedPosition) }
-    var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModel.searchWithMaskWord) }
+    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModelViewModel.searchInFieldsCheckedPosition) }
+    var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModelViewModel.searchWithMaskWord) }
 
     var progressVisibility by rememberBooleanDefaultFalse()
 
-    val pagingItems = searchResultViewModel.booksData.collectAsLazyPagingItems()
+    val pagingItems = searchResultViewModelViewModel.booksData.collectAsLazyPagingItems()
 
     val scope = rememberCoroutineScope()
 
@@ -87,7 +87,7 @@ fun SearchResult(
     )
 
     val retry = {
-        searchResultViewModel.refresh()
+        searchResultViewModelViewModel.refresh()
         pagingItems.refresh()
     }
 
@@ -96,20 +96,20 @@ fun SearchResult(
             searchInFieldsCheckedPosition,
             searchWithMaskWord,
             filtersVisible,
-            onBackClicked = { searchResultViewModel.navigateUp() },
+            onBackClicked = { searchResultViewModelViewModel.navigateUp() },
             onSortPositionClicked = {
                 checkedSortPosition = it
-                searchResultViewModel.sortByPosition(it)
+                searchResultViewModelViewModel.sortByPosition(it)
                 pagingItems.refresh()
             },
             onSearchInFieldsCheckedPosition = {
                 searchInFieldsCheckedPosition = it
-                searchResultViewModel.searchInFieldsByPosition(it)
+                searchResultViewModelViewModel.searchInFieldsByPosition(it)
                 pagingItems.refresh()
             },
             onSearchWithMaskWord = {
                 searchWithMaskWord = it
-                searchResultViewModel.searchWithMaskedWord(it)
+                searchResultViewModelViewModel.searchWithMaskedWord(it)
                 pagingItems.refresh()
             }) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -194,7 +194,7 @@ fun SearchResult(
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
                             onBookClicked(item.mirrors?.toList() ?: emptyList())
-                            searchResultViewModel.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
+                            searchResultViewModelViewModel.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
                         }
                     }
                 }
