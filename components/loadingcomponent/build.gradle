@@ -1,0 +1,18 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    //resources
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':resources:drawables')
+
+    //style
+    implementation project(path: ':style:theme')
+    implementation project(path: ':style:shape')
+    implementation project(path: ':style:color')
+
+
+    implementation "com.github.FunkyMuse:Composed:$composed"
+
+    implementation "androidx.compose.material:material:$compose_version"
+
+}

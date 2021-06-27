@@ -1,0 +1,11 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+
+    api "androidx.navigation:navigation-compose:$navigation"
+
+}

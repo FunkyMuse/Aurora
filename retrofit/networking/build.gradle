@@ -1,0 +1,16 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+android {
+    buildFeatures{
+        buildConfig = true
+    }
+}
+applyHiltDeps(this)
+
+
+dependencies {
+    api "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    api project(path: ':serverconstants')
+}

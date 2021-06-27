@@ -9,3 +9,63 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Aurora"
 include ':app'
+
+include ':style:color'
+include ':style:shape'
+include ':style:typography'
+include ':style:theme'
+
+include ':serverconstants'
+include ':paging'
+
+include ':resources:strings'
+include ':resources:drawables'
+include ':resources:colors'
+
+
+include ':components'
+include ':navigator'
+
+include ':internetdetector'
+include ':retrofit:libgenapi'
+include ':retrofit:networking'
+
+include ':bookdetails:bookdetailsmodel'
+include ':bookdetails:bookdetailsui'
+
+include ':bookdetails:bookdetailsdestination'
+include ':bookdetails:bookdetailsdata'
+include ':generalbook'
+
+include ':favoritebook:favoritebookdb'
+include ':favoritebook:favoritebookui'
+include ':favoritebook:favoritebookmodel'
+
+include ':book:bookmodel'
+include ':book:bookui'
+
+include ':components:loadingcomponent'
+include ':components:backbuttoncomponent'
+include ':components:errorcomponent'
+include ':components:confirmationdialog'
+include ':components:radiobuttoncomponent'
+
+
+include ':latestbooks:latestbooksui'
+include ':latestbooks:latestbooksdata'
+
+
+include ':search:searchui'
+include ':search:searchdata'
+
+include ':toaster'
+include ':coroutines'
+
+include ':searchresult:searchresultui'
+include ':searchresult:searchresultdata'
+include ':searchresult:searchresultdestination'
+
+include ':settings:settingsui'
+include ':settings:settingsdata'
+include ':coroutines:dispatchers'
+include ':coroutines:appscope'
