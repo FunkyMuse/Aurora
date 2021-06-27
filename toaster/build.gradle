@@ -1,0 +1,8 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+dependencies {
+    api "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"
+}

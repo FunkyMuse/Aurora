@@ -7,7 +7,7 @@ applyComposeUIDeps(this)
 
 dependencies {
     //paging
-    implementation "androidx.paging:paging-compose:$paging_compose"
+    api "androidx.paging:paging-compose:$paging_compose"
 
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"

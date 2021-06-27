@@ -1,16 +1,9 @@
-plugins {
-    id 'kotlin-kapt'
-}
-
-
 applyComposeUIDeps(this)
-applyHiltDeps(this)
 
 dependencies {
     implementation project(path: ':resources:strings')
 
     implementation project(path: ':paging')
-    implementation "androidx.paging:paging-compose:$paging_compose"
 
     implementation project(path: ':favoritebook:favoritebookdb')
     implementation project(path: ':book:bookui')

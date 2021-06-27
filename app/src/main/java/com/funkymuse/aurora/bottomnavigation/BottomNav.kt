@@ -10,7 +10,7 @@ import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRout
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
-import com.funkymuse.aurora.searchResult.SearchResultDestination
+import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 
 /**
  * Created by funkymuse on 3/29/21 to long live and prosper !
@@ -18,27 +18,27 @@ import com.funkymuse.aurora.searchResult.SearchResultDestination
 object BottomNav {
 
     val bottomNavigationEntries =
-        listOf(
-            BottomEntry(
-                SearchBottomNavRoute,
-                Icons.Filled.Search
-            ),
-            BottomEntry(
-                FavoritesBottomNavRoute,
-                Icons.Filled.Favorite
-            ),
-            BottomEntry(
-                LatestBooksBottomNavRoute,
-                Icons.Filled.List
-            ),
-            BottomEntry(
-                SettingsBottomNavRoute,
-                Icons.Filled.Settings
-            ),
-        )
+            listOf(
+                    BottomEntry(
+                            SearchBottomNavRoute,
+                            Icons.Filled.Search
+                    ),
+                    BottomEntry(
+                            FavoritesBottomNavRoute,
+                            Icons.Filled.Favorite
+                    ),
+                    BottomEntry(
+                            LatestBooksBottomNavRoute,
+                            Icons.Filled.List
+                    ),
+                    BottomEntry(
+                            SettingsBottomNavRoute,
+                            Icons.Filled.Settings
+                    ),
+            )
 
     val hideBottomNavOnDestinations = listOf(
-            com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.destination.route(),
+            BookDetailsDestination.destination.route(),
             SearchResultDestination.destination.route()
     )
 

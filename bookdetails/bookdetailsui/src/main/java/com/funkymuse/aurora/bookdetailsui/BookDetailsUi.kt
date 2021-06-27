@@ -61,10 +61,9 @@ import java.util.*
 @Composable
 fun ShowDetailedBook(
         mirrors: Array<String>?,
-        bookDetailsViewModel: BookDetailsViewModel = hiltViewModel(),
-        internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel(),
 ) {
-
+    val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
+    val internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel()
     val onBackClicked = {
         bookDetailsViewModel.navigateUp()
     }

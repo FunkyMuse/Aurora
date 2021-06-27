@@ -23,21 +23,23 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import com.crazylegend.kotlinextensions.log.debug
-import com.funkymuse.aurora.bookDetails.ShowDetailedBook
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
-import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_MIRRORS_PARAM
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.addBookMirrors
+import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.getBookMirrors
+import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
 import com.funkymuse.aurora.bottomnavigation.BottomEntry
 import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
-import com.funkymuse.aurora.favorites.Favorites
-import com.funkymuse.aurora.latestBooks.LatestBooks
+import com.funkymuse.aurora.favoritebookui.Favorites
+import com.funkymuse.aurora.latestbooksui.LatestBooks
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.navigator.NavigatorEvent
-import com.funkymuse.aurora.search.Search
-import com.funkymuse.aurora.searchResult.*
+import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
+import com.funkymuse.aurora.searchresultui.SearchResult
+import com.funkymuse.aurora.searchui.Search
 import com.funkymuse.aurora.settings.Settings
 import com.funkymuse.aurora.settings.SettingsViewModel
 import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
@@ -109,19 +111,19 @@ fun AuroraScaffold(navigator: Navigator) {
                     }
                     composable(FavoritesBottomNavRoute.route) {
                         Favorites { mirrors ->
-                            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
+                            it.addBookMirrors(mirrors)
                         }
                     }
                     composable(LatestBooksBottomNavRoute.route) {
                         LatestBooks { mirrors ->
-                            it.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
+                            it.addBookMirrors(mirrors)
                         }
                     }
                     composable(SettingsBottomNavRoute.route) {
                         Settings()
                     }
                     addSearchResult()
-                    addBookDetails(navController)
+                    addBookDetails(navController.previousBackStackEntry)
                 }
         )
     }
@@ -132,23 +134,20 @@ private fun NavGraphBuilder.addSearchResult() {
     val destination = SearchResultDestination.destination
     composable(destination.route(), destination.arguments) {
         SearchResult { mirrors ->
-            it.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
+            it.addBookMirrors(mirrors)
         }
     }
 }
 
-private fun addMirrors(mirrors: List<String>, entry: NavBackStackEntry) {
-    entry.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
-}
 
 private fun NavGraphBuilder.addBookDetails(
-        navController: NavHostController,
+        previousBackStackEntry: NavBackStackEntry?,
 ) {
-    val destination = com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.destination
+    val destination = BookDetailsDestination.destination
     composable(destination.route(), destination.arguments) {
         it.arguments?.apply {
             //workaround since we can't pass parcelable as nav arguments :(
-            ShowDetailedBook(navController.previousBackStackEntry?.arguments?.getStringArray(BOOK_MIRRORS_PARAM))
+            ShowDetailedBook(previousBackStackEntry?.getBookMirrors())
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.bookdetailsdestination
 
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.navArgument
@@ -23,4 +24,11 @@ object BookDetailsDestination {
     }
 
     fun bookDetailsRoute(bookID: Int) = NavigationDestination { "$BOOK_DETAILS_ROUTE/${bookID}" }
+
+    fun NavBackStackEntry.addBookMirrors(mirrors: List<String>) {
+        arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
+    }
+
+    fun NavBackStackEntry.getBookMirrors(): Array<String>? = arguments?.getStringArray(BOOK_MIRRORS_PARAM)
+
 }

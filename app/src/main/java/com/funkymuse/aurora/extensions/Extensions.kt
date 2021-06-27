@@ -6,9 +6,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.PagingSource
 import androidx.savedstate.SavedStateRegistryOwner
-import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.composed.core.savedStateRegistryOwner
 
 
@@ -41,5 +39,3 @@ inline fun <reified T : ViewModel> assistedViewModel(
     })
 
 
-fun canNotLoadMoreBooks(): PagingSource.LoadResult.Page<Int, com.funkymuse.aurora.bookmodel.Book> =
-        PagingSource.LoadResult.Page(emptyList(), null, null)

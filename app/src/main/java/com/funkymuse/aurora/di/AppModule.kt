@@ -3,10 +3,7 @@ package com.funkymuse.aurora.di
 import android.content.Context
 import coil.ImageLoader
 import coil.request.CachePolicy
-import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.R
-import com.funkymuse.aurora.favoritebookdb.db.FavoritesDAO
-import com.funkymuse.aurora.favoritebookdb.db.FavoritesDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,12 +27,4 @@ object AppModule {
             .fallback(R.drawable.ic_logo)
             .build()
 
-    @Provides
-    @Singleton
-    fun favoritesDBDao(@ApplicationContext context: Context): FavoritesDAO =
-        FavoritesDatabase.getInstance(context).dao()
-
-    @Provides
-    @Singleton
-    fun toaster(@ApplicationContext context: Context) = Toaster(context)
 }

@@ -40,10 +40,11 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Favorites(
-        viewModel: FavoritesViewModel = hiltViewModel(),
-        pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel(),
+
         onBookClicked: (mirrors: List<String>) -> Unit
 ) {
+    val viewModel: FavoritesViewModel = hiltViewModel()
+    val pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>(null) }

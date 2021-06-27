@@ -10,7 +10,6 @@ dependencies {
     implementation project(path: ':paging')
     api project(path: ':navigator')
     implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
-    implementation "androidx.paging:paging-compose:$paging_compose"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
     api project(path: ':favoritebook:favoritebookmodel')

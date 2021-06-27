@@ -43,7 +43,23 @@ include ':favoritebook:favoritebookmodel'
 
 include ':book:bookmodel'
 include ':book:bookui'
+
 include ':components:loadingcomponent'
 include ':components:backbuttoncomponent'
 include ':components:errorcomponent'
 include ':components:confirmationdialog'
+include ':components:radiobuttoncomponent'
+
+
+include ':latestbooks:latestbooksui'
+include ':latestbooks:latestbooksdata'
+
+
+include ':search:searchui'
+include ':search:searchdata'
+
+include ':toaster'
+
+include ':searchresult:searchresultui'
+include ':searchresult:searchresultdata'
+include ':searchresult:searchresultdestination'
