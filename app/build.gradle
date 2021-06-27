@@ -47,7 +47,6 @@ applyMoshiDeps(this)
 applyComposeUIDeps(this)
 
 dependencies {
-
     //navigation
     implementation project(path: ':navigator')
 
@@ -56,7 +55,6 @@ dependencies {
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')
 
-    implementation project(path: ':resources:strings')
     implementation project(path: ':resources:colors')
 
     //search
@@ -86,34 +84,24 @@ dependencies {
 
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:string:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:collections:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:lifecycle:$KAHelpers"
-    implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
 
     implementation "com.github.FunkyMuse:Composed:$composed"
-
 
     //compose
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.navigation:navigation-compose:$navigation"
     implementation "androidx.activity:activity-compose:$activity"
-    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
-    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
     implementation "com.google.accompanist:accompanist-coil:$accompanist"
 
     //hilt jetpack
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
     implementation "androidx.hilt:hilt-navigation:$hiltJetpackVersion"
-    implementation "androidx.hilt:hilt-work:$hiltJetpackVersion"
-
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //data store

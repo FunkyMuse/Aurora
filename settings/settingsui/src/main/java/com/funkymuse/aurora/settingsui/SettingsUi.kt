@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.settings
+package com.funkymuse.aurora.settingsui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.funkymuse.aurora.R
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -38,9 +36,9 @@ fun Settings() {
 fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> Unit) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(8.dp)
     ) {
         item(this)
     }
@@ -78,32 +76,32 @@ fun CheckBoxWithText(
 ) {
     ConstraintLayout(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp)
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
     ) {
         val (textWidget, checkboxWidget) = createRefs()
         Text(
             text = stringResource(id = text),
             modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(textWidget) {
-                    start.linkTo(parent.start)
-                    end.linkTo(checkboxWidget.start)
-                    width = Dimension.fillToConstraints
-                    centerVerticallyTo(parent)
-                }
-                .padding(start = 8.dp, end = 4.dp),
+                    .fillMaxWidth()
+                    .constrainAs(textWidget) {
+                        start.linkTo(parent.start)
+                        end.linkTo(checkboxWidget.start)
+                        width = Dimension.fillToConstraints
+                        centerVerticallyTo(parent)
+                    }
+                    .padding(start = 8.dp, end = 4.dp),
             textAlign = TextAlign.Start
         )
 
         Switch(
             checked = isChecked, onCheckedChange = checkChanged,
             modifier = Modifier
-                .constrainAs(checkboxWidget) {
-                    centerVerticallyTo(parent)
-                    end.linkTo(parent.end)
-                }
-                .padding(start = 8.dp, end = 4.dp)
+                    .constrainAs(checkboxWidget) {
+                        centerVerticallyTo(parent)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(start = 8.dp, end = 4.dp)
         )
     }
 }

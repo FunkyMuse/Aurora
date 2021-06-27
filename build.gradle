@@ -38,7 +38,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
 
     }
@@ -74,7 +74,7 @@ subprojects {
 
         //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "search"]:
+        "latestbooks", "searchresult", "search", "settings"]:
             break
 
         case ["serverconstants", "generalbook"]:

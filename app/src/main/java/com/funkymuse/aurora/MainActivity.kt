@@ -88,7 +88,6 @@ fun AuroraScaffold(navigator: Navigator) {
     LaunchedEffect(key1 = rememberCoroutineScope()) {
         navigator.destinations.collectLatest {
             val event = it ?: return@collectLatest
-
             debug { "NAVIGATOR EVENT $this" }
             when (event) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
