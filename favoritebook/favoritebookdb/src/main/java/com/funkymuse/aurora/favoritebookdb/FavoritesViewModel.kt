@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Created by Hristijan, date 3/5/21
+ * Created by funkymuse, date 3/5/21
  */
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(

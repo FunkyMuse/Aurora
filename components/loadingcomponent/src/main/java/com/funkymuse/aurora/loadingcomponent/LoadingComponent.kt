@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.funkymuse.composed.core.density
 
 /**
- * Created by Hristijan, date 4/14/21
+ * Created by funkymuse, date 4/14/21
  */
 
 

@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 /**
- * Created by Hristijan, date 4/14/21
+ * Created by funkymuse, date 4/14/21
  */
 @HiltViewModel
 class SearchViewModel @Inject constructor(application: Application) :

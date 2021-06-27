@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 /**
- * Created by Hristijan, date 3/3/21
+ * Created by funkymuse, date 3/3/21
  */
 @Composable
 fun ErrorAnimation(modifier: Modifier = Modifier) {
