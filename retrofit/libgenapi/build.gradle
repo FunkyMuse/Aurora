@@ -5,6 +5,6 @@ plugins {
 applyHiltDeps(this)
 
 dependencies {
-    implementation project(path: ':features:bookdetails:bookdetailsmodel')
+    implementation project(path: ':bookdetails:bookdetailsmodel')
     implementation project(path: ':retrofit:networking')
 }

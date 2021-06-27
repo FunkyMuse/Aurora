@@ -9,17 +9,14 @@ applyHiltDeps(this)
 dependencies {
     implementation project(path: ':resources:strings')
 
-    implementation project(path: ':paging')
-    implementation "androidx.paging:paging-compose:$paging_compose"
-
-    implementation project(path: ':favoritebook:favoritebookdb')
-
-
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')
-
+    
     implementation project(path: ':serverconstants')
     implementation project(path: ':bookdetails:bookdetailsmodel')
+    implementation project(path: ':bookdetails:bookdetailsdata')
+    implementation project(path: ':favoritebook:favoritebookdb')
+
     implementation project(path: ':internetdetector')
 
     implementation "androidx.compose.material:material:$compose_version"
@@ -37,7 +34,7 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
 
 
-    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
     implementation "com.google.accompanist:accompanist-coil:$accompanist"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
+
 }

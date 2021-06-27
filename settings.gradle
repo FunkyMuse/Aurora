@@ -26,16 +26,15 @@ include ':resources:colors'
 include ':components'
 include ':navigator'
 
-
+include ':internetdetector'
 include ':retrofit:libgenapi'
 include ':retrofit:networking'
 
-include ':features:bookdetails:bookdetailsmodel'
-include ':features:bookdetails:bookdetailsui'
-include ':internetdetector'
+include ':bookdetails:bookdetailsmodel'
+include ':bookdetails:bookdetailsui'
 
-include ':features:bookdetails:bookdetailsdestination'
-include ':features:bookdetails:bookdetailsdata'
+include ':bookdetails:bookdetailsdestination'
+include ':bookdetails:bookdetailsdata'
 include ':generalbook'
 
 include ':favoritebook:favoritebookdb'

@@ -49,7 +49,7 @@ applyComposeUIDeps(this)
 dependencies {
 
     implementation project(path: ':retrofit:libgenapi')
-    implementation project(path: ':features:bookdetails:bookdetailsmodel')
+    implementation project(path: ':bookdetails:bookdetailsmodel')
 
 
     //style
