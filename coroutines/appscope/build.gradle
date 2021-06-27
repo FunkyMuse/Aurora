@@ -1,0 +1,10 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+    implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
+    implementation project(path: ':coroutines:dispatchers')
+}

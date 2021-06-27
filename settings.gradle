@@ -59,9 +59,13 @@ include ':search:searchui'
 include ':search:searchdata'
 
 include ':toaster'
+include ':coroutines'
 
 include ':searchresult:searchresultui'
 include ':searchresult:searchresultdata'
 include ':searchresult:searchresultdestination'
+
 include ':settings:settingsui'
 include ':settings:settingsdata'
+include ':coroutines:dispatchers'
+include ':coroutines:appscope'

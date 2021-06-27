@@ -19,7 +19,6 @@ buildscript {
         activity = "1.3.0-beta02"
         viewmodel_compose ="1.0.0-alpha07"
         navigation_compose ="1.0.0-alpha03"
-        coreKTX = "1.6.0-rc01"
         jsoup = "1.13.1"
         data_store = "1.0.0-beta02"
 
@@ -62,11 +61,11 @@ subprojects {
             break
 
         //disable compose
-        case ["strings", "colors", "drawables",
-              "networking", "libgenapi", "bookdetailsmodel", "toaster",
-        "internetdetector", "bookdetailsdata", "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel",
-        "bookdetailsdata", "bookdetailsdestination", "bookdetailsmodel", "latestbooksdata",
-              "searchresultdata", "searchresultdestination", "searchdata", "settingsdata"]:
+        case ["strings", "colors", "drawables", "networking", "libgenapi",
+              "bookdetailsmodel", "toaster", "internetdetector", "bookdetailsdata",
+              "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel",
+              "bookdetailsmodel", "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
+              "searchresultdestination", "searchdata", "settingsdata"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
@@ -75,7 +74,7 @@ subprojects {
 
         //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "search", "settings"]:
+        "latestbooks", "searchresult", "search", "settings", "coroutines"]:
             break
 
         case ["serverconstants", "generalbook"]:
