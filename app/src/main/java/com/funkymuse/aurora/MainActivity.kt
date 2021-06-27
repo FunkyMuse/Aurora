@@ -3,12 +3,18 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -67,13 +73,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AuroraScaffold(navigator: Navigator) {
-    val navController = rememberNavController()
+fun AuroraScaffold(navigator: Navigator, navController: NavHostController = rememberNavController()) {
 
     LaunchedEffect(rememberCoroutineScope()) {
         navigator.destinations.collectLatest {
-            val event = it ?: return@collectLatest
-            when (event) {
+            when (val event = it) {
+                null -> {
+                }
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(event.destination.route()) { launchSingleTop = true }
             }

@@ -124,6 +124,8 @@ def applyAndroid(project, buildConfigCase, enableCompose) {
         kotlinOptions {
             jvmTarget = "1.8"
             useIR = true
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+            freeCompilerArgs += "-Xjvm-default=all"
         }
 
         testOptions.unitTests {

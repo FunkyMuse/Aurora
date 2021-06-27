@@ -104,7 +104,7 @@ fun Search() {
                     Spacer(
                         modifier = Modifier
                                 .navigationBarsPadding()
-                                .padding(bottom = 36.dp)
+                                .padding(bottom = 46.dp)
                     )
                 }
             }
