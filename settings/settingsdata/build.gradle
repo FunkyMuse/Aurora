@@ -1,0 +1,12 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
+
+    //data store
+    api "androidx.datastore:datastore-preferences:$data_store"
+}

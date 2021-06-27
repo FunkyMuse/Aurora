@@ -3,31 +3,21 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
-import com.crazylegend.kotlinextensions.log.debug
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.addBookMirrors
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.getBookMirrors
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
-import com.funkymuse.aurora.bottomnavigation.BottomEntry
+import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
@@ -40,14 +30,11 @@ import com.funkymuse.aurora.navigator.NavigatorEvent
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 import com.funkymuse.aurora.searchresultui.SearchResult
 import com.funkymuse.aurora.searchui.Search
-import com.funkymuse.aurora.settings.Settings
-import com.funkymuse.aurora.settings.SettingsViewModel
-import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
-import com.funkymuse.style.shape.BottomSheetShapes
+import com.funkymuse.aurora.settingsdata.SettingsViewModel
+import com.funkymuse.aurora.settingsui.Settings
 import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.coil.LocalImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -81,14 +68,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AuroraScaffold(navigator: Navigator) {
-
     val navController = rememberNavController()
 
-    navigator.destinations.collectAsState()
-    LaunchedEffect(key1 = rememberCoroutineScope()) {
+    LaunchedEffect(rememberCoroutineScope()) {
         navigator.destinations.collectLatest {
             val event = it ?: return@collectLatest
-            debug { "NAVIGATOR EVENT $this" }
             when (event) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(event.destination.route()) { launchSingleTop = true }
@@ -105,26 +89,42 @@ fun AuroraScaffold(navigator: Navigator) {
                 navController = navController,
                 startDestination = SearchBottomNavRoute.route,
                 builder = {
-                    composable(SearchBottomNavRoute.route) {
-                        Search()
-                    }
-                    composable(FavoritesBottomNavRoute.route) {
-                        Favorites { mirrors ->
-                            it.addBookMirrors(mirrors)
-                        }
-                    }
-                    composable(LatestBooksBottomNavRoute.route) {
-                        LatestBooks { mirrors ->
-                            it.addBookMirrors(mirrors)
-                        }
-                    }
-                    composable(SettingsBottomNavRoute.route) {
-                        Settings()
-                    }
+                    addSearch()
+                    addFavorites()
+                    addLatestBooks()
+                    addSettings()
                     addSearchResult()
                     addBookDetails(navController.previousBackStackEntry)
                 }
         )
+    }
+}
+
+private fun NavGraphBuilder.addSearch() {
+    composable(SearchBottomNavRoute.route) {
+        Search()
+    }
+}
+
+private fun NavGraphBuilder.addFavorites() {
+    composable(FavoritesBottomNavRoute.route) {
+        Favorites { mirrors ->
+            it.addBookMirrors(mirrors)
+        }
+    }
+}
+
+private fun NavGraphBuilder.addLatestBooks() {
+    composable(LatestBooksBottomNavRoute.route) {
+        LatestBooks { mirrors ->
+            it.addBookMirrors(mirrors)
+        }
+    }
+}
+
+private fun NavGraphBuilder.addSettings() {
+    composable(SettingsBottomNavRoute.route) {
+        Settings()
     }
 }
 
@@ -147,52 +147,6 @@ private fun NavGraphBuilder.addBookDetails(
         it.arguments?.apply {
             //workaround since we can't pass parcelable as nav arguments :(
             ShowDetailedBook(previousBackStackEntry?.getBookMirrors())
-        }
-    }
-}
-
-
-@Composable
-fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List<BottomEntry>) {
-
-    var hideBottomNav by rememberBooleanSaveableDefaultFalse()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-    navBackStackEntry?.debug { "CURRENT ROUTE $currentRoute" }
-
-    val size = if (hideBottomNav) {
-        Modifier.size(animateDpAsState(targetValue = 0.dp, animationSpec = tween()).value)
-    } else {
-        Modifier
-    }
-
-    BottomNavigation(
-            modifier = size
-                    .clip(BottomSheetShapes.large)
-                    .navigationBarsPadding()
-    ) {
-        hideBottomNav = currentRoute in BottomNav.hideBottomNavOnDestinations
-        bottomNavList.forEach { bottomEntry ->
-            BottomNavigationItem(
-                    selected = currentRoute == bottomEntry.screen.route,
-                    alwaysShowLabel = false,
-                    onClick = {
-                        navController.navigate(bottomEntry.screen.route) {
-                            restoreState = true
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                        }
-                    },
-                    label = { Text(text = stringResource(id = bottomEntry.screen.resourceID)) },
-                    icon = {
-                        Icon(
-                                imageVector = bottomEntry.icon,
-                                contentDescription = stringResource(id = bottomEntry.screen.resourceID)
-                        )
-                    }
-            )
         }
     }
 }

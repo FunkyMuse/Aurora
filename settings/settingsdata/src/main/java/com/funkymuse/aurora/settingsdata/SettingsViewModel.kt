@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.settings
+package com.funkymuse.aurora.settingsdata
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

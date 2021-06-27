@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -22,13 +24,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Settings() {
+    val viewModel: SettingsViewModel = hiltViewModel()
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars
-        )
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = rememberInsetsPaddingValues(
+                    insets = LocalWindowInsets.current.systemBars
+            )
     ) {
-        item { DarkTheme() }
+        item { DarkTheme(viewModel) }
     }
 }
 
@@ -46,7 +50,7 @@ fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> 
 
 @Composable
 fun DarkTheme(
-    viewModel: SettingsViewModel = hiltViewModel()
+        viewModel: SettingsViewModel
 ) {
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
     val scope = rememberCoroutineScope()

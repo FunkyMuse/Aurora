@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.settings
+package com.funkymuse.aurora.settingsdata
 
 import kotlinx.coroutines.flow.Flow
 
