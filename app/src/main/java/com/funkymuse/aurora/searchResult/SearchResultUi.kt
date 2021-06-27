@@ -22,19 +22,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.funkymuse.aurora.R
 import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
-import com.funkymuse.aurora.dto.Mirrors
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
-import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.aurora.paging.prependState
-import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.aurora.search.RadioButtonWithText
 import com.funkymuse.aurora.search.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.search.SearchViewModel
@@ -58,7 +52,7 @@ import kotlinx.coroutines.launch
 fun SearchResult(
         searchResultViewModel: SearchResultHandleData = hiltViewModel(),
         pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel(),
-        onBookClicked: (mirrors: Mirrors) -> Unit
+        onBookClicked: (mirrors: List<String>) -> Unit
 ) {
     var checkedSortPosition by rememberIntSaveableDefaultZero()
     var filtersVisible by rememberBooleanSaveableDefaultFalse()
@@ -194,7 +188,7 @@ fun SearchResult(
 
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
-                            onBookClicked(Mirrors(item.mirrors?.toList() ?: emptyList()))
+                            onBookClicked(item.mirrors?.toList() ?: emptyList())
                             searchResultViewModel.navigate(com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.bookDetailsRoute(bookID))
                         }
                     }

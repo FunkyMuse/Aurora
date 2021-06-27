@@ -38,8 +38,6 @@ import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.components.BackButton
 import com.funkymuse.aurora.components.ErrorMessage
 import com.funkymuse.aurora.components.ErrorWithRetry
-import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.favoritebookdb.FavoriteBook
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loading.CardShimmer
 import com.funkymuse.aurora.loading.LoadingBubbles
@@ -63,7 +61,7 @@ import java.util.*
 
 @Composable
 fun ShowDetailedBook(
-        mirrors: Mirrors?,
+        mirrors: Array<String>?,
         bookDetailsViewModel: BookDetailsViewModel = hiltViewModel(),
         internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel(),
 ) {
@@ -137,23 +135,23 @@ fun ShowDetailedBook(
 }
 
 private fun favoritesClick(
-        favoritesBook: FavoriteBook?,
+        favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
         detailedBook: DetailedBookModel?,
         bookDetailsViewModel: BookDetailsViewModel,
-        mirrors: Mirrors?
+        mirrors: Array<String>?
 ) {
     if (favoritesBook == null) {
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
-                FavoriteBook(
-                    bookModel.id.toString().toInt(),
-                    bookModel.title,
-                    bookModel.year,
-                    bookModel.pages,
-                    bookModel.extension,
-                    bookModel.author,
-                    mirrors?.list
-                )
+                    com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
+                            bookModel.id.toString().toInt(),
+                            bookModel.title,
+                            bookModel.year,
+                            bookModel.pages,
+                            bookModel.extension,
+                            bookModel.author,
+                            mirrors?.toList()
+                    )
             )
         }
 
@@ -164,11 +162,11 @@ private fun favoritesClick(
 
 @Composable
 fun ScaffoldWithBackAndFavorites(
-    showFavoritesButton: Boolean,
-    favoritesBook: FavoriteBook?,
-    onBackClicked: () -> Unit,
-    onFavoritesClicked: () -> Unit,
-    content: @Composable (PaddingValues) -> Unit
+        showFavoritesButton: Boolean,
+        favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
+        onBackClicked: () -> Unit,
+        onFavoritesClicked: () -> Unit,
+        content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize(),
         topBar = {

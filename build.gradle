@@ -21,6 +21,7 @@ buildscript {
         lifecycle_viewmodel ="1.0.0-alpha07"
         navigation_compose ="1.0.0-alpha03"
         coreKTX = "1.6.0-rc01"
+        jsoup = "1.13.1"
 
         //compilation
         compileVersion = 30
@@ -38,7 +39,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
 
     }
@@ -63,7 +64,7 @@ subprojects {
         //disable compose
         case ["strings", "colors", "drawables",
               "networking", "libgenapi", "bookdetailsmodel,",
-        "internetdetector", "bookdetailsdata", "bookdetailsdestination", "favoritebookdb"]:
+        "internetdetector", "bookdetailsdata", "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
@@ -71,7 +72,7 @@ subprojects {
             break
 
         //ignore parent folders
-        case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook"]:
+        case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components"]:
             break
 
         case ["serverconstants", "generalbook"]:

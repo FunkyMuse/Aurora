@@ -23,16 +23,28 @@ include ':resources:drawables'
 include ':resources:colors'
 
 
+include ':components'
 include ':navigator'
 
-include ':features:bookdetails'
+
 include ':retrofit:libgenapi'
 include ':retrofit:networking'
+
 include ':features:bookdetails:bookdetailsmodel'
 include ':features:bookdetails:bookdetailsui'
 include ':internetdetector'
+
 include ':features:bookdetails:bookdetailsdestination'
 include ':features:bookdetails:bookdetailsdata'
 include ':generalbook'
+
 include ':favoritebook:favoritebookdb'
 include ':favoritebook:favoritebookui'
+include ':favoritebook:favoritebookmodel'
+
+include ':book:bookmodel'
+include ':book:bookui'
+include ':components:loadingcomponent'
+include ':components:backbuttoncomponent'
+include ':components:errorcomponent'
+include ':components:confirmationdialog'

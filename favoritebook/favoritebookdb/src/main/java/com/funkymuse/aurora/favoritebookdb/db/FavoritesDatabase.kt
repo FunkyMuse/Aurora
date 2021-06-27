@@ -6,6 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.crazylegend.kotlinextensions.singleton.ParameterizedSingleton
+import com.funkymuse.aurora.favoritebookmodel.ArrayListStringConverter
+import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 
 
 /**
@@ -15,7 +17,7 @@ import com.crazylegend.kotlinextensions.singleton.ParameterizedSingleton
 const val FAVORITES_DB_NAME = "favorites-db"
 
 
-@Database(entities = [com.funkymuse.aurora.favoritebookdb.FavoriteBook::class], version = 1, exportSchema = false)
+@Database(entities = [FavoriteBook::class], version = 1, exportSchema = false)
 @TypeConverters(ArrayListStringConverter::class)
 abstract class FavoritesDatabase : RoomDatabase() {
     abstract fun dao(): FavoritesDAO

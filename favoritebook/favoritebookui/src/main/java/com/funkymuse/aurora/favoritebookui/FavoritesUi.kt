@@ -20,8 +20,8 @@ import com.funkymuse.aurora.book.Book
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.components.ConfirmationDialog
 import com.funkymuse.aurora.components.ErrorMessage
-import com.funkymuse.aurora.dto.Mirrors
-import com.funkymuse.aurora.favoritebookdb.FavoriteBook
+import com.funkymuse.aurora.favoritebookdb.FavoritesViewModel
+import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
 import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
@@ -39,13 +39,13 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Favorites(
-        viewModel: com.funkymuse.aurora.favoritebookdb.FavoritesViewModel = hiltViewModel(),
-        pagingUIProviderViewModel: com.funkymuse.aurora.paging.PagingUIProviderViewModel = hiltViewModel(),
-        onBookClicked: (mirrors: Mirrors) -> Unit
+        viewModel: FavoritesViewModel = hiltViewModel(),
+        pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel(),
+        onBookClicked: (mirrors: List<String>) -> Unit
 ) {
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
-    val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
+    val longClickedBook = remember { mutableStateOf<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>(null) }
     longClickedBook.value?.apply {
         DeleteBook(it = this,
             onConfirm = { viewModel.removeFromFavorites(it) },
@@ -108,7 +108,7 @@ fun Favorites(
                         Book(it, onLongClick = {
                             longClickedBook.value = it
                         }) {
-                            onBookClicked(Mirrors(it.mirrors ?: emptyList()))
+                            onBookClicked(it.mirrors ?: emptyList())
                             viewModel.navigate(com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.bookDetailsRoute(it.id))
                         }
                     }
@@ -122,7 +122,7 @@ fun Favorites(
 @Composable
 @Preview
 fun DeleteBook(
-        it: FavoriteBook = FavoriteBook(
+        it: com.funkymuse.aurora.favoritebookmodel.FavoriteBook = com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
                 title = "My favorite book"
         ), onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
 ) {

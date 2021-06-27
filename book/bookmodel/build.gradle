@@ -1,0 +1,17 @@
+plugins {
+    id 'kotlin-kapt'
+    id 'kotlin-parcelize'
+}
+
+applyMoshiDeps(this)
+
+dependencies {
+    api project(path: ':generalbook')
+    implementation project(path: ':favoritebook:favoritebookmodel')
+
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
+
+
+    //jsoup
+    implementation "org.jsoup:jsoup:$jsoup"
+}

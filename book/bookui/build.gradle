@@ -1,0 +1,20 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    //resources
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':resources:drawables')
+
+    //style
+    implementation project(path: ':style:theme')
+    implementation project(path: ':style:shape')
+    implementation project(path: ':style:color')
+
+    implementation project(path: ':book:bookmodel')
+
+
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
+    implementation "androidx.compose.material:material:$compose_version"
+
+}

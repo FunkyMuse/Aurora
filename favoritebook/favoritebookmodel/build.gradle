@@ -1,0 +1,11 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyRoomDeps(this)
+applyMoshiDeps(this)
+
+dependencies {
+    implementation project(path: ':generalbook')
+
+}

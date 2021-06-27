@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
 import com.crazylegend.retrofit.throwables.NoConnectionException
-import com.funkymuse.aurora.dto.Book
+import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.extensions.canNotLoadMoreBooks
 import com.funkymuse.aurora.serverconstants.*
 import kotlinx.coroutines.Dispatchers
@@ -18,16 +18,16 @@ import org.jsoup.nodes.Document
  * Created by funkymuse on 5/10/21 to long live and prosper !
  */
 class LatestBooksDataSource(
-    private val context: Context,
-    private val sortQuery: String = "",
-    private val sortType: String = "",
-) : PagingSource<Int, Book>() {
+        private val context: Context,
+        private val sortQuery: String = "",
+        private val sortType: String = "",
+) : PagingSource<Int, com.funkymuse.aurora.bookmodel.Book>() {
 
     var canLoadMore = true
 
-    override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, com.funkymuse.aurora.bookmodel.Book>): Int? = null
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, com.funkymuse.aurora.bookmodel.Book> {
         val page = params.key ?: 1
 
         return if (context.isOnline) {
@@ -46,7 +46,7 @@ class LatestBooksDataSource(
         }
     }
 
-    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, Book> {
+    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, com.funkymuse.aurora.bookmodel.Book> {
         return if (canLoadMore) {
             loadBooks(it, page)
         } else {
@@ -55,7 +55,7 @@ class LatestBooksDataSource(
     }
 
 
-    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, Book> {
+    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, com.funkymuse.aurora.bookmodel.Book> {
         val list = processDocument(it)
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreBooks()
@@ -67,7 +67,7 @@ class LatestBooksDataSource(
     }
 
 
-    private fun processDocument(doc: Document?): List<Book>? {
+    private fun processDocument(doc: Document?): List<com.funkymuse.aurora.bookmodel.Book>? {
         return doc?.let { document ->
 
             val trs = document.select("table")[2].select("tr")
@@ -79,7 +79,7 @@ class LatestBooksDataSource(
             }
 
             return@let trs.map {
-                return@map Book(it)
+                return@map com.funkymuse.aurora.bookmodel.Book(it)
             }
         }
     }

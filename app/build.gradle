@@ -132,5 +132,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     //jsoup
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation "org.jsoup:jsoup:$jsoup"
+
 }

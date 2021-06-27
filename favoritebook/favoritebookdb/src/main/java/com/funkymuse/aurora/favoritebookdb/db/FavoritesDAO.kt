@@ -17,17 +17,17 @@ import kotlinx.coroutines.flow.Flow
 interface FavoritesDAO {
 
     @Query("select * from favoriteBooks")
-    fun getAllFavorites(): PagingSource<Int, com.funkymuse.aurora.favoritebookdb.FavoriteBook>
+    fun getAllFavorites(): PagingSource<Int, com.funkymuse.aurora.favoritebookmodel.FavoriteBook>
 
     @Delete
-    suspend fun deleteFromFavorites(favoriteBook: com.funkymuse.aurora.favoritebookdb.FavoriteBook)
+    suspend fun deleteFromFavorites(favoriteBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook)
 
     @Query("delete from favoriteBooks where id =:favID")
     suspend fun deleteFromFavoritesByID(favID: Int)
 
     @Insert(onConflict = REPLACE)
-    suspend fun insertIntoFavorites(favoriteBook: com.funkymuse.aurora.favoritebookdb.FavoriteBook)
+    suspend fun insertIntoFavorites(favoriteBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook)
 
     @Query("select * from favoriteBooks where id =:bookID limit 1")
-    fun getFavoriteById(bookID: Int): Flow<com.funkymuse.aurora.favoritebookdb.FavoriteBook?>
+    fun getFavoriteById(bookID: Int): Flow<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>
 }

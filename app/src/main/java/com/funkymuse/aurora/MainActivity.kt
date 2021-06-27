@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -108,12 +109,12 @@ fun AuroraScaffold(navigator: Navigator) {
                     }
                     composable(FavoritesBottomNavRoute.route) {
                         Favorites { mirrors ->
-                            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
+                            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
                         }
                     }
                     composable(LatestBooksBottomNavRoute.route) {
                         LatestBooks { mirrors ->
-                            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
+                            it.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
                         }
                     }
                     composable(SettingsBottomNavRoute.route) {
@@ -131,9 +132,13 @@ private fun NavGraphBuilder.addSearchResult() {
     val destination = SearchResultDestination.destination
     composable(destination.route(), destination.arguments) {
         SearchResult { mirrors ->
-            it.arguments?.putParcelable(BOOK_MIRRORS_PARAM, mirrors)
+            it.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
         }
     }
+}
+
+private fun addMirrors(mirrors: List<String>, entry: NavBackStackEntry) {
+    entry.arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())
 }
 
 private fun NavGraphBuilder.addBookDetails(
@@ -143,7 +148,7 @@ private fun NavGraphBuilder.addBookDetails(
     composable(destination.route(), destination.arguments) {
         it.arguments?.apply {
             //workaround since we can't pass parcelable as nav arguments :(
-            ShowDetailedBook(navController.previousBackStackEntry?.arguments?.getParcelable(BOOK_MIRRORS_PARAM))
+            ShowDetailedBook(navController.previousBackStackEntry?.arguments?.getStringArray(BOOK_MIRRORS_PARAM))
         }
     }
 }
