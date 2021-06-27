@@ -6,6 +6,6 @@ applyRoomDeps(this)
 applyMoshiDeps(this)
 
 dependencies {
-    implementation project(path: ':generalbook')
+    api project(path: ':generalbook')
 
 }

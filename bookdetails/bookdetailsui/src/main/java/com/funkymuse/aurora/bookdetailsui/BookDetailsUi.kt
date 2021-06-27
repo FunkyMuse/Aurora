@@ -33,14 +33,14 @@ import com.crazylegend.retrofit.retryOnConnectedToInternet
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
+import com.funkymuse.aurora.backbuttoncomponent.BackButton
 import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
 import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
-import com.funkymuse.aurora.components.BackButton
-import com.funkymuse.aurora.components.ErrorMessage
-import com.funkymuse.aurora.components.ErrorWithRetry
+import com.funkymuse.aurora.errorcomponent.ErrorMessage
+import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
-import com.funkymuse.aurora.loading.CardShimmer
-import com.funkymuse.aurora.loading.LoadingBubbles
+import com.funkymuse.aurora.loadingcomponent.CardShimmer
+import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.composed.core.context
@@ -124,7 +124,7 @@ fun ShowDetailedBook(
                         return@handle
                     }
                     detailedBook?.apply {
-                        DetailedBook(this, mirrors?.list)
+                        DetailedBook(this, mirrors?.toList())
                     }
 
                 }

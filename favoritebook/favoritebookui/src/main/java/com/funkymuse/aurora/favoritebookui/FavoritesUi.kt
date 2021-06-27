@@ -16,10 +16,11 @@ import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.funkymuse.aurora.book.Book
+import androidx.paging.compose.items
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
-import com.funkymuse.aurora.components.ConfirmationDialog
-import com.funkymuse.aurora.components.ErrorMessage
+import com.funkymuse.aurora.bookui.Book
+import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
+import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.favoritebookdb.FavoritesViewModel
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
@@ -48,15 +49,15 @@ fun Favorites(
     val longClickedBook = remember { mutableStateOf<com.funkymuse.aurora.favoritebookmodel.FavoriteBook?>(null) }
     longClickedBook.value?.apply {
         DeleteBook(it = this,
-            onConfirm = { viewModel.removeFromFavorites(it) },
-            onDismiss = { longClickedBook.value = null })
+                onConfirm = { viewModel.removeFromFavorites(it) },
+                onDismiss = { longClickedBook.value = null })
     }
 
     progressVisibility =
-        pagingUIProviderViewModel.progressBarVisibility(
-            favorites.appendState,
-            favorites.refreshState
-        )
+            pagingUIProviderViewModel.progressBarVisibility(
+                    favorites.appendState,
+                    favorites.refreshState
+            )
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()
@@ -76,20 +77,20 @@ fun Favorites(
             ErrorMessage(text = R.string.no_favorites_expl)
         } else {
             pagingUIProviderViewModel.onPaginationReachedError(
-                favorites.appendState,
-                R.string.no_more_favorite_books
+                    favorites.appendState,
+                    R.string.no_more_favorite_books
             )
         }
 
         val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
         SwipeRefresh(
-            state = swipeToRefreshState, onRefresh = {
-                swipeToRefreshState.isRefreshing = true
-                favorites.refresh()
-                swipeToRefreshState.isRefreshing = false
-            },
-            modifier = Modifier
-                .fillMaxSize()
+                state = swipeToRefreshState, onRefresh = {
+            swipeToRefreshState.isRefreshing = true
+            favorites.refresh()
+            swipeToRefreshState.isRefreshing = false
+        },
+                modifier = Modifier
+                        .fillMaxSize()
         ) {
 
             LazyColumn(
@@ -109,7 +110,7 @@ fun Favorites(
                             longClickedBook.value = it
                         }) {
                             onBookClicked(it.mirrors ?: emptyList())
-                            viewModel.navigate(com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.bookDetailsRoute(it.id))
+                            viewModel.navigate(BookDetailsDestination.bookDetailsRoute(it.id))
                         }
                     }
                 }
@@ -127,12 +128,12 @@ fun DeleteBook(
         ), onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
 ) {
     ConfirmationDialog(
-        title = stringResource(
-            R.string.remove_book_from_favs,
-            it.title.toString()
-        ), onDismiss = onDismiss, onConfirm = {
-            onConfirm(it.id)
-        }, confirmText = stringResource(id = R.string.remove)
+            title = stringResource(
+                    R.string.remove_book_from_favs,
+                    it.title.toString()
+            ), onDismiss = onDismiss, onConfirm = {
+        onConfirm(it.id)
+    }, confirmText = stringResource(id = R.string.remove)
     )
 }
 

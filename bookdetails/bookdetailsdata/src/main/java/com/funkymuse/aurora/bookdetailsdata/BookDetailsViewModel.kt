@@ -6,14 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.crazylegend.retrofit.retrofitStateInitialLoading
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_ID_PARAM
 import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
-import com.funkymuse.aurora.dto.FavoriteBook
-import com.funkymuse.aurora.favorites.db.FavoritesDAO
+import com.funkymuse.aurora.favoritebookdb.db.FavoritesDAO
+import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.libgenapi.LibgenAPI
 import com.funkymuse.aurora.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

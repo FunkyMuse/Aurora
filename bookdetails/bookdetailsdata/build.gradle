@@ -9,7 +9,7 @@ dependencies {
     implementation project(path: ':bookdetails:bookdetailsdestination')
     implementation project(path: ':favoritebook:favoritebookdb')
 
-    implementation project(path: ':navigator')
+    api project(path: ':navigator')
 
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"

@@ -13,6 +13,9 @@ dependencies {
     implementation "androidx.paging:paging-compose:$paging_compose"
 
     implementation project(path: ':favoritebook:favoritebookdb')
+    implementation project(path: ':book:bookui')
+
+    implementation project(path: ':bookdetails:bookdetailsdestination')
 
 
     implementation project(path: ':style:shape')
@@ -21,6 +24,10 @@ dependencies {
     implementation project(path: ':serverconstants')
     implementation project(path: ':bookdetails:bookdetailsmodel')
     implementation project(path: ':internetdetector')
+
+    implementation project(path: ':components:loadingcomponent')
+    implementation project(path: ':components:errorcomponent')
+    implementation project(path: ':components:confirmationdialog')
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
