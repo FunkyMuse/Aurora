@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -73,8 +72,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AuroraScaffold(navigator: Navigator, navController: NavHostController = rememberNavController()) {
-
+fun AuroraScaffold(navigator: Navigator) {
+    val navController = rememberNavController()
     LaunchedEffect(rememberCoroutineScope()) {
         navigator.destinations.collectLatest {
             when (val event = it) {
@@ -100,7 +99,7 @@ fun AuroraScaffold(navigator: Navigator, navController: NavHostController = reme
                     addLatestBooks()
                     addSettings()
                     addSearchResult()
-                    addBookDetails(navController.previousBackStackEntry)
+                    addBookDetails(navController)
                 }
         )
     }
@@ -146,13 +145,13 @@ private fun NavGraphBuilder.addSearchResult() {
 
 
 private fun NavGraphBuilder.addBookDetails(
-        previousBackStackEntry: NavBackStackEntry?,
+        navController: NavHostController
 ) {
     val destination = BookDetailsDestination.destination
     composable(destination.route(), destination.arguments) {
         it.arguments?.apply {
             //workaround since we can't pass parcelable as nav arguments :(
-            ShowDetailedBook(previousBackStackEntry?.getBookMirrors())
+            ShowDetailedBook(navController.previousBackStackEntry?.getBookMirrors())
         }
     }
 }

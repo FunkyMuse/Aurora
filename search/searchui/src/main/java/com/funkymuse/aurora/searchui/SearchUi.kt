@@ -134,7 +134,7 @@ fun Search() {
                             bottom.linkTo(parent.bottom)
                             centerHorizontallyTo(parent)
                         }
-                        .padding(bottom = 64.dp)
+                        .padding(bottom = 74.dp)
             ) {
                 FloatingActionButton(
                     onClick = { scope.launch { state.show() } },
