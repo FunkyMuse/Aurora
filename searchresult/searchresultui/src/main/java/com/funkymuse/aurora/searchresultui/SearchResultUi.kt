@@ -186,7 +186,7 @@ fun SearchResult(
                                 .padding(top = 8.dp),
                         contentPadding = rememberInsetsPaddingValues(
                                 insets = LocalWindowInsets.current.navigationBars,
-                                additionalBottom = 64.dp
+                                additionalBottom = 84.dp
                         )
                 ) {
                     items(pagingItems) { item ->
