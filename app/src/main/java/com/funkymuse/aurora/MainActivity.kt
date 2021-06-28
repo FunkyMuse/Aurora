@@ -1,6 +1,10 @@
 package com.funkymuse.aurora
 
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
@@ -44,6 +48,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -56,7 +61,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContent {
             AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
@@ -68,7 +72,38 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        hideNavigationBars()
     }
+
+    @Suppress("DEPRECATION")
+    private fun hideNavigationBars() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val controller = window.insetsController ?: return
+            controller.hide(WindowInsets.Type.navigationBars())
+            controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        } else {
+            val flags = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+
+            val decorView = window.decorView
+
+            decorView.systemUiVisibility = flags
+            // Code below is to handle presses of Volume up or Volume down.
+            // Without this, after pressing volume buttons, the navigation bar will
+            // show up and won't hide
+            decorView.setOnSystemUiVisibilityChangeListener { visibility: Int ->
+                if (visibility and View.SYSTEM_UI_FLAG_FULLSCREEN == 0) {
+                    decorView.systemUiVisibility = flags
+                }
+            }
+        }
+    }
+
+
 }
 
 @Composable
@@ -77,8 +112,7 @@ fun AuroraScaffold(navigator: Navigator) {
     LaunchedEffect(rememberCoroutineScope()) {
         navigator.destinations.collectLatest {
             when (val event = it) {
-                null -> {
-                }
+                null -> return@collectLatest
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(event.destination.route()) { launchSingleTop = true }
             }

@@ -82,6 +82,8 @@ dependencies {
 
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
+    implementation "androidx.core:core-ktx:$coreKTX"
+
 
     //compose
     implementation "androidx.compose.material:material:$compose_version"
