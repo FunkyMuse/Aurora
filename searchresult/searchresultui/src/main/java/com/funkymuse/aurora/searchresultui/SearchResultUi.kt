@@ -150,7 +150,7 @@ fun SearchResult(
                                 bottom.linkTo(parent.bottom)
                                 end.linkTo(parent.end)
                             }
-                            .padding(bottom = 12.dp, end = 4.dp)
+                            .padding(bottom = 22.dp, end = 4.dp)
                             .zIndex(2f)) {
 
                 Box {
