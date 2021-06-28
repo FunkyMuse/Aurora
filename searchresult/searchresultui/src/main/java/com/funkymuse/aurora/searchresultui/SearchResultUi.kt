@@ -182,7 +182,8 @@ fun SearchResult(
                 LazyColumn(
                         state = columnState,
                         modifier = Modifier
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .padding(top = 8.dp),
                         contentPadding = rememberInsetsPaddingValues(
                                 insets = LocalWindowInsets.current.navigationBars,
                                 additionalBottom = 64.dp

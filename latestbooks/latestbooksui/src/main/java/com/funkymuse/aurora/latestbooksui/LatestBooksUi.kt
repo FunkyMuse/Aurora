@@ -147,11 +147,11 @@ fun LatestBooks(
         ) {
 
             LazyColumn(
-                state = columnState,
-                modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 56.dp),
-                contentPadding = listInsets
+                    state = columnState,
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 56.dp, top = 8.dp),
+                    contentPadding = listInsets
             ) {
                 items(pagingItems) { item ->
                     item ?: return@items

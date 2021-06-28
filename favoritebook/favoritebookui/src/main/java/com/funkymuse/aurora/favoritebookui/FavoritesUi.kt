@@ -102,7 +102,8 @@ fun Favorites(
             LazyColumn(
                     modifier = Modifier
                             .fillMaxSize()
-                            .systemBarsPadding(),
+                            .systemBarsPadding()
+                            .padding(top = 8.dp),
                     contentPadding = rememberInsetsPaddingValues(
                             insets = LocalWindowInsets.current.navigationBars,
                             applyTop = false,

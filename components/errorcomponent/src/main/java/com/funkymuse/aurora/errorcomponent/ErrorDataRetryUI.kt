@@ -137,15 +137,15 @@ fun ErrorWithRetry() {
 @Preview
 fun RetryOption(onRetryClicked: () -> Unit = {}) {
     Column(modifier = Modifier
-            .clickable(true) {
+            .padding(top = 16.dp)
+            .clickable {
                 onRetryClicked()
-            }
-            .padding(top = 16.dp)) {
+            }) {
         Icon(
-            imageVector = Icons.Filled.Replay,
-            contentDescription = stringResource(id = R.string.retry),
-            modifier = Modifier
-                .size(50.dp)
+                imageVector = Icons.Filled.Replay,
+                contentDescription = stringResource(id = R.string.retry),
+                modifier = Modifier
+                        .size(50.dp)
         )
         Text(text = stringResource(id = R.string.retry), modifier = Modifier.padding(8.dp))
     }
