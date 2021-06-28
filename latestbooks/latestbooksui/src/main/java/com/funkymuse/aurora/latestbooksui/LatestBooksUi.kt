@@ -77,7 +77,7 @@ fun LatestBooks(
                 }
                 .wrapContentSize()
                 .systemBarsPadding()
-                .padding(top = 4.dp)
+                .padding(top = 8.dp)
                 .zIndex(2f)) {
             CircularProgressIndicator()
         }

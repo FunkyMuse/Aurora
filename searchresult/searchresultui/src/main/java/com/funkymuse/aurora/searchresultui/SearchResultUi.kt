@@ -120,7 +120,7 @@ fun SearchResult(
                         centerHorizontallyTo(parent)
                     }
                     .wrapContentSize()
-                    .padding(top = 4.dp)
+                    .padding(top = 8.dp)
                     .zIndex(2f)) {
                 CircularProgressIndicator()
             }
@@ -389,7 +389,7 @@ fun ScaffoldWithBackFiltersAndContent(
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
                             }
-                            .padding(bottom = 12.dp)
+                            .padding(bottom = 22.dp)
                             .zIndex(0.3f)
             ) {
                 if (filtersVisible) {
