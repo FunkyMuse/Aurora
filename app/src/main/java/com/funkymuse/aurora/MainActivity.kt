@@ -3,6 +3,7 @@ package com.funkymuse.aurora
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -54,11 +55,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
+    private val isDarkThemeEnabled get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme) {
+            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme, isDarkThemeEnabled) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     CompositionLocalProvider(LocalImageLoader provides imageLoader) {
                         Surface(color = MaterialTheme.colors.background) {

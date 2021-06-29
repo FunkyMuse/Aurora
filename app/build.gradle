@@ -77,6 +77,9 @@ dependencies {
     implementation project(path: ':settings:settingsui')
     implementation project(path: ':settings:settingsdata')
 
+    //coroutines
+    implementation project(path: ':coroutines:appscope')
+
     //material
     implementation 'com.google.android.material:material:1.3.0'
 
