@@ -35,6 +35,9 @@ fun Crashes() {
     val crashes = remember {
         CrashyReporter.getLogsAsStrings()
     }
+    val showToast = {
+        toaster.shortToast(R.string.crash_copied_to_clipboard)
+    }
 
     if (crashes.isNullOrEmpty()) {
         toaster.shortToast(R.string.no_crashes)
@@ -50,7 +53,7 @@ fun Crashes() {
             }) {
         LazyColumn {
             itemsIndexed(crashes) { index, item ->
-                CrashItem(index + 1, item, toaster)
+                CrashItem(index + 1, item, showToast)
             }
         }
     }
@@ -60,7 +63,7 @@ const val CRASHES_URL = "https://github.com/FunkyMuse/Aurora/issues/new"
 
 @ExperimentalMaterialApi
 @Composable
-fun CrashItem(index: Int, item: String, toaster: ToasterViewModel) {
+fun CrashItem(index: Int, item: String, showToast: () -> Unit) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     Card(modifier = Modifier
@@ -70,7 +73,7 @@ fun CrashItem(index: Int, item: String, toaster: ToasterViewModel) {
             .wrapContentHeight(), onClick = {
         clipboardManager.apply {
             clipboardManager.setText(AnnotatedString(text = item))
-            toaster.shortToast(R.string.crash_copied_to_clipboard)
+            showToast()
             context.openWebPage(CRASHES_URL)
         }
     }) {

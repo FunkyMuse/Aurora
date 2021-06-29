@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.settingsui
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -7,14 +8,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,24 +25,61 @@ import com.funkymuse.aurora.extensions.openWebPage
 import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
-import com.funkymuse.composed.core.stateWhenStarted
+import com.funkymuse.composed.core.context
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun Settings() {
     val viewModel: SettingsViewModel = hiltViewModel()
     val navigator: NavigatorViewModel = hiltViewModel()
+
     LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = rememberInsetsPaddingValues(
                     insets = LocalWindowInsets.current.systemBars
             )
     ) {
-        item { DarkTheme(viewModel) }
+        item { DarkTheme(viewModel.darkTheme) { viewModel.changeTheme(it) } }
         item { CrashesSettings(navigator) }
         item { MyOtherApps() }
+        item { VersionNumber() }
+        item { License() }
+    }
+}
+
+@Composable
+fun License() {
+    SettingsItem(modifier = Modifier
+            .padding(vertical = 8.dp)) {
+        Text(text = stringResource(id = R.string.license),
+                modifier = Modifier.padding(horizontal = 8.dp))
+    }
+}
+
+fun Context.getVersionName(): String = packageManager.getPackageInfo(packageName, 0).versionName
+
+
+@Composable
+fun VersionNumber() {
+    SettingsItem(modifier = Modifier
+            .padding(vertical = 8.dp)) {
+        Column(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()) {
+            Text(text = stringResource(id = R.string.version), modifier =
+            Modifier.padding(horizontal = 8.dp))
+
+            Text(text = context.getVersionName(),
+                    modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .padding(top = 4.dp),
+                    fontSize = 12.sp, color = Color.Gray
+            )
+
+        }
+
     }
 }
 
@@ -84,19 +123,19 @@ fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> 
 
 @Composable
 fun DarkTheme(
-        viewModel: SettingsViewModel
+        darkThemeFlow: StateFlow<Boolean>,
+        changeTheme: (theme: Boolean) -> Unit
 ) {
-    val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
-    val scope = rememberCoroutineScope()
+    val darkTheme = darkThemeFlow.collectAsState().value
     SettingsItem(modifier = Modifier
             .clickable {
-                scope.launch { viewModel.changeTheme(!darkTheme) }
+                changeTheme(!darkTheme)
             }
             .padding(top = 8.dp)) {
         CheckBoxWithText(text = R.string.dark_theme,
                 isChecked = darkTheme,
                 checkChanged = {
-                    scope.launch { viewModel.changeTheme(it) }
+                    changeTheme(it)
                 })
     }
 }
