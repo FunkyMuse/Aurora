@@ -71,12 +71,14 @@ fun DarkTheme(
 ) {
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
     val scope = rememberCoroutineScope()
-    SettingsItem {
+    SettingsItem(modifier = Modifier.clickable {
+        scope.launch { viewModel.changeTheme(!darkTheme) }
+    }) {
         CheckBoxWithText(text = R.string.dark_theme,
-            isChecked = darkTheme,
-            checkChanged = {
-                scope.launch { viewModel.changeTheme(it) }
-            })
+                isChecked = darkTheme,
+                checkChanged = {
+                    scope.launch { viewModel.changeTheme(it) }
+                })
     }
 }
 
@@ -99,9 +101,6 @@ fun CheckBoxWithText(
         modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 6.dp)
-                .clickable {
-                    checkChanged(!isChecked)
-                }
     ) {
         val (textWidget, checkboxWidget) = createRefs()
         Text(
