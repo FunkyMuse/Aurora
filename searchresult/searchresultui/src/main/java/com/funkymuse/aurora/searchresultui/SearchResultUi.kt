@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.searchresultui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
@@ -242,10 +243,9 @@ fun ScaffoldWithBackFiltersAndContent(
         backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, collapseDropDownMenu, onBackClicked)
     }
 
-    //uncomment when this gets fixed
-    /*BackHandler {
+    BackHandler {
         onBack()
-    }*/
+    }
 
     BottomSheetScaffold(
             sheetContent = {
