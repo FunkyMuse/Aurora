@@ -1,5 +1,6 @@
 package com.funkymuse.aurora
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -72,8 +73,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        hideNavigationBars()
+
+        if (!isGestureNavigationEnabled())
+            hideNavigationBars()
     }
+
+    private fun Context.isGestureNavigationEnabled() = android.provider.Settings.Secure.getInt(contentResolver, "navigation_mode", 0) == 2
+
 
     @Suppress("DEPRECATION")
     private fun hideNavigationBars() {
