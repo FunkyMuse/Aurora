@@ -23,7 +23,7 @@ object BookDetailsDestination {
             get() = listOf(navArgument(BOOK_ID_PARAM) { type = NavType.IntType })
     }
 
-    fun bookDetailsRoute(bookID: Int) = NavigationDestination { "$BOOK_DETAILS_ROUTE/${bookID}" }
+    fun bookDetailsRoute(bookID: Int) = "$BOOK_DETAILS_ROUTE/${bookID}"
 
     fun NavBackStackEntry.addBookMirrors(mirrors: List<String>) {
         arguments?.putStringArray(BOOK_MIRRORS_PARAM, mirrors.toTypedArray())

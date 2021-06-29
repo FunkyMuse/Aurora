@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.navigator
 
+import androidx.navigation.NavOptionsBuilder
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -21,6 +22,6 @@ internal class NavigatorImpl @Inject constructor() : Navigator {
     override val destinations = navigationEvents.asSharedFlow()
 
     override fun navigateUp(): Boolean = navigationEvents.tryEmit(NavigatorEvent.NavigateUp)
-    override fun navigate(directions: NavigationDestination): Boolean = navigationEvents.tryEmit(NavigatorEvent.Directions(directions))
+    override fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit): Boolean = navigationEvents.tryEmit(NavigatorEvent.Directions(route, builder))
 
 }

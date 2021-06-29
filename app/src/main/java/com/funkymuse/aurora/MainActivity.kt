@@ -120,7 +120,7 @@ fun AuroraScaffold(navigator: Navigator) {
             when (val event = it) {
                 null -> return@collectLatest
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
-                is NavigatorEvent.Directions -> navController.navigate(event.destination.route()) { launchSingleTop = true }
+                is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
             }
         }
     }
