@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.crazylegend.intent.openWebPage
+import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.stateWhenStarted
 import com.google.accompanist.insets.LocalWindowInsets
@@ -34,16 +37,30 @@ fun Settings() {
             )
     ) {
         item { DarkTheme(viewModel) }
+        item { MyOtherApps() }
+    }
+}
+
+@Composable
+fun MyOtherApps() {
+    val context = LocalContext.current
+    SettingsItem(modifier = Modifier
+            .clickable {
+                context.openWebPage(MY_OTHER_APPS)
+            }
+            .padding(vertical = 8.dp)) {
+        Text(text = stringResource(id = R.string.my_other_apps),
+                modifier = Modifier.padding(horizontal = 8.dp))
     }
 }
 
 @Composable
 fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> Unit) {
     Box(
-        modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(8.dp)
+            modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(8.dp)
     ) {
         item(this)
     }

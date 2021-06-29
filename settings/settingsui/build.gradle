@@ -11,6 +11,7 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
 
     implementation "com.github.FunkyMuse:Composed:$composed"
+    implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
 
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
 }
