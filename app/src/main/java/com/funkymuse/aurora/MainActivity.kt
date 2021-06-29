@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -29,6 +30,8 @@ import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRout
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
+import com.funkymuse.aurora.crashesdestination.CrashesDestination
+import com.funkymuse.aurora.crashesui.Crashes
 import com.funkymuse.aurora.favoritebookui.Favorites
 import com.funkymuse.aurora.latestbooksui.LatestBooks
 import com.funkymuse.aurora.navigator.Navigator
@@ -103,8 +106,16 @@ fun AuroraScaffold(navigator: Navigator) {
                     addSettings()
                     addSearchResult()
                     addBookDetails(navController)
+                    addCrashes()
                 }
         )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+private fun NavGraphBuilder.addCrashes() {
+    composable(CrashesDestination.destination.route()) {
+        Crashes()
     }
 }
 

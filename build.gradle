@@ -22,6 +22,7 @@ buildscript {
         jsoup = "1.13.1"
         data_store = "1.0.0-beta02"
         coreKTX = "1.6.0-rc01"
+        crashy = "1.1.0"
 
         //compilation
         compileVersion = 30
@@ -65,7 +66,7 @@ subprojects {
               "bookdetailsmodel", "toaster", "internetdetector", "bookdetailsdata",
               "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel",
               "bookdetailsmodel", "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
-              "searchresultdestination", "searchdata", "settingsdata"]:
+              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
@@ -74,7 +75,7 @@ subprojects {
 
         //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "search", "settings", "coroutines"]:
+        "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
             break
 
         case ["serverconstants", "generalbook"]:

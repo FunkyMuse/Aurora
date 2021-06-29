@@ -70,3 +70,6 @@ include ':settings:settingsdata'
 
 include ':coroutines:dispatchers'
 include ':coroutines:appscope'
+include ':crashes:crashesui'
+include ':crashes:crashesdestination'
+include ':extensions'

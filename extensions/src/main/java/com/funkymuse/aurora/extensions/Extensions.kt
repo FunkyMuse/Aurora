@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.settingsui
+package com.funkymuse.aurora.extensions
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.net.Uri
  * Created by funkymuse on 6/29/21 to long live and prosper !
  */
 
-internal inline fun Context.openWebPage(url: String, onCantHandleAction: () -> Unit = {}) {
+inline fun Context.openWebPage(url: String, onCantHandleAction: () -> Unit = {}) {
     val webpage: Uri = Uri.parse(url)
     val intent = Intent(Intent.ACTION_VIEW, webpage)
     try {

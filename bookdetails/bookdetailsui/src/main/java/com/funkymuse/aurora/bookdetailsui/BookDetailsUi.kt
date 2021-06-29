@@ -46,7 +46,6 @@ import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground
-import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.imageloading.ImageLoadState
@@ -398,7 +397,7 @@ fun TopAppBarBookDetails(
         onBackClicked: () -> Unit, isInFavorites: Boolean, showFavoritesButton: Boolean,
         onFavoritesClicked: () -> Unit
 ) {
-    TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
+    TopAppBar(backgroundColor = MaterialTheme.colors.primaryVariant, modifier = Modifier.statusBarsPadding()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (backButton, favorites) = createRefs()
             BackButton(

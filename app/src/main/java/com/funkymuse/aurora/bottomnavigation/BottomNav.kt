@@ -10,6 +10,7 @@ import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRout
 import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
 import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
+import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 
 /**
@@ -39,7 +40,8 @@ object BottomNav {
 
     val hideBottomNavOnDestinations = listOf(
             BookDetailsDestination.destination.route(),
-            SearchResultDestination.destination.route()
+            SearchResultDestination.destination.route(),
+            CrashesDestination.destination.route()
     )
 
 }

@@ -4,6 +4,7 @@ dependencies {
     implementation project(path: ':resources:strings')
 
     implementation project(path: ':settings:settingsdata')
+    implementation project(path: ':extensions')
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
@@ -13,4 +14,6 @@ dependencies {
     implementation "com.github.FunkyMuse:Composed:$composed"
 
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation project(path: ':crashes:crashesdestination')
+    implementation project(path: ':navigator')
 }

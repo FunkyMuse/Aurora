@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.funkymuse.aurora.crashesdestination.CrashesDestination
+import com.funkymuse.aurora.extensions.openWebPage
+import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.stateWhenStarted
@@ -28,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun Settings() {
     val viewModel: SettingsViewModel = hiltViewModel()
-
+    val navigator: NavigatorViewModel = hiltViewModel()
     LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = rememberInsetsPaddingValues(
@@ -36,7 +39,21 @@ fun Settings() {
             )
     ) {
         item { DarkTheme(viewModel) }
+        item { CrashesSettings(navigator) }
         item { MyOtherApps() }
+    }
+}
+
+@Composable
+fun CrashesSettings(navigator: NavigatorViewModel) {
+
+    SettingsItem(modifier = Modifier
+            .clickable {
+                navigator.navigate(CrashesDestination.destination.route())
+            }
+            .padding(vertical = 8.dp)) {
+        Text(text = stringResource(id = R.string.crashes), modifier =
+        Modifier.padding(horizontal = 8.dp))
     }
 }
 
@@ -71,9 +88,11 @@ fun DarkTheme(
 ) {
     val darkTheme by stateWhenStarted(flow = viewModel.darkTheme, initial = false)
     val scope = rememberCoroutineScope()
-    SettingsItem(modifier = Modifier.clickable {
-        scope.launch { viewModel.changeTheme(!darkTheme) }
-    }) {
+    SettingsItem(modifier = Modifier
+            .clickable {
+                scope.launch { viewModel.changeTheme(!darkTheme) }
+            }
+            .padding(top = 8.dp)) {
         CheckBoxWithText(text = R.string.dark_theme,
                 isChecked = darkTheme,
                 checkChanged = {
@@ -87,44 +106,44 @@ fun DarkTheme(
 @Composable
 fun SettingsItemPreview() {
     CheckBoxWithText(text = R.string.dark_theme,
-        isChecked = false,
-        checkChanged = {})
+            isChecked = false,
+            checkChanged = {})
 }
 
 @Composable
 fun CheckBoxWithText(
-    @StringRes text: Int,
-    isChecked: Boolean,
-    checkChanged: (Boolean) -> Unit
+        @StringRes text: Int,
+        isChecked: Boolean,
+        checkChanged: (Boolean) -> Unit
 ) {
     ConstraintLayout(
-        modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 6.dp)
+            modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
     ) {
         val (textWidget, checkboxWidget) = createRefs()
         Text(
-            text = stringResource(id = text),
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .constrainAs(textWidget) {
-                        start.linkTo(parent.start)
-                        end.linkTo(checkboxWidget.start)
-                        width = Dimension.fillToConstraints
-                        centerVerticallyTo(parent)
-                    }
-                    .padding(start = 8.dp, end = 4.dp),
-            textAlign = TextAlign.Start
+                text = stringResource(id = text),
+                modifier = Modifier
+                        .fillMaxWidth()
+                        .constrainAs(textWidget) {
+                            start.linkTo(parent.start)
+                            end.linkTo(checkboxWidget.start)
+                            width = Dimension.fillToConstraints
+                            centerVerticallyTo(parent)
+                        }
+                        .padding(start = 8.dp, end = 4.dp),
+                textAlign = TextAlign.Start
         )
 
         Switch(
-            checked = isChecked, onCheckedChange = checkChanged,
-            modifier = Modifier
-                    .constrainAs(checkboxWidget) {
-                        centerVerticallyTo(parent)
-                        end.linkTo(parent.end)
-                    }
-                    .padding(start = 8.dp, end = 4.dp)
+                checked = isChecked, onCheckedChange = checkChanged,
+                modifier = Modifier
+                        .constrainAs(checkboxWidget) {
+                            centerVerticallyTo(parent)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(start = 8.dp, end = 4.dp)
         )
     }
 }

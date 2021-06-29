@@ -80,6 +80,10 @@ dependencies {
     //coroutines
     implementation project(path: ':coroutines:appscope')
 
+    //crashes
+    implementation project(path: ':crashes:crashesui')
+    implementation project(path: ':crashes:crashesdestination')
+
     //material
     implementation 'com.google.android.material:material:1.3.0'
 
@@ -88,7 +92,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$coreKTX"
 
     //crashy
-    implementation "com.github.FunkyMuse:Crashy:1.1.0"
+    implementation "com.github.FunkyMuse:Crashy:$crashy"
     implementation "androidx.startup:startup-runtime:1.0.0"
 
     //compose

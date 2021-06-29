@@ -1,0 +1,25 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':extensions')
+
+    implementation project(path: ':navigator')
+    implementation project(path: ':toaster')
+
+    implementation project(path: ':crashes:crashesdestination')
+
+    implementation project(path: ':style:shape')
+    implementation project(path: ':components:backbuttoncomponent')
+
+    implementation "com.github.FunkyMuse:Crashy:$crashy"
+
+
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    implementation "com.github.FunkyMuse:Composed:$composed"
+    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+}
