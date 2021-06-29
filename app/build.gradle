@@ -87,6 +87,9 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "androidx.core:core-ktx:$coreKTX"
 
+    //crashy
+    implementation "com.github.FunkyMuse:Crashy:1.1.0"
+    implementation "androidx.startup:startup-runtime:1.0.0"
 
     //compose
     implementation "androidx.compose.material:material:$compose_version"

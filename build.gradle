@@ -50,7 +50,6 @@ task clean(type: Delete) {
 
 subprojects {
 
-    println it.name
     switch (it.name) {
         case "app":
             apply plugin: 'com.android.application'
