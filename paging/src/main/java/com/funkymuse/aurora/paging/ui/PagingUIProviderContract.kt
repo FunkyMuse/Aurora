@@ -37,13 +37,13 @@ interface PagingUIProviderContract {
 
     @Composable
     fun <T : Any> OnError(
-        refresh: LoadState,
-        append: LoadState,
-        prepend: LoadState,
-        scope: CoroutineScope,
-        pagingItems: LazyPagingItems<T>,
-        noInternetUI: @Composable () -> Unit = {},
-        errorUI: @Composable () -> Unit
+            refresh: LoadState,
+            append: LoadState,
+            prepend: LoadState,
+            scope: CoroutineScope,
+            pagingItems: LazyPagingItems<T>,
+            noInternetUI: @Composable () -> Unit,
+            errorUI: @Composable () -> Unit
     )
 
     fun isLoadStateNoConnectionException(state: LoadState): Boolean =

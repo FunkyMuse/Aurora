@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        compose_version = '1.0.0-beta09'
+        compose_version = '1.0.0-rc01'
         kotlin_version = '1.5.10'
         room = "2.4.0-alpha03"
         KAHelpers = '3.0.5'
@@ -12,11 +12,11 @@ buildscript {
         accompanist = "0.12.0"
         lifecycle = '2.4.0-alpha02'
         composed = '0.0.10'
-        paging_compose = '1.0.0-alpha10'
+        paging_compose = '1.0.0-alpha11'
         paging_runtime = '3.0.0'
-        navigation = '2.4.0-alpha03'
+        navigation = '2.4.0-alpha04'
         constraint_layout = "1.0.0-alpha08"
-        activity = "1.3.0-beta02"
+        activity = "1.3.0-rc01"
         viewmodel_compose ="1.0.0-alpha07"
         navigation_compose ="1.0.0-alpha03"
         jsoup = "1.13.1"
