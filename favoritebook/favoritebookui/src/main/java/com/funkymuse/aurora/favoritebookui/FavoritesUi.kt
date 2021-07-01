@@ -49,15 +49,15 @@ fun Favorites(
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
 
-    var isDatabaseEmpty by rememberBooleanDefaultFalse()
     longClickedBook.value?.apply {
         DeleteBook(it = this,
                 onConfirm = { viewModel.removeFromFavorites(it) },
                 onDismiss = { longClickedBook.value = null })
     }
 
-    //we trick the paging library to not spam the UI with empty data first
-    isDatabaseEmpty = viewModel.count.conflate()
+
+    //gotta make this workaround bcuz the paging library itemCount always starts with 0 :(
+    val isDatabaseEmpty = viewModel.count.conflate()
             .collectAsState(1).value == 0
 
     progressVisibility =
