@@ -25,8 +25,6 @@ import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.latestbooksdata.LatestBooksVM
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.aurora.paging.prependState
-import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.composed.core.lastVisibleIndex
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
@@ -54,7 +52,7 @@ fun LatestBooks(
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     progressVisibility =
-            pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+            pagingUIUIProvider.progressBarVisibility(pagingItems)
     val retry = {
         latestBooksVM.refresh()
         pagingItems.refresh()
@@ -118,9 +116,6 @@ fun LatestBooks(
         }
 
         pagingUIUIProvider.OnError(
-            refresh = pagingItems.refreshState,
-            append = pagingItems.appendState,
-            prepend = pagingItems.prependState,
             pagingItems = pagingItems,
             scope = scope,
             noInternetUI = {

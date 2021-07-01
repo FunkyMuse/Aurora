@@ -24,7 +24,6 @@ import com.funkymuse.aurora.favoritebookdb.FavoritesViewModel
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -61,10 +60,7 @@ fun Favorites(
             .collectAsState(1).value == 0
 
     progressVisibility =
-            pagingUIProviderViewModel.progressBarVisibility(
-                    favorites.appendState,
-                    favorites.refreshState
-            )
+            pagingUIProviderViewModel.progressBarVisibility(favorites)
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()

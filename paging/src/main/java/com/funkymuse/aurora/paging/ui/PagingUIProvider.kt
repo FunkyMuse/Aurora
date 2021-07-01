@@ -8,6 +8,9 @@ import androidx.paging.compose.LazyPagingItems
 import com.crazylegend.internetdetector.InternetDetector
 import com.crazylegend.toaster.Toaster
 import com.funkymuse.aurora.paging.R
+import com.funkymuse.aurora.paging.appendState
+import com.funkymuse.aurora.paging.prependState
+import com.funkymuse.aurora.paging.refreshState
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -18,43 +21,21 @@ import javax.inject.Inject
  */
 @ViewModelScoped
 class PagingUIProvider @Inject constructor(
-    private val toaster: Toaster,
-    private val internetDetector: InternetDetector
+        private val toaster: Toaster,
+        private val internetDetector: InternetDetector
 ) : PagingUIProviderContract {
 
     override fun <T : Any> isDataEmpty(pagingItems: LazyPagingItems<T>): Boolean =
-        pagingItems.itemCount == 0
-
-    override fun isDataEmptyWithError(
-        append: LoadState,
-        refresh: LoadState,
-        itemCount: Int
-    ): Boolean = ((append is LoadState.Error || refresh is LoadState.Error) && itemCount == 0)
-
-    override fun isDataEmptyWithError(
-        refresh: LoadState,
-        append: LoadState,
-        prepend: LoadState,
-        itemCount: Int
-    ): Boolean =
-        ((append is LoadState.Error || refresh is LoadState.Error || prepend is LoadState.Error) && itemCount == 0)
-
-
-    private var isToastShown = false
+            pagingItems.itemCount == 0
 
     @Composable
-    override fun <T : Any> OnError(
-        refresh: LoadState,
-        append: LoadState,
-        prepend: LoadState,
-        scope: CoroutineScope,
-        pagingItems: LazyPagingItems<T>,
-        noInternetUI: @Composable () -> Unit,
-        errorUI: @Composable () -> Unit
-    ) {
+    override fun <T : Any> OnError(scope: CoroutineScope, pagingItems: LazyPagingItems<T>, noInternetUI: () -> Unit, errorUI: () -> Unit) {
+        val append = pagingItems.appendState
+        val refresh = pagingItems.refreshState
+        val prepend = pagingItems.prependState
         if (isLoadStateNoConnectionException(refresh) ||
-            isLoadStateNoConnectionException(append) ||
-            isLoadStateNoConnectionException(prepend)
+                isLoadStateNoConnectionException(append) ||
+                isLoadStateNoConnectionException(prepend)
         ) {
 
             if (pagingItems.itemCount == 0) {
@@ -70,11 +51,35 @@ class PagingUIProvider @Inject constructor(
             }
 
         } else {
-            if (isDataEmptyWithError(append, refresh, prepend, pagingItems.itemCount)) {
+            if (isDataEmptyWithError(pagingItems)) {
                 errorUI()
             }
         }
     }
+
+    override fun <T : Any> isDataEmptyWithError(pagingItems: LazyPagingItems<T>): Boolean {
+        val append = pagingItems.appendState
+        val refresh = pagingItems.refreshState
+        val prepend = pagingItems.prependState
+        val itemCount = pagingItems.itemCount
+        return ((append is LoadState.Error || refresh is LoadState.Error || prepend is LoadState.Error) && itemCount == 0)
+    }
+
+    override fun <T : Any> progressBarVisibility(pagingItems: LazyPagingItems<T>
+    ): Boolean {
+        val append = pagingItems.appendState
+        val refresh = pagingItems.refreshState
+        return append is LoadState.Loading || refresh is LoadState.Loading
+    }
+
+    override fun <T : Any> isSwipeToRefreshEnabled(pagingItems: LazyPagingItems<T>): Boolean {
+        val append = pagingItems.appendState
+        val refresh = pagingItems.refreshState
+        return append !is LoadState.Loading || refresh !is LoadState.Loading
+    }
+
+
+    private var isToastShown = false
 
 
     override fun onPaginationReachedError(append: LoadState, @StringRes errorMessage: Int) {
@@ -85,14 +90,5 @@ class PagingUIProvider @Inject constructor(
             }
         }
     }
-
-    override fun progressBarVisibility(
-        append: LoadState,
-        refresh: LoadState
-    ) = append is LoadState.Loading || refresh is LoadState.Loading
-
-
-    override fun isSwipeToRefreshEnabled(append: LoadState, refresh: LoadState): Boolean =
-        append !is LoadState.Loading || refresh !is LoadState.Loading
 
 }

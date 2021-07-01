@@ -31,8 +31,6 @@ import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.aurora.paging.prependState
-import com.funkymuse.aurora.paging.refreshState
 import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.radiobutton.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.searchdata.SearchViewModel
@@ -73,14 +71,9 @@ fun SearchResult(
 
 
     progressVisibility =
-            pagingUIUIProvider.progressBarVisibility(pagingItems.appendState, pagingItems.refreshState)
+            pagingUIUIProvider.progressBarVisibility(pagingItems)
 
-    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(
-            pagingItems.refreshState,
-            pagingItems.appendState,
-            pagingItems.prependState,
-            pagingItems.itemCount
-    )
+    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems)
     pagingUIUIProvider.onPaginationReachedError(
             pagingItems.appendState,
             R.string.no_more_books_by_query_to_load
@@ -126,9 +119,6 @@ fun SearchResult(
             }
 
             pagingUIUIProvider.OnError(
-                    refresh = pagingItems.refreshState,
-                    append = pagingItems.appendState,
-                    prepend = pagingItems.prependState,
                     pagingItems = pagingItems,
                     scope = scope,
                     noInternetUI = {
