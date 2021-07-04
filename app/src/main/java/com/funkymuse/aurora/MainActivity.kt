@@ -11,7 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -44,7 +43,7 @@ import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.coil.LocalImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 
@@ -80,10 +79,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AuroraScaffold(navigator: Navigator) {
     val navController = rememberNavController()
-    LaunchedEffect(rememberCoroutineScope()) {
-        navigator.destinations.collectLatest {
+    LaunchedEffect(navController) {
+        navigator.destinations.collect {
             when (val event = it) {
-                null -> return@collectLatest
+                null -> return@collect
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
             }

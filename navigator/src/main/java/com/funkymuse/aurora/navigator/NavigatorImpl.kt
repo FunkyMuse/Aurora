@@ -1,9 +1,8 @@
 package com.funkymuse.aurora.navigator
 
 import androidx.navigation.NavOptionsBuilder
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,15 +12,10 @@ import javax.inject.Singleton
 @Singleton
 internal class NavigatorImpl @Inject constructor() : Navigator {
 
-    /**
-     * Adding new subscribers to this is O(1) which
-     * should happen only once in an Activity and emitting has O(n) cost which ideally
-     * if you've subscribed only in the Activity it's O(1) still.
-     */
-    private val navigationEvents = MutableSharedFlow<NavigatorEvent?>(replay = 1, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    override val destinations = navigationEvents.asSharedFlow()
+    private val navigationEvents = Channel<NavigatorEvent?>()
+    override val destinations = navigationEvents.receiveAsFlow()
 
-    override fun navigateUp(): Boolean = navigationEvents.tryEmit(NavigatorEvent.NavigateUp)
-    override fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit): Boolean = navigationEvents.tryEmit(NavigatorEvent.Directions(route, builder))
+    override fun navigateUp(): Boolean = navigationEvents.trySend(NavigatorEvent.NavigateUp).isSuccess
+    override fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit): Boolean = navigationEvents.trySend(NavigatorEvent.Directions(route, builder)).isSuccess
 
 }
