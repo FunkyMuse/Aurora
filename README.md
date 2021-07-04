@@ -48,8 +48,8 @@ Some of the popular libraries and MVVM clean architecture used with Room databas
 * [Android JetPack](https://developer.android.com/jetpack) - Collection of libraries that help you design robust, testable, and maintainable apps.
   * [Paging3](https://developer.android.com/topic/libraries/architecture/paging) - Load and display small chunks of data at a time.
   * [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes.
-  * [Navigation Components](https://developer.android.com/guide/navigation/navigation-getting-started) - Navigate fragments as never easier before
-  * [SavedStateHandle](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) - A handle to saved state passed down to androidx.lifecycle.ViewModel. 
+  * [Navigation Components](https://developer.android.com/jetpack/compose/navigation) - [Navigate between composables](https://funkymuse.dev/posts/compose_hilt_mm/)
+  * [SavedStateHandle](https://developer.android.com/reference/androidx/lifecycle/SavedStateHandle) - A handle to saved state passed down to `ViewModel`. 
   * [Room](https://developer.android.google.cn/jetpack/androidx/releases/room) - Persistence library provides an abstraction layer over SQLite to allow for more robust database access while harnessing the full power of SQLite.
 * [Dependency Injection](https://developer.android.com/training/dependency-injection) -
   * [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
