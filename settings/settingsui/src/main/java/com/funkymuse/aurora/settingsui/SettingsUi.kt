@@ -42,7 +42,7 @@ fun Settings() {
             )
     ) {
         item { DarkTheme(viewModel.darkTheme) { viewModel.changeTheme(it) } }
-        item { CrashesSettings(navigator) }
+        item { CrashesSettings { navigator.navigate(CrashesDestination.route()) } }
         item { MyOtherApps() }
         item { VersionNumber() }
         item { License() }
@@ -84,11 +84,11 @@ fun VersionNumber() {
 }
 
 @Composable
-fun CrashesSettings(navigator: NavigatorViewModel) {
+fun CrashesSettings(navigateToCrashes: () -> Unit) {
 
     SettingsItem(modifier = Modifier
             .clickable {
-                navigator.navigate(CrashesDestination.route())
+                navigateToCrashes()
             }
             .padding(vertical = 8.dp)) {
         Text(text = stringResource(id = R.string.crashes), modifier =
