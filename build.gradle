@@ -9,7 +9,7 @@ buildscript {
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
         glide = "4.12.0"
-        accompanist = "0.12.0"
+        accompanist = "0.13.0"
         lifecycle = '2.4.0-alpha02'
         composed = '0.0.10'
         paging_compose = '1.0.0-alpha11'
