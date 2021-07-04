@@ -29,7 +29,7 @@ class PagingUIProvider @Inject constructor(
             pagingItems.itemCount == 0
 
     @Composable
-    override fun <T : Any> OnError(scope: CoroutineScope, pagingItems: LazyPagingItems<T>, noInternetUI: () -> Unit, errorUI: () -> Unit) {
+    override fun <T : Any> OnError(scope: CoroutineScope, pagingItems: LazyPagingItems<T>, noInternetUI: @Composable () -> Unit, errorUI: @Composable () -> Unit) {
         val append = pagingItems.appendState
         val refresh = pagingItems.refreshState
         val prepend = pagingItems.prependState
