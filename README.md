@@ -16,7 +16,7 @@ The developer has no relation with [Library Genesis](https://libgen.rs/).
 - See detailed info about the book (pages, size, etc)
 - Switch between light and dark theme
 - Dark mode/light mode
-- Built with many amazing open source libraries such as ([KAHelpers](https://github.com/FunkyMuse/KAHelpers), [Crashy](https://github.com/FunkyMuse/Crashy))
+- Built with many amazing open source libraries such as ([KAHelpers](https://github.com/FunkyMuse/KAHelpers), [Crashy](https://github.com/FunkyMuse/Crashy), [Accompanist](https://github.com/google/accompanist), [Composed](https://github.com/FunkyMuse/Composed))
 - and many more...
 
 ## Download
