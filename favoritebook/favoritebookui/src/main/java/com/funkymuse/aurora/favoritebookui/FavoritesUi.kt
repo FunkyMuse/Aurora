@@ -113,7 +113,7 @@ fun Favorites(
                             longClickedBook.value = it
                         }) {
                             onBookClicked(it.mirrors ?: emptyList())
-                            viewModel.navigate(BookDetailsDestination.bookDetailsRoute(it.id))
+                            viewModel.navigate(BookDetailsDestination.createBookDetailsRoute(it.id))
                         }
                     }
                 }

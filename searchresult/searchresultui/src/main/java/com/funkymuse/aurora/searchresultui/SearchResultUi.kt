@@ -185,7 +185,7 @@ fun SearchResult(
                         Book(item) {
                             val bookID = item.id?.toInt() ?: return@Book
                             onBookClicked(item.mirrors?.toList() ?: emptyList())
-                            searchResultViewModelViewModel.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
+                            searchResultViewModelViewModel.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                         }
                     }
                 }

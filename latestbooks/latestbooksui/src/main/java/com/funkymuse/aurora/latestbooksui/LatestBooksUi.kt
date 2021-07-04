@@ -153,7 +153,7 @@ fun LatestBooks(
                     Book(item) {
                         val bookID = item.id?.toInt() ?: return@Book
                         onBookClicked(item.mirrors?.toList() ?: emptyList())
-                        latestBooksVM.navigate(BookDetailsDestination.bookDetailsRoute(bookID))
+                        latestBooksVM.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                     }
                 }
             }

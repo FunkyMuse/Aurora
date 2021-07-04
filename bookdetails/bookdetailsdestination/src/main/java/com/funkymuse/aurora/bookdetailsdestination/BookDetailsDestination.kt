@@ -20,7 +20,7 @@ object BookDetailsDestination : NavigationDestination {
 
     private const val BOOK_DETAILS_ROUTE = "book_details"
     private const val BOOK_DETAILS_BOTTOM_NAV_ROUTE = "$BOOK_DETAILS_ROUTE/{$BOOK_ID_PARAM}"
-    fun bookDetailsRoute(bookID: Int) = "$BOOK_DETAILS_ROUTE/${bookID}"
+    fun createBookDetailsRoute(bookID: Int) = "$BOOK_DETAILS_ROUTE/${bookID}"
 
     private const val BOOK_MIRRORS_PARAM = "mirrors"
     fun NavBackStackEntry.addBookMirrors(mirrors: List<String>) {
