@@ -51,10 +51,28 @@ fun Settings() {
 
 @Composable
 fun License() {
+    TitleWithSubtitleTextItem(titleText = stringResource(id = R.string.license_title),
+            subtitleText = stringResource(id = R.string.license))
+}
+
+@Composable
+private fun TitleWithSubtitleTextItem(titleText: String, subtitleText: String) {
     SettingsItem(modifier = Modifier
             .padding(vertical = 8.dp)) {
-        Text(text = stringResource(id = R.string.license),
-                modifier = Modifier.padding(horizontal = 8.dp))
+        Column(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()) {
+            Text(text = titleText, modifier =
+            Modifier.padding(horizontal = 8.dp))
+
+            Text(text = subtitleText,
+                    modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .padding(top = 4.dp),
+                    fontSize = 12.sp, color = Color.Gray
+            )
+
+        }
     }
 }
 
@@ -63,24 +81,8 @@ fun Context.getVersionName(): String = packageManager.getPackageInfo(packageName
 
 @Composable
 fun VersionNumber() {
-    SettingsItem(modifier = Modifier
-            .padding(vertical = 8.dp)) {
-        Column(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()) {
-            Text(text = stringResource(id = R.string.version), modifier =
-            Modifier.padding(horizontal = 8.dp))
-
-            Text(text = context.getVersionName(),
-                    modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .padding(top = 4.dp),
-                    fontSize = 12.sp, color = Color.Gray
-            )
-
-        }
-
-    }
+    TitleWithSubtitleTextItem(titleText = stringResource(id = R.string.version),
+            subtitleText = context.getVersionName())
 }
 
 @Composable

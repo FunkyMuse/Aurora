@@ -107,4 +107,5 @@
     <string name="crash_number">Crash #%1$d</string>
     <string name="crash_copied_to_clipboard">Crash copied to clipboard!</string>
     <string name="license">GPL 3.0</string>
+    <string name="license_title">License</string>
 </resources>
