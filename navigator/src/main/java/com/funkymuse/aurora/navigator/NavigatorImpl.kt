@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 internal class NavigatorImpl @Inject constructor() : Navigator {
 
-    private val navigationEvents = Channel<NavigatorEvent?>()
+    private val navigationEvents = Channel<NavigatorEvent>()
     override val destinations = navigationEvents.receiveAsFlow()
 
     override fun navigateUp(): Boolean = navigationEvents.trySend(NavigatorEvent.NavigateUp).isSuccess

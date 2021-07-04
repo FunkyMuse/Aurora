@@ -82,7 +82,6 @@ fun AuroraScaffold(navigator: Navigator) {
     LaunchedEffect(navController) {
         navigator.destinations.collect {
             when (val event = it) {
-                null -> return@collect
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
             }

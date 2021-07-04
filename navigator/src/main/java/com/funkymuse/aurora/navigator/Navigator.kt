@@ -10,5 +10,5 @@ interface Navigator {
 
     fun navigateUp(): Boolean
     fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit = { launchSingleTop = true }): Boolean
-    val destinations: Flow<NavigatorEvent?>
+    val destinations: Flow<NavigatorEvent>
 }
