@@ -1,3 +1,0 @@
-### Improvements
-- Added an option to mute notifications
-- Bug fixes

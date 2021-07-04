@@ -1,5 +1,0 @@
-### Improvements
-- Spanish translations
-
-### Fixed
-- Layout overlaps due to edge-to-edge

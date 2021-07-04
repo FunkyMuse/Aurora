@@ -1,3 +1,0 @@
-### Improvements
-bug fixes
-notifications preview
