@@ -11,6 +11,8 @@ This is a non-official [Library Genesis](https://libgen.rs/) mobile client.
 The project is completely independent and Open Source. 
 The developer has no relation with [Library Genesis](https://libgen.rs/).
 
+Publishing a copy of this application on the Play Store will only get your account banned.
+
 ## Features
 - Search books by title, author, and other parameters
 - See detailed info about the book (pages, size, etc)
