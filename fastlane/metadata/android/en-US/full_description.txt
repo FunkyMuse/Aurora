@@ -1,0 +1,13 @@
+- Search books by title, author, and other parameters
+- See detailed info about the book (pages, size, etc)
+- Switch between light and dark theme
+- Dark mode/light mode
+- and many more...
+
+
+<b>Check out the all of my apps:</b>
+https://funkymuse.dev
+
+<b>GitHub:</b>
+https://github.com/FunkyMuse
+

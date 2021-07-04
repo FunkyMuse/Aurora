@@ -26,9 +26,10 @@ The developer has no relation with [Library Genesis](https://libgen.rs/).
 ## Screenshots
 
 #### Light
-
+<img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_5.png" width="33%"> </img><img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_6.png" width="33%"> </img><img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_7.png" width="33%"></img> <img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_8.png" width="33%"></img> 
 
 #### Dark
+<img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_1.png" width="33%"></img> <img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_2.png" width="33%"></img> <img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_3.png" width="33%"></img> <img src="https://raw.githubusercontent.com/FunkyMuse/Aurora/master/fastlane/metadata/android/en-US/images/phoneScreenshots/screen_4.png" width="33%"></img>
 
 
 ## Built With 🛠
