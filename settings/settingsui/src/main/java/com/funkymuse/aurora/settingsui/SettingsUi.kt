@@ -88,7 +88,7 @@ fun CrashesSettings(navigator: NavigatorViewModel) {
 
     SettingsItem(modifier = Modifier
             .clickable {
-                navigator.navigate(CrashesDestination.destination.route())
+                navigator.navigate(CrashesDestination.route())
             }
             .padding(vertical = 8.dp)) {
         Text(text = stringResource(id = R.string.crashes), modifier =

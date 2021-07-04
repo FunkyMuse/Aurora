@@ -8,7 +8,7 @@ import com.funkymuse.aurora.navigator.NavigationDestination
 /**
  * Created by funkymuse on 6/26/21 to long live and prosper !
  */
-object SearchResultDestination {
+object SearchResultDestination : NavigationDestination {
 
     private const val SEARCH_RESULT_ROUTE = "search_result"
 
@@ -25,20 +25,18 @@ object SearchResultDestination {
             searchWithMaskWord: Boolean
     ): String = "$SEARCH_RESULT_ROUTE/$inputText/$searchInFieldsCheckedPosition/$searchWithMaskWord"
 
-    val destination = object : NavigationDestination {
-        override fun route(): String = SEARCH_ROUTE_BOTTOM_NAV
+    override fun route(): String = SEARCH_ROUTE_BOTTOM_NAV
 
-        override val arguments: List<NamedNavArgument>
-            get() = listOf(
-                    navArgument(SEARCH_PARAM) { type = NavType.StringType },
-                    navArgument(SEARCH_IN_FIELDS_PARAM) {
-                        type = NavType.IntType
-                        defaultValue = 0
-                    },
-                    navArgument(SEARCH_WITH_MASK_WORD_PARAM) {
-                        type = NavType.BoolType
-                        defaultValue = false
-                    }
-            )
-    }
+    override val arguments: List<NamedNavArgument>
+        get() = listOf(
+                navArgument(SEARCH_PARAM) { type = NavType.StringType },
+                navArgument(SEARCH_IN_FIELDS_PARAM) {
+                    type = NavType.IntType
+                    defaultValue = 0
+                },
+                navArgument(SEARCH_WITH_MASK_WORD_PARAM) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+        )
 }

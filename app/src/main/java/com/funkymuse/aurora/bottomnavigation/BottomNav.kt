@@ -39,9 +39,9 @@ object BottomNav {
             )
 
     val hideBottomNavOnDestinations = listOf(
-            BookDetailsDestination.destination.route(),
-            SearchResultDestination.destination.route(),
-            CrashesDestination.destination.route()
+            BookDetailsDestination.route(),
+            SearchResultDestination.route(),
+            CrashesDestination.route()
     )
 
 }
