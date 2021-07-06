@@ -8,7 +8,6 @@ import java.util.*
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
-
 @JsonClass(generateAdapter = true)
 data class DetailedBookModel(
         @Json(name = "author")

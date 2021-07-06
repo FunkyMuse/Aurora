@@ -62,7 +62,7 @@ subprojects {
 
         //disable compose
         case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
-              "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel",
+              "bookdetailsdestination", "favoritebookdb", "favoritebookmodel",
               "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
               "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions"]:
             //setup gradle for libraries
@@ -73,10 +73,10 @@ subprojects {
 
         //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
+        "latestbooks", "searchresult", "sefarch", "settings", "coroutines", "crashes"]:
             break
 
-        case ["serverconstants", "generalbook", "bookdetailsmodel"]:
+        case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel"]:
             apply plugin: 'java-library'
             apply plugin: 'kotlin'
             applyKotlinModule(it)

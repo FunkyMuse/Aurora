@@ -1,7 +1,5 @@
 package com.funkymuse.aurora.bookmodel
 
-import com.crazylegend.common.tryOrNull
-import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.generalbook.GeneralBook
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
@@ -10,19 +8,8 @@ import org.jsoup.nodes.TextNode
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
-
 class Book(private val element: Element) : GeneralBook {
 
-    val generateFavoriteBook
-        get() = FavoriteBook(
-                id.toString().toInt(),
-                title,
-                year,
-                pages,
-                extension,
-                author,
-                mirrors
-        )
 
     val id: String?
         get() = tryOrNull {
@@ -59,13 +46,13 @@ class Book(private val element: Element) : GeneralBook {
         }
 
 
-    val language: String?
+    private val language: String?
         get() = tryOrNull {
             (element.childNodes()[12].childNodes()[0] as TextNode).wholeText
         }
 
 
-    val size: String?
+    private val size: String?
         get() = tryOrNull {
             (element.childNodes()[14].childNodes()[0] as TextNode).wholeText
         }
@@ -84,7 +71,7 @@ class Book(private val element: Element) : GeneralBook {
                 for (i in 18..21) {
                     list.add(element.childNodes()[i].childNodes()[0].attributes().get("href"))
                 }
-                return list
+                list
             }
         }
 
@@ -95,6 +82,14 @@ class Book(private val element: Element) : GeneralBook {
 
     override fun toString(): String {
         return "$id $author $title $publisher $year $language favorite links $mirrors"
+    }
+
+    private fun <T> tryOrNull(action: () -> T): T? {
+        return try {
+            action()
+        } catch (t: Throwable) {
+            return null
+        }
     }
 
     /*
@@ -111,8 +106,7 @@ class Book(private val element: Element) : GeneralBook {
     }
 
     override fun hashCode(): Int {
-        var result = generateFavoriteBook.hashCode()
-        result = 31 * result + (id?.hashCode() ?: 0)
+        var result = id?.hashCode() ?: 0
         result = 31 * result + (author?.hashCode() ?: 0)
         result = 31 * result + (title?.hashCode() ?: 0)
         result = 31 * result + (publisher?.hashCode() ?: 0)
@@ -124,5 +118,6 @@ class Book(private val element: Element) : GeneralBook {
         result = 31 * result + (mirrors?.hashCode() ?: 0)
         return result
     }
+
 
 }
