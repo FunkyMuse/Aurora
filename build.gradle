@@ -56,16 +56,14 @@ subprojects {
             apply plugin: 'com.android.application'
             apply plugin: 'kotlin-android'
             apply plugin: 'kotlin-kapt'
-            apply plugin: 'kotlin-parcelize'
             apply plugin: 'dagger.hilt.android.plugin'
             applyAndroid(it, true, true)
             break
 
         //disable compose
-        case ["strings", "colors", "drawables", "networking", "libgenapi",
-              "bookdetailsmodel", "toaster", "internetdetector", "bookdetailsdata",
+        case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
               "bookdetailsdestination", "favoritebookdb", "favoritebookmodel", "bookmodel",
-              "bookdetailsmodel", "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
+              "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
               "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
@@ -78,7 +76,7 @@ subprojects {
         "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
             break
 
-        case ["serverconstants", "generalbook"]:
+        case ["serverconstants", "generalbook", "bookdetailsmodel"]:
             apply plugin: 'java-library'
             apply plugin: 'kotlin'
             applyKotlinModule(it)

@@ -1,11 +1,11 @@
 package com.funkymuse.aurora.libgenapi
 
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY_CONST
 import com.funkymuse.aurora.serverconstants.IDS_QUERY_CONST
 import com.funkymuse.aurora.serverconstants.JSON_PHP_PAGE_CONST
+import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import retrofit2.http.GET
 import retrofit2.http.Query
 

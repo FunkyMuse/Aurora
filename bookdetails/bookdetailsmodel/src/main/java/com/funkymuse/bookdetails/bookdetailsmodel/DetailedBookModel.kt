@@ -1,17 +1,14 @@
-package com.funkymuse.aurora.bookdetailsmodel
+package com.funkymuse.bookdetails.bookdetailsmodel
 
 
-import android.os.Parcelable
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import kotlinx.parcelize.Parcelize
 import java.util.*
 
 /**
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
-@Parcelize
 @JsonClass(generateAdapter = true)
 data class DetailedBookModel(
         @Json(name = "author")
@@ -50,7 +47,7 @@ data class DetailedBookModel(
         val volumeinfo: String? = null,
         @Json(name = "year")
         val year: String? = null
-) : Parcelable {
+) {
     companion object {
         val testBook = DetailedBookModel(
                 author = UUID.randomUUID().toString(),

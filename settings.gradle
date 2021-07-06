@@ -30,7 +30,6 @@ include ':internetdetector'
 include ':retrofit:libgenapi'
 include ':retrofit:networking'
 
-include ':bookdetails:bookdetailsmodel'
 include ':bookdetails:bookdetailsui'
 
 include ':bookdetails:bookdetailsdestination'
@@ -73,3 +72,4 @@ include ':coroutines:appscope'
 include ':crashes:crashesui'
 include ':crashes:crashesdestination'
 include ':extensions'
+include ':bookdetails:bookdetailsmodel'

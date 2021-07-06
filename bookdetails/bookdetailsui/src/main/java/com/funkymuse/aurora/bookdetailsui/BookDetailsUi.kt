@@ -35,7 +35,6 @@ import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
 import com.funkymuse.aurora.backbuttoncomponent.BackButton
 import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
-import com.funkymuse.aurora.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
@@ -43,6 +42,7 @@ import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.aurora.serverconstants.torrentDownloadURL
+import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground

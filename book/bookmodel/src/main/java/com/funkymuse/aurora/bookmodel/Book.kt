@@ -1,11 +1,8 @@
 package com.funkymuse.aurora.bookmodel
 
-import android.os.Parcelable
 import com.crazylegend.common.tryOrNull
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.generalbook.GeneralBook
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.TextNode
 
@@ -14,8 +11,7 @@ import org.jsoup.nodes.TextNode
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
-@Parcelize
-class Book(private val element: @RawValue Element) : Parcelable, GeneralBook {
+class Book(private val element: Element) : GeneralBook {
 
     val generateFavoriteBook
         get() = FavoriteBook(
