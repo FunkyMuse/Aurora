@@ -23,7 +23,7 @@ Publishing a copy of this application on the Play Store will only get your accou
 
 ## Download
 [![Get it on GitHub releases](https://i.ibb.co/q0mdc4Z/get-it-on-github.png)](https://github.com/FunkyMuse/Aurora/releases/latest)
-
+[![Get it on F-Droid](https://fdroid.gitlab.io/artwork/badge/get-it-on.png)](https://f-droid.org/en/packages/com.funkymuse.aurora/)
 
 ## Screenshots
 
