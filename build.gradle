@@ -19,7 +19,7 @@ buildscript {
         activity = "1.3.0-rc01"
         viewmodel_compose ="1.0.0-alpha07"
         navigation_compose ="1.0.0-alpha03"
-        jsoup = "1.13.1"
+        jsoup = "1.14.1"
         data_store = "1.0.0-beta02"
         coreKTX = "1.7.0-alpha01"
         crashy = "1.1.0"
