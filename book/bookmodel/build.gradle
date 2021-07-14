@@ -5,7 +5,7 @@ plugins {
 applyMoshiDeps(this)
 
 dependencies {
-    api project(path: ':generalbook')
+    api project(path: ':book:generalbook')
 
     //jsoup
     implementation "org.jsoup:jsoup:$jsoup"

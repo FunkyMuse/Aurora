@@ -34,7 +34,6 @@ include ':bookdetails:bookdetailsui'
 
 include ':bookdetails:bookdetailsdestination'
 include ':bookdetails:bookdetailsdata'
-include ':generalbook'
 
 include ':favoritebook:favoritebookdb'
 include ':favoritebook:favoritebookui'
@@ -73,3 +72,4 @@ include ':crashes:crashesui'
 include ':crashes:crashesdestination'
 include ':extensions'
 include ':bookdetails:bookdetailsmodel'
+include ':book:generalbook'
