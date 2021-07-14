@@ -9,6 +9,10 @@ import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -17,15 +21,25 @@ import org.jsoup.nodes.Document
 /**
  * Created by funkymuse on 5/11/21 to long live and prosper !
  */
-class SearchResultDataSource(
-        private val context: Context,
-        private val searchQuery: String,
-        private val searchInFieldsPosition: Int,
-        private val sortQuery: String,
-        private val maskWord: Boolean,
-        private val sortType: String
+class SearchResultDataSource @AssistedInject constructor(
+    @ApplicationContext private val context: Context,
+    @Assisted(COLUM_QUERY) private val searchQuery: String,
+    @Assisted(FIELDS_QUERY_CONST) private val searchInFieldsPosition: Int,
+    @Assisted(SORT_QUERY) private val sortQuery: String,
+    @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
+    @Assisted(SORT_TYPE) private val sortType: String
 ) : PagingSource<Int, Book>() {
 
+    @AssistedFactory
+    interface SearchResultDataSourceFactory {
+        fun create(
+            @Assisted(COLUM_QUERY) searchQuery: String,
+            @Assisted(FIELDS_QUERY_CONST) searchInFieldsPosition: Int,
+            @Assisted(SORT_QUERY) sortQuery: String,
+            @Assisted(SEARCH_WITH_MASK) maskWord: Boolean,
+            @Assisted(SORT_TYPE) sortType: String
+        ): SearchResultDataSource
+    }
 
     var canLoadMore = true
 
@@ -64,7 +78,7 @@ class SearchResultDataSource(
             canNotLoadMoreContent()
         } else {
             val prevKey =
-                    if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
+                if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
             val nextKey = if (list.count() == 0) null else page.plus(1)
             LoadResult.Page(list, prevKey, nextKey)
         }

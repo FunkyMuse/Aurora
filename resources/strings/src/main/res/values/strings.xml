@@ -11,7 +11,7 @@
     <string name="file_format">File format</string>
     <string name="not_available">N/A</string>
     <string name="empty_or_short_input">Search must contain minimum 3 characters…</string>
-    <string name="no_connection_message_will_load_on_connection_achieved">No internet connection available, establish active internet connection and it will automatically reload !</string>
+    <string name="no_connection_message_will_load_on_connection_achieved">No internet connection available, establish active internet connection and the content will automatically reload !</string>
     <string name="title_favorites">Favorites</string>
     <string name="title_settings">Settings</string>
     <string name="title_search">Search</string>
@@ -75,7 +75,7 @@
     <string name="follow_system">Follow system\'s choice</string>
     <string name="rate_us">Rate us</string>
     <string name="back">Back</string>
-    <string name="no_books_loaded">Couldn\'t load books, seems like they\'re unavailable at the moment, please come back later!</string>
+    <string name="no_books_loaded">Couldn\'t load books, seems like they\'re unavailable at the moment, could be that the server is unreachable, please come back later!</string>
     <string name="no_books_loaded_search">Couldn\'t load books according to your search, seems like they\'re unavailable at the moment, please come back later!</string>
     <string name="share">Share</string>
     <string name="download_mirrors">Download mirrors</string>

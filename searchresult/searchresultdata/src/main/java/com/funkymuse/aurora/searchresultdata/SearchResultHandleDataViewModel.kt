@@ -24,11 +24,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultHandleDataViewModel @Inject constructor(
-        application: Application,
-        override val savedStateHandle: SavedStateHandle,
-        dataProvider: PagingDataProvider,
-        private val navigator: Navigator,
-        @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    application: Application,
+    override val savedStateHandle: SavedStateHandle,
+    dataProvider: PagingDataProvider,
+    private val navigator: Navigator,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val searchResultDataSourceFactory: SearchResultDataSource.SearchResultDataSourceFactory
 ) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
 
     private companion object {
@@ -39,13 +40,12 @@ class SearchResultHandleDataViewModel @Inject constructor(
     }
 
     private val searchResultDataSource
-        get() = SearchResultDataSource(
-                getApplication(),
-                searchQuery ?: "",
-                searchInFieldsPosition ?: searchInFieldsCheckedPosition,
-                sortQuery ?: "",
-                maskWord ?: searchWithMaskWord,
-                sortType ?: ""
+        get() = searchResultDataSourceFactory.create(
+            searchQuery ?: "",
+            searchInFieldsPosition ?: searchInFieldsCheckedPosition,
+            sortQuery ?: "",
+            maskWord ?: searchWithMaskWord,
+            sortType ?: ""
         )
     val booksData = dataProvider.providePagingData(viewModelScope, ioDispatcher) { searchResultDataSource }
 

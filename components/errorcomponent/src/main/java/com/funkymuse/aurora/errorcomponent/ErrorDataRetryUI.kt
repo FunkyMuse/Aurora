@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 
 /**
  * Created by funkymuse, date 3/3/21
@@ -33,12 +34,12 @@ fun ErrorAnimation(modifier: Modifier = Modifier) {
 
 
     val color by infiniteTransition.animateColor(
-            initialValue = MaterialTheme.colors.primary,
-            targetValue = MaterialTheme.colors.secondary,
-            animationSpec = infiniteRepeatable(
-                    animation = tween(2500, easing = LinearEasing),
-                    repeatMode = RepeatMode.Reverse
-            )
+        initialValue = MaterialTheme.colors.primary,
+        targetValue = MaterialTheme.colors.secondary,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
     )
     val scale by infiniteTransition.animateFloat(
         initialValue = 8f,
@@ -114,7 +115,7 @@ fun ErrorMessage(
     @StringRes text: Int,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().zIndex(3f),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -137,15 +138,16 @@ fun ErrorWithRetry() {
 @Preview
 fun RetryOption(onRetryClicked: () -> Unit = {}) {
     Column(modifier = Modifier
-            .padding(top = 16.dp)
-            .clickable {
-                onRetryClicked()
-            }) {
+        .clickable {
+            onRetryClicked()
+        }
+        .padding(top = 16.dp)
+    ) {
         Icon(
-                imageVector = Icons.Filled.Replay,
-                contentDescription = stringResource(id = R.string.retry),
-                modifier = Modifier
-                        .size(50.dp)
+            imageVector = Icons.Filled.Replay,
+            contentDescription = stringResource(id = R.string.retry),
+            modifier = Modifier
+                .size(50.dp)
         )
         Text(text = stringResource(id = R.string.retry), modifier = Modifier.padding(8.dp))
     }

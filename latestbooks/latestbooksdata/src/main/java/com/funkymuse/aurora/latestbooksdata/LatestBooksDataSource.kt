@@ -9,6 +9,10 @@ import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -17,11 +21,20 @@ import org.jsoup.nodes.Document
 /**
  * Created by funkymuse on 5/10/21 to long live and prosper !
  */
-class LatestBooksDataSource(
-        private val context: Context,
-        private val sortQuery: String = "",
-        private val sortType: String = "",
+
+class LatestBooksDataSource @AssistedInject constructor(
+    @ApplicationContext private val context: Context,
+    @Assisted(COLUM_QUERY) private val sortQuery: String,
+    @Assisted(SORT_TYPE) private val sortType: String,
 ) : PagingSource<Int, Book>() {
+
+    @AssistedFactory
+    interface LatestBookDataSourceFactory {
+        fun create(
+            @Assisted(COLUM_QUERY) sortQuery: String,
+            @Assisted(SORT_TYPE) sortType: String,
+        ): LatestBooksDataSource
+    }
 
     var canLoadMore = true
 

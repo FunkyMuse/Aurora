@@ -1,6 +1,7 @@
 package com.funkymuse.aurora.latestbooksdata
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -19,11 +20,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
-        application: Application,
-        override val savedStateHandle: SavedStateHandle,
-        dataProvider: PagingDataProvider,
-        private val navigator: Navigator,
-        @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    application: Application,
+    override val savedStateHandle: SavedStateHandle,
+    dataProvider: PagingDataProvider,
+    private val navigator: Navigator,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+    private val latestBooksDataSourceFactory: LatestBooksDataSource.LatestBookDataSourceFactory
 ) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
 
     private companion object {
@@ -31,9 +33,14 @@ class LatestBooksVM @Inject constructor(
         private const val SORT_TYPE_KEY = "sortType"
     }
 
-    private val latestBooksDataSource get() = LatestBooksDataSource(getApplication())
+    private val latestBooksDataSource
+        get() = latestBooksDataSourceFactory.create(
+            sortQuery ?: "",
+            sortType ?: ""
+        )
 
-    val pagingData = dataProvider.providePagingData(viewModelScope, ioDispatcher) { latestBooksDataSource }
+    val pagingData =
+        dataProvider.providePagingData(viewModelScope, ioDispatcher) { latestBooksDataSource }
 
     private var sortType by stateHandleDelegate<String>(SORT_TYPE_KEY)
     private var sortQuery by stateHandleDelegate<String>(SORT_QUERY_KEY)
@@ -73,6 +80,7 @@ class LatestBooksVM @Inject constructor(
     }
 
     fun refresh() {
+        Log.d("REFERSH", "LATEST BOOKS")
         resetOnSort()
     }
 
