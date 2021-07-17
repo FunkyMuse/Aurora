@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
+import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.addBookMirrors
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
@@ -40,7 +41,6 @@ import com.funkymuse.aurora.searchui.Search
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.aurora.settingsui.Settings
 import com.funkymuse.style.theme.AuroraTheme
-import com.google.accompanist.coil.LocalImageLoader
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect

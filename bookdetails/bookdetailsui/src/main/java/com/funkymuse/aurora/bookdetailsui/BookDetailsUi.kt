@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.ImagePainter
+import coil.compose.rememberImagePainter
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.intent.openWebPage
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
@@ -47,8 +49,6 @@ import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground
 import com.funkymuse.style.shape.Shapes
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.ImageLoadState
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
 
@@ -59,7 +59,7 @@ import java.util.*
 
 @Composable
 fun ShowDetailedBook(
-        mirrors: Array<String>?,
+    mirrors: Array<String>?,
 ) {
     val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
     val internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel()
@@ -77,78 +77,78 @@ fun ShowDetailedBook(
         bookDetailsViewModel.retry()
     }
     ScaffoldWithBackAndFavorites(
-            book is RetrofitResult.Success,
-            favoritesBook,
-            onBackClicked = {
-                onBackClicked()
-            },
-            onFavoritesClicked = {
-                favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel, mirrors)
-            }
+        book is RetrofitResult.Success,
+        favoritesBook,
+        onBackClicked = {
+            onBackClicked()
+        },
+        onFavoritesClicked = {
+            favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel, mirrors)
+        }
     ) {
         book.handle(
-                loading = {
-                    LoadingBubbles()
-                },
-                emptyData = {
-                    ErrorWithRetry(R.string.no_book_loaded) {
-                        retry()
-                    }
-                },
-                callError = { throwable ->
-                    if (throwable is NoConnectionException) {
-                        retryOnConnectedToInternet(
-                                internetDetectorViewModel,
-                                scope
-                        ) {
-                            retry()
-                        }
-                        ErrorMessage(R.string.no_book_loaded_no_connect)
-                    } else {
-                        ErrorWithRetry(R.string.no_book_loaded) {
-                            retry()
-                        }
-                    }
-                },
-                apiError = { _, _ ->
-                    ErrorWithRetry(R.string.no_book_loaded) {
-                        retry()
-                    }
-                },
-                success = {
-                    detailedBook = firstOrNull()
-                    if (detailedBook == null) {
-                        onBackClicked()
-                        return@handle
-                    }
-                    detailedBook?.apply {
-                        DetailedBook(this, mirrors?.toList())
-                    }
-
+            loading = {
+                LoadingBubbles()
+            },
+            emptyData = {
+                ErrorWithRetry(R.string.no_book_loaded) {
+                    retry()
                 }
+            },
+            callError = { throwable ->
+                if (throwable is NoConnectionException) {
+                    retryOnConnectedToInternet(
+                        internetDetectorViewModel,
+                        scope
+                    ) {
+                        retry()
+                    }
+                    ErrorMessage(R.string.no_book_loaded_no_connect)
+                } else {
+                    ErrorWithRetry(R.string.no_book_loaded) {
+                        retry()
+                    }
+                }
+            },
+            apiError = { _, _ ->
+                ErrorWithRetry(R.string.no_book_loaded) {
+                    retry()
+                }
+            },
+            success = {
+                detailedBook = firstOrNull()
+                if (detailedBook == null) {
+                    onBackClicked()
+                    return@handle
+                }
+                detailedBook?.apply {
+                    DetailedBook(this, mirrors?.toList())
+                }
+
+            }
         )
     }
 
 }
 
 private fun favoritesClick(
-        favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
-        detailedBook: DetailedBookModel?,
-        bookDetailsViewModel: BookDetailsViewModel,
-        mirrors: Array<String>?
+    favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
+    detailedBook: DetailedBookModel?,
+    bookDetailsViewModel: BookDetailsViewModel,
+    mirrors: Array<String>?
 ) {
     if (favoritesBook == null) {
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
-                    com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
-                            bookModel.id.toString().toInt(),
-                            bookModel.title,
-                            bookModel.year,
-                            bookModel.pages,
-                            bookModel.extension,
-                            bookModel.author,
-                            mirrors?.toList()
-                    )
+                com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
+                    bookModel.id.toString().toInt(),
+                    bookModel.title,
+                    bookModel.year,
+                    bookModel.pages,
+                    bookModel.extension,
+                    bookModel.author,
+                    mirrors?.toList()
+                )
             )
         }
 
@@ -159,18 +159,18 @@ private fun favoritesClick(
 
 @Composable
 fun ScaffoldWithBackAndFavorites(
-        showFavoritesButton: Boolean,
-        favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
-        onBackClicked: () -> Unit,
-        onFavoritesClicked: () -> Unit,
-        content: @Composable (PaddingValues) -> Unit
+    showFavoritesButton: Boolean,
+    favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
+    onBackClicked: () -> Unit,
+    onFavoritesClicked: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopAppBarBookDetails(onBackClicked, favoritesBook != null, showFavoritesButton) {
-                    onFavoritesClicked()
-                }
-            }) {
+        topBar = {
+            TopAppBarBookDetails(onBackClicked, favoritesBook != null, showFavoritesButton) {
+                onFavoritesClicked()
+            }
+        }) {
         content(it)
     }
 }
@@ -185,34 +185,35 @@ fun BookPreview() {
 
 @Composable
 fun DetailedBook(
-        book: DetailedBookModel,
-        dlMirrors: List<String>? = null
+    book: DetailedBookModel,
+    dlMirrors: List<String>? = null
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
+    val painter = rememberImagePainter(data = imageUrl)
 
     Column(
-            modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         val alignment = Modifier.align(Alignment.Start)
         val imageModifier = Modifier
-                .padding(top = 16.dp)
+            .size(width = 200.dp, height = 240.dp)
+            .padding(top = 16.dp)
 
-        val painter = rememberCoilPainter(imageUrl)
-        when (painter.loadState) {
-            is ImageLoadState.Loading -> {
-                CardShimmer(imageHeight = 200.dp, imageWidth = 180.dp)
+        when (painter.state) {
+            is ImagePainter.State.Loading -> {
+                CardShimmer(imageHeight = 240.dp, imageWidth = 200.dp)
             }
-            is ImageLoadState.Success, is ImageLoadState.Error -> {
+            is ImagePainter.State.Success, is ImagePainter.State.Error, ImagePainter.State.Empty -> {
                 Card(shape = Shapes.large, modifier = imageModifier) {
                     Image(
-                            painter = painter,
-                            contentDescription = stringResource(id = R.string.book_details)
+                        painter = painter,
+                        contentDescription = stringResource(id = R.string.book_details)
                     )
                 }
             }
@@ -220,51 +221,51 @@ fun DetailedBook(
 
 
         Text(
-                modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-                text = book.author ?: stringResource(id = R.string.not_available),
-                style = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
-                )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+            text = book.author ?: stringResource(id = R.string.not_available),
+            style = TextStyle(
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.Gray,
+            )
         )
 
         Text(
-                modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                text = book.title ?: stringResource(id = R.string.not_available),
-                style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp, textAlign = TextAlign.Center
-                )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+            text = book.title ?: stringResource(id = R.string.not_available),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp, textAlign = TextAlign.Center
+            )
         )
 
         book.descr?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.description_detail,
-                        clearHtmlTags()
+                    alignment,
+                    R.string.description_detail,
+                    clearHtmlTags()
                 )
         }
 
         book.year?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.year,
-                        this
+                    alignment,
+                    R.string.year,
+                    this
                 )
         }
 
         book.language?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.language_detail,
-                        this
+                    alignment,
+                    R.string.language_detail,
+                    this
                 )
         }
 
@@ -272,9 +273,9 @@ fun DetailedBook(
         book.pages?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.number_of_pages_detail,
-                        this
+                    alignment,
+                    R.string.number_of_pages_detail,
+                    this
                 )
         }
 
@@ -282,72 +283,72 @@ fun DetailedBook(
         book.extension?.uppercase()?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.file_type_detail,
-                        this
+                    alignment,
+                    R.string.file_type_detail,
+                    this
                 )
         }
 
         book.timeadded?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.time_added_detail,
-                        this
+                    alignment,
+                    R.string.time_added_detail,
+                    this
                 )
         }
 
         book.timelastmodified?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.time_last_modified_detail,
-                        this
+                    alignment,
+                    R.string.time_last_modified_detail,
+                    this
                 )
         }
 
         book.edition?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.edition_detail,
-                        this
+                    alignment,
+                    R.string.edition_detail,
+                    this
                 )
         }
 
         book.publisher?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.publisher_detail,
-                        this
+                    alignment,
+                    R.string.publisher_detail,
+                    this
                 )
         }
 
         book.series?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.series_detail,
-                        this
+                    alignment,
+                    R.string.series_detail,
+                    this
                 )
         }
 
         book.volumeinfo?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.volume_info_detail,
-                        this
+                    alignment,
+                    R.string.volume_info_detail,
+                    this
                 )
         }
 
         book.periodical?.apply {
             if (isNotNullOrEmpty())
                 TitleCardWithContent(
-                        alignment,
-                        R.string.periodical_detail,
-                        this
+                    alignment,
+                    R.string.periodical_detail,
+                    this
                 )
         }
 
@@ -358,22 +359,22 @@ fun DetailedBook(
                 menuExpanded = true
             }
             DropdownMenu(expanded = menuExpanded,
-                    modifier = Modifier.fillMaxWidth(),
-                    offset = DpOffset(32.dp, 16.dp),
-                    onDismissRequest = { menuExpanded = false }) {
+                modifier = Modifier.fillMaxWidth(),
+                offset = DpOffset(32.dp, 16.dp),
+                onDismissRequest = { menuExpanded = false }) {
                 dlMirrors?.forEachIndexed { index, it ->
                     DropdownMenuItem(onClick = {
                         localContext.openWebPage(it)
                         menuExpanded = false
                     }) {
                         Icon(
-                                Icons.Filled.Download,
-                                contentDescription = stringResource(id = R.string.download)
+                            Icons.Filled.Download,
+                            contentDescription = stringResource(id = R.string.download)
                         )
 
                         Text(
-                                text = stringResource(id = R.string.mirror_placeholder, index + 1),
-                                modifier = Modifier.padding(16.dp)
+                            text = stringResource(id = R.string.mirror_placeholder, index + 1),
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
                 }
@@ -394,31 +395,34 @@ fun DetailedBook(
 
 @Composable
 fun TopAppBarBookDetails(
-        onBackClicked: () -> Unit, isInFavorites: Boolean, showFavoritesButton: Boolean,
-        onFavoritesClicked: () -> Unit
+    onBackClicked: () -> Unit, isInFavorites: Boolean, showFavoritesButton: Boolean,
+    onFavoritesClicked: () -> Unit
 ) {
-    TopAppBar(backgroundColor = MaterialTheme.colors.primaryVariant, modifier = Modifier.statusBarsPadding()) {
+    TopAppBar(
+        backgroundColor = MaterialTheme.colors.primaryVariant,
+        modifier = Modifier.statusBarsPadding()
+    ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (backButton, favorites) = createRefs()
             BackButton(
-                    modifier = Modifier
-                            .constrainAs(backButton) {
-                                start.linkTo(parent.start)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            }
-                            .padding(8.dp), onClick = onBackClicked
+                modifier = Modifier
+                    .constrainAs(backButton) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+                    .padding(8.dp), onClick = onBackClicked
             )
 
             if (showFavoritesButton) {
                 AddToFavorites(
-                        Modifier
-                                .constrainAs(favorites) {
-                                    end.linkTo(parent.end)
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                }
-                                .padding(8.dp), isInFavorites, onFavoritesClicked
+                    Modifier
+                        .constrainAs(favorites) {
+                            end.linkTo(parent.end)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        }
+                        .padding(8.dp), isInFavorites, onFavoritesClicked
                 )
             }
         }
@@ -428,21 +432,21 @@ fun TopAppBarBookDetails(
 @Composable
 @Preview
 fun AddToFavorites(
-        modifier: Modifier = Modifier,
-        isInFavorites: Boolean = false,
-        onClicked: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    isInFavorites: Boolean = false,
+    onClicked: () -> Unit = {}
 ) {
     val favoritesIndicator =
-            if (isInFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
+        if (isInFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
     Button(
-            onClick = onClicked,
-            shape = Shapes.large,
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
-            modifier = modifier
+        onClick = onClicked,
+        shape = Shapes.large,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+        modifier = modifier
     ) {
         Icon(
-                imageVector = favoritesIndicator,
-                contentDescription = stringResource(id = R.string.title_favorites)
+            imageVector = favoritesIndicator,
+            contentDescription = stringResource(id = R.string.title_favorites)
         )
     }
 }
@@ -450,38 +454,38 @@ fun AddToFavorites(
 @Composable
 fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String) {
     Card(
-            elevation = 2.dp,
-            shape = Shapes.medium,
-            modifier = modifier
-                    .padding(start = 22.dp)
-                    .offset(y = 16.dp)
-                    .zIndex(2f)
+        elevation = 2.dp,
+        shape = Shapes.medium,
+        modifier = modifier
+            .padding(start = 22.dp)
+            .offset(y = 16.dp)
+            .zIndex(2f)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
-                    modifier = Modifier.padding(8.dp),
-                    text = stringResource(id = title),
-                    style = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 20.sp
-                    )
+                modifier = Modifier.padding(8.dp),
+                text = stringResource(id = title),
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
+                )
             )
         }
     }
     Card(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            shape = Shapes.large,
-            backgroundColor = CardBackground
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        shape = Shapes.large,
+        backgroundColor = CardBackground
     ) {
         Column {
             Text(
-                    modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
-                    text = text,
-                    fontSize = 18.sp
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
+                text = text,
+                fontSize = 18.sp
             )
         }
     }
@@ -491,8 +495,8 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
 @Preview
 fun DetailedButton(text: String = "Some button text", onClicked: () -> Unit = {}) {
     Button(
-            shape = Shapes.large, onClick = onClicked,
-            modifier = Modifier.padding(top = 16.dp)
+        shape = Shapes.large, onClick = onClicked,
+        modifier = Modifier.padding(top = 16.dp)
     ) {
         Text(text = text)
     }

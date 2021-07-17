@@ -38,6 +38,5 @@ dependencies {
 
 
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
-    implementation "com.google.accompanist:accompanist-coil:$accompanist"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
 }

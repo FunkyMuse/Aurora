@@ -30,7 +30,6 @@ dependencies {
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
 
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
-    implementation "com.google.accompanist:accompanist-coil:$accompanist"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
 
     implementation project(path: ':search:searchdata')

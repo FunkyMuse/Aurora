@@ -45,6 +45,7 @@ applyDaggerDeps(this)
 applyHiltDeps(this)
 applyMoshiDeps(this)
 applyComposeUIDeps(this)
+applyCoilDep(this)
 
 dependencies {
     //navigation
@@ -102,7 +103,6 @@ dependencies {
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
-    implementation "com.google.accompanist:accompanist-coil:$accompanist"
 
     //hilt jetpack
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
