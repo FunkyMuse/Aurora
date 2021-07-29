@@ -73,7 +73,7 @@ subprojects {
 
         //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "sefarch", "settings", "coroutines", "crashes"]:
+        "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
             break
 
         case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel"]:
