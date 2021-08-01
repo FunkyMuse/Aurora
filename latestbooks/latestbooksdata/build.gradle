@@ -12,7 +12,8 @@ dependencies {
 
     //jsoup
     implementation "org.jsoup:jsoup:$jsoup"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$viewmodel_compose"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
 
     implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
