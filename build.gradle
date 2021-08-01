@@ -17,7 +17,7 @@ buildscript {
         constraint_layout = "1.0.0-beta01"
         activity = "1.3.0"
         navigation_compose = "1.0.0-alpha03"
-        jsoup = "1.14.1"
+        skrapeit = "1.1.5"
         data_store = "1.0.0-rc02"
         coreKTX = "1.7.0-alpha01"
         crashy = "1.1.0"

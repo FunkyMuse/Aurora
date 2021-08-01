@@ -12,7 +12,7 @@ dependencies {
     implementation project(path: ':searchresult:searchresultdestination')
 
     //jsoup
-    implementation "org.jsoup:jsoup:$jsoup"
+    implementation "it.skrape:skrapeit:$skrapeit"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
 

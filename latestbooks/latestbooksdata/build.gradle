@@ -11,7 +11,7 @@ dependencies {
     implementation project(path: ':book:bookmodel')
 
     //jsoup
-    implementation "org.jsoup:jsoup:$jsoup"
+    implementation "it.skrape:skrapeit:$skrapeit"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
 

@@ -8,5 +8,5 @@ dependencies {
     api project(path: ':book:generalbook')
 
     //jsoup
-    implementation "org.jsoup:jsoup:$jsoup"
+    implementation "it.skrape:skrapeit:$skrapeit"
 }

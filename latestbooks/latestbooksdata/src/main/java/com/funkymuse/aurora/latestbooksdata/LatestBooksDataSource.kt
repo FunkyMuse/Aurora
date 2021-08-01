@@ -7,12 +7,18 @@ import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
+import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import it.skrape.core.htmlDocument
+import it.skrape.fetcher.HttpFetcher
+import it.skrape.fetcher.response
+import it.skrape.fetcher.skrape
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -26,6 +32,7 @@ class LatestBooksDataSource @AssistedInject constructor(
     @ApplicationContext private val context: Context,
     @Assisted(COLUM_QUERY) private val sortQuery: String,
     @Assisted(SORT_TYPE) private val sortType: String,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -80,21 +87,54 @@ class LatestBooksDataSource @AssistedInject constructor(
     }
 
 
-    private fun processDocument(doc: Document?): List<Book>? {
-        return doc?.let { document ->
+    private suspend fun fetch(): List<Book> =
+        withContext(Dispatchers.IO) {
+            skrape(HttpFetcher) {
+                request {
+                    timeout = DEFAULT_API_TIMEOUT
+                    url =
+                        "$SEARCH_BASE_URL?req=dan+brown&lg_topic=libgen&view=detailed&res=100&phrase=1&column=def"
+                }
+                response {
+                    htmlDocument {
+                        findAll("table").drop(2).map {
 
-            val trs = document.select("table")[2].select("tr")
-            trs.removeAt(0)
+                            val trs =
+                                tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
+                                    ?.map { it.findAll("td") }?.flatten()?.map { it.children }
+                                    ?.flatten()
 
-            if (trs.size < PAGE_SIZE.toInt()) {
-                //cant load more
-                canLoadMore = false
-            }
+                            val res = if (!trs.isNullOrEmpty()) {
+                                trs.dropLast(1).mapNotNull {
+                                    val id = tryOrNull {
+                                        trs[2].eachLink.values.firstOrNull()?.substringAfter("md5=")
+                                    }
+                                    if (id == null) {
+                                        null
+                                    } else {
+                                        Book(
+                                            image = tryOrNull { trs[0].eachImage.values.firstOrNull() },
+                                            title = tryOrNull { trs[2].text },
+                                            author = tryOrNull { trs[5].text },
+                                            id = id
+                                        )
+                                    }
+                                }
+                            } else {
+                                emptyList()
+                            }
 
-            return@let trs.map {
-                return@map Book(it)
+                            res
+                        }.flatten()
+                    }
+                }
             }
         }
+
+    private fun <T> tryOrNull(block: () -> T) = try {
+        block()
+    } catch (t: Throwable) {
+        null
     }
 
 
