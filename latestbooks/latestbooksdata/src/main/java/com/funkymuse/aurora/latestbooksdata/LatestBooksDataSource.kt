@@ -42,8 +42,6 @@ class LatestBooksDataSource @AssistedInject constructor(
         ): LatestBooksDataSource
     }
 
-    var canLoadMore = true
-
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
@@ -51,7 +49,7 @@ class LatestBooksDataSource @AssistedInject constructor(
 
         return if (context.isOnline) {
             try {
-                withContext(dispatcher) { tryToLoadBooks(page) }
+                withContext(dispatcher) { loadBooks(page) }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
@@ -59,15 +57,6 @@ class LatestBooksDataSource @AssistedInject constructor(
             return LoadResult.Error(NoConnectionException())
         }
     }
-
-    private suspend fun tryToLoadBooks(page: Int): LoadResult.Page<Int, Book> {
-        return if (canLoadMore) {
-            loadBooks(page)
-        } else {
-            canNotLoadMoreContent()
-        }
-    }
-
 
     private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
         val list = fetch()
@@ -80,7 +69,6 @@ class LatestBooksDataSource @AssistedInject constructor(
         }
     }
 
-
     private suspend fun fetch(): List<Book> =
             skrape(HttpFetcher) {
                 request {
@@ -90,7 +78,7 @@ class LatestBooksDataSource @AssistedInject constructor(
                 }
                 response {
                     htmlDocument {
-                        findAll("table").drop(2).map {
+                        findAll("table").asSequence().drop(2).map {
 
                             val trs =
                                 tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
@@ -114,12 +102,11 @@ class LatestBooksDataSource @AssistedInject constructor(
                                     }
                                 }
                             } else {
-                                canLoadMore = false
                                 emptyList()
                             }
 
                             res
-                        }.flatten()
+                        }.flatten().toSet().toList()
                     }
                 }
             }

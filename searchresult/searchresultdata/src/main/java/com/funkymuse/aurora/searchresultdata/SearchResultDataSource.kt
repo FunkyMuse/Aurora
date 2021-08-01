@@ -1,6 +1,7 @@
 package com.funkymuse.aurora.searchresultdata
 
 import android.content.Context
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
@@ -48,8 +49,6 @@ class SearchResultDataSource @AssistedInject constructor(
         ): SearchResultDataSource
     }
 
-    var canLoadMore = true
-
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
@@ -57,20 +56,12 @@ class SearchResultDataSource @AssistedInject constructor(
 
         return if (context.isOnline) {
             try {
-                withContext(dispatcher) { tryToLoadBooks(page) }
+                withContext(dispatcher) { loadBooks(page) }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
         } else {
             return LoadResult.Error(NoConnectionException())
-        }
-    }
-
-    private suspend fun tryToLoadBooks(page: Int): LoadResult.Page<Int, Book> {
-        return if (canLoadMore) {
-            loadBooks(page)
-        } else {
-            canNotLoadMoreContent()
         }
     }
 
@@ -90,13 +81,14 @@ class SearchResultDataSource @AssistedInject constructor(
         skrape(HttpFetcher) {
             request {
                 timeout = DEFAULT_API_TIMEOUT
-                url = "$SEARCH_BASE_URL?$REQ_CONST=$searchQuery&$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_CONST&" +
-                        "$LAST_MODE=$LAST_QUERY&$COLUM_QUERY=${getFieldParamByPosition(searchInFieldsPosition)}&$SORT_TYPE=$sortType&"+
+                url = "$SEARCH_BASE_URL?$REQ_CONST=${searchQuery.replace(" ", "+")}&$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_SIZE&" +
+                        "&$COLUM_QUERY=${getFieldParamByPosition(searchInFieldsPosition)}&$SORT_TYPE=$sortType&"+
                         "$SEARCH_WITH_MASK=${if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO}"
+                Log.d("URL REQUESt", url)
             }
             response {
                 htmlDocument {
-                    findAll("table").drop(2).map {
+                    findAll("table").asSequence().drop(2).map {
 
                         val trs =
                             tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
@@ -120,12 +112,11 @@ class SearchResultDataSource @AssistedInject constructor(
                                 }
                             }
                         } else {
-                            canLoadMore = false
                             emptyList()
                         }
 
                         res
-                    }.flatten()
+                    }.flatten().toSet().toList()
                 }
             }
         }

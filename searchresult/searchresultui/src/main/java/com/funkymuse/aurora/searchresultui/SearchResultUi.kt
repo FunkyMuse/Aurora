@@ -177,7 +177,7 @@ fun SearchResult() {
                                 additionalBottom = 84.dp
                         )
                 ) {
-                    items(pagingItems) { item ->
+                    items(pagingItems, key = {it.id}) { item ->
                         item ?: return@items
 
                         Book(item) {

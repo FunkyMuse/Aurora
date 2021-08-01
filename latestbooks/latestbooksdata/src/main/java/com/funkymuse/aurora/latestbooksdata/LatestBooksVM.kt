@@ -48,7 +48,6 @@ class LatestBooksVM @Inject constructor(
     private fun resetOnSort() {
         sortType = ""
         sortQuery = ""
-        latestBooksDataSource.canLoadMore = true
     }
 
     fun sortByYearDESC() {

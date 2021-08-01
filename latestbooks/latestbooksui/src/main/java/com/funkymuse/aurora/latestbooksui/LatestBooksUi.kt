@@ -146,7 +146,7 @@ fun LatestBooks(
                             .padding(bottom = 56.dp, top = 8.dp),
                     contentPadding = listInsets
             ) {
-                items(pagingItems) { item ->
+                items(pagingItems, key = {it.id}) { item ->
                     item ?: return@items
                     Book(item) {
                         val bookID = item.id
