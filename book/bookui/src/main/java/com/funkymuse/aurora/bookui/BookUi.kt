@@ -7,8 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -24,9 +25,9 @@ import androidx.constraintlayout.compose.Dimension
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.funkymuse.aurora.generalbook.GeneralBook
+import com.funkymuse.aurora.loadingcomponent.BoxShimmer
 import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.serverconstants.LIBGEN_BASE_URL
-import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
 import com.funkymuse.style.color.CardBackground
 import com.funkymuse.style.shape.Shapes
 
@@ -54,7 +55,7 @@ fun Book(
             modifier = Modifier
                 .combinedClickable(onLongClick = onLongClick, onClick = onClick)
         ) {
-            val image = addStaticImage(book.image)
+            val image = image(book.image)
             val title = addTitle(image, book.title)
             addAuthor(title, image, book.author)
         }
@@ -73,12 +74,14 @@ private fun ConstraintLayoutScope.addAuthor(
         modifier = Modifier
             .constrainAs(author) {
                 start.linkTo(image.end, 16.dp)
-                top.linkTo(title.bottom, 4.dp)
+                top.linkTo(title.bottom, 8.dp)
                 end.linkTo(parent.end, 16.dp)
                 width = Dimension.fillToConstraints
             },
-        fontStyle = FontStyle.Italic
-    )
+        style = TextStyle(fontStyle = FontStyle.Italic, fontSize = 16.sp),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        )
     return author
 }
 
@@ -93,44 +96,43 @@ private fun ConstraintLayoutScope.addTitle(
         modifier = Modifier
             .constrainAs(title) {
                 start.linkTo(image.end, 16.dp)
-                top.linkTo(parent.top, 14.dp)
+                top.linkTo(parent.top, 10.dp)
                 end.linkTo(parent.end, 16.dp)
                 width = Dimension.fillToConstraints
             },
         overflow = TextOverflow.Ellipsis,
-        maxLines = 3,
-        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+        maxLines = 2,
+        style = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 17.sp)
     )
     return title
 }
 
 @Composable
-private fun ConstraintLayoutScope.addStaticImage(remoteImage: String?): ConstrainedLayoutReference {
-    val imageLoadingModifier = Modifier
-        .size(width = 100.dp, height = 200.dp)
-        .padding(top = 16.dp)
+private fun ConstraintLayoutScope.image(remoteImage: String?): ConstrainedLayoutReference {
 
     val imageUrl = LIBGEN_BASE_URL + remoteImage
     val painter = rememberImagePainter(data = imageUrl)
 
     val image = createRef()
 
+    val size = Size(85.dp.value, 130.dp.value)
+
     val imageModifier = Modifier
-        .size(100.dp, 100.dp)
+        .size(size.width.dp, size.height.dp)
         .constrainAs(image) {
-            top.linkTo(parent.top, margin = 16.dp)
-            start.linkTo(parent.start, margin = 16.dp)
-            bottom.linkTo(parent.bottom, margin = 16.dp)
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            bottom.linkTo(parent.bottom)
         }
 
     when (painter.state) {
         is ImagePainter.State.Loading -> {
-            Box(modifier = imageLoadingModifier) {
-                CardShimmer(imageHeight = 100.dp, imageWidth = 100.dp)
+            Box(modifier = imageModifier) {
+                BoxShimmer(padding = 0.dp, imageHeight = size.height.dp, imageWidth = size.width.dp)
             }
         }
         is ImagePainter.State.Success, is ImagePainter.State.Error, ImagePainter.State.Empty -> {
-            Box(modifier = imageModifier) {
+            Box(modifier = imageModifier, contentAlignment = Alignment.CenterStart) {
                 Image(
                     painter = painter,
                     contentDescription = stringResource(id = R.string.book_details)

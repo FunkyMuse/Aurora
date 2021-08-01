@@ -91,6 +91,11 @@ fun LoadingBubbles(
     }
 }
 
+private val defaultColors = listOf(
+    Color.LightGray.copy(alpha = .9f),
+    Color.LightGray.copy(alpha = .3f),
+    Color.LightGray.copy(alpha = .9f),
+)
 
 @Composable
 fun CardShimmer(
@@ -99,11 +104,7 @@ fun CardShimmer(
         padding: Dp = 16.dp,
         shimmerDelayDuration: Int = 300,
         shimmerDuration: Int = 1600,
-        colors: List<Color> = listOf(
-                Color.LightGray.copy(alpha = .9f),
-                Color.LightGray.copy(alpha = .3f),
-                Color.LightGray.copy(alpha = .9f),
-        ),
+        colors: List<Color> = defaultColors,
         alphaDuration: Int = 400,
         cardShape: Shape = MaterialTheme.shapes.large
 ) {
@@ -112,60 +113,111 @@ fun CardShimmer(
     } else {
         Modifier.fillMaxSize()
     }
+    LoadingCard(
+        modifier,
+        padding,
+        imageHeight,
+        shimmerDuration,
+        shimmerDelayDuration,
+        alphaDuration,
+        colors,
+        cardShape
+    )
+}
+
+@Composable
+fun BoxShimmer(
+        imageHeight: Dp = 160.dp,
+        imageWidth: Dp? = null,
+        padding: Dp = 16.dp,
+        shimmerDelayDuration: Int = 300,
+        shimmerDuration: Int = 1600,
+        colors: List<Color> = defaultColors,
+        alphaDuration: Int = 400,
+) {
+    val modifier = if (imageWidth != null) {
+        Modifier.size(imageWidth, imageHeight)
+    } else {
+        Modifier.fillMaxSize()
+    }
+    LoadingCard(
+        modifier,
+        padding,
+        imageHeight,
+        shimmerDuration,
+        shimmerDelayDuration,
+        alphaDuration,
+        colors,
+        null
+    )
+}
+
+@Composable
+private fun LoadingCard(
+    modifier: Modifier,
+    padding: Dp,
+    imageHeight: Dp,
+    shimmerDuration: Int,
+    shimmerDelayDuration: Int,
+    alphaDuration: Int,
+    colors: List<Color>,
+    cardShape: Shape?
+) {
     BoxWithConstraints(
-            modifier = modifier
+        modifier = modifier
     ) {
 
         val cardWidthPx = with(density) { (maxWidth - (padding * 2)).toPx() }
         val cardHeightPx = with(density) { (imageHeight - padding).toPx() }
         val gradientWidth: Float = (0.2f * cardHeightPx)
         val tweenAnim = tweenParameters(
-                shimmerDuration,
-                shimmerDelayDuration
+            shimmerDuration,
+            shimmerDelayDuration
         )
         val infiniteTransition = rememberInfiniteTransition()
 
         val xCardShimmer = cardShimmerAxis(
-                cardWidthPx = cardWidthPx,
-                infiniteTransition = infiniteTransition,
-                gradientWidth = gradientWidth,
-                tweenAnim = tweenAnim
+            cardWidthPx = cardWidthPx,
+            infiniteTransition = infiniteTransition,
+            gradientWidth = gradientWidth,
+            tweenAnim = tweenAnim
         )
 
         val yCardShimmer = cardShimmerAxis(
-                cardWidthPx = cardHeightPx,
-                infiniteTransition = infiniteTransition,
-                gradientWidth = gradientWidth,
-                tweenAnim = tweenAnim
+            cardWidthPx = cardHeightPx,
+            infiniteTransition = infiniteTransition,
+            gradientWidth = gradientWidth,
+            tweenAnim = tweenAnim
         )
 
         val alpha by infiniteTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 1f,
-                animationSpec = infiniteRepeatable(
-                        animation = keyframes {
-                            durationMillis = alphaDuration
-                            0.7f at alphaDuration / 2
-                        },
-                        repeatMode = RepeatMode.Reverse
-                )
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = keyframes {
+                    durationMillis = alphaDuration
+                    0.7f at alphaDuration / 2
+                },
+                repeatMode = RepeatMode.Reverse
+            )
         )
 
-        ShimmerCardItem(
-                colors = colors,
-                xShimmer = xCardShimmer.value,
-                yShimmer = yCardShimmer.value,
-                cardHeight = imageHeight,
-                gradientWidth = gradientWidth,
-                padding = padding,
-                alpha = alpha,
-                cardShape = cardShape
+
+        ShimmerSurfaceItem(
+            colors = colors,
+            xShimmer = xCardShimmer.value,
+            yShimmer = yCardShimmer.value,
+            cardHeight = imageHeight,
+            gradientWidth = gradientWidth,
+            padding = padding,
+            alpha = alpha,
+            cardShape = cardShape
         )
     }
 }
 
 @Composable
-private fun ShimmerCardItem(
+private fun ShimmerSurfaceItem(
         colors: List<Color>,
         xShimmer: Float,
         yShimmer: Float,
@@ -173,7 +225,7 @@ private fun ShimmerCardItem(
         gradientWidth: Float,
         padding: Dp,
         alpha: Float = 1f,
-        cardShape: Shape
+        cardShape: Shape?
 ) {
     val brush = Brush.linearGradient(
             colors,
@@ -185,15 +237,24 @@ private fun ShimmerCardItem(
                     .padding(padding)
                     .alpha(alpha)
     ) {
-        Surface(
-                shape = cardShape,
-        ) {
-            Spacer(
+        if (cardShape!=null){
+            Surface(shape = cardShape){
+                Spacer(
                     modifier = Modifier
-                            .fillMaxWidth()
-                            .size(cardHeight)
-                            .background(brush = brush)
-            )
+                        .fillMaxWidth()
+                        .size(cardHeight)
+                        .background(brush = brush)
+                )
+            }
+        }else {
+            Surface{
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .size(cardHeight)
+                        .background(brush = brush)
+                )
+            }
         }
     }
 }

@@ -21,10 +21,8 @@ object AppModule {
     @Provides
     @Singleton
     fun imageLoader(@ApplicationContext context: Context): ImageLoader = ImageLoader.Builder(context)
-            .error(R.drawable.ic_logo)
             .crossfade(true)
-            .diskCachePolicy(CachePolicy.DISABLED)
-            .fallback(R.drawable.ic_logo)
+            .diskCachePolicy(CachePolicy.ENABLED)
             .build()
 
 }
