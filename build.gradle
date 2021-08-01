@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        compose_version = '1.0.0-rc02'
+        compose_version = '1.0.0'
         kotlin_version = '1.5.10'
         room = "2.4.0-alpha04"
         KAHelpers = '3.0.8'
@@ -16,7 +16,7 @@ buildscript {
         navigation = '2.4.0-alpha05'
         constraint_layout = "1.0.0-beta01"
         activity = "1.3.0"
-        navigation_compose ="1.0.0-alpha03"
+        navigation_compose = "1.0.0-alpha03"
         jsoup = "1.14.1"
         data_store = "1.0.0-rc02"
         coreKTX = "1.7.0-alpha01"
@@ -59,7 +59,7 @@ subprojects {
             applyAndroid(it, true, true)
             break
 
-        //disable compose
+    //disable compose
         case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
               "bookdetailsdestination", "favoritebookdb", "favoritebookmodel",
               "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
@@ -70,9 +70,9 @@ subprojects {
             applyAndroid(it, false, false)
             break
 
-        //ignore parent folders
+    //ignore parent folders
         case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-        "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
+              "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
             break
 
         case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel"]:
@@ -131,7 +131,7 @@ def applyAndroid(project, buildConfigCase, enableCompose) {
             compose enableCompose
         }
 
-        if (enableCompose){
+        if (enableCompose) {
             composeOptions {
                 kotlinCompilerExtensionVersion compose_version
             }
@@ -180,15 +180,15 @@ void applyComposeUIDeps(project) {
     }
 }
 
-void applyMoshiDeps(project){
-    project.dependencies{
+void applyMoshiDeps(project) {
+    project.dependencies {
         implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
         kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
     }
 }
 
-void applyCoilDep(project){
-    project.dependencies{
+void applyCoilDep(project) {
+    project.dependencies {
         implementation "io.coil-kt:coil-compose:$coil"
     }
 }
