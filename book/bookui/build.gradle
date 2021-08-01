@@ -1,4 +1,5 @@
 applyComposeUIDeps(this)
+applyCoilDep(this)
 
 dependencies {
     //resources
@@ -10,8 +11,12 @@ dependencies {
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')
 
+    implementation project(path: ':components:loadingcomponent')
+
+
     implementation project(path: ':book:bookmodel')
 
+    implementation project(path: ':serverconstants')
 
 
     implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"

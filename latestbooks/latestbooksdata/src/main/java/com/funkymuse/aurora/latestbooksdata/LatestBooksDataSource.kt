@@ -19,7 +19,6 @@ import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -52,12 +51,7 @@ class LatestBooksDataSource @AssistedInject constructor(
 
         return if (context.isOnline) {
             try {
-                val it = withContext(Dispatchers.IO) { getData(page) }
-                if (it == null) {
-                    canNotLoadMoreContent()
-                } else {
-                    tryToLoadBooks(page, it)
-                }
+                withContext(dispatcher) { tryToLoadBooks(page) }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
@@ -66,17 +60,17 @@ class LatestBooksDataSource @AssistedInject constructor(
         }
     }
 
-    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, Book> {
+    private suspend fun tryToLoadBooks(page: Int): LoadResult.Page<Int, Book> {
         return if (canLoadMore) {
-            loadBooks(it, page)
+            loadBooks(page)
         } else {
             canNotLoadMoreContent()
         }
     }
 
 
-    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, Book> {
-        val list = processDocument(it)
+    private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
+        val list = fetch()
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {
@@ -88,12 +82,11 @@ class LatestBooksDataSource @AssistedInject constructor(
 
 
     private suspend fun fetch(): List<Book> =
-        withContext(Dispatchers.IO) {
             skrape(HttpFetcher) {
                 request {
                     timeout = DEFAULT_API_TIMEOUT
-                    url =
-                        "$SEARCH_BASE_URL?req=dan+brown&lg_topic=libgen&view=detailed&res=100&phrase=1&column=def"
+                    url = "$SEARCH_BASE_URL?$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_CONST&" +
+                                "$LAST_MODE=$LAST_QUERY&$COLUM_QUERY=$FIELD_DEFAULT_PARAM&$SORT_TYPE=$sortType"
                 }
                 response {
                     htmlDocument {
@@ -121,6 +114,7 @@ class LatestBooksDataSource @AssistedInject constructor(
                                     }
                                 }
                             } else {
+                                canLoadMore = false
                                 emptyList()
                             }
 
@@ -129,25 +123,10 @@ class LatestBooksDataSource @AssistedInject constructor(
                     }
                 }
             }
-        }
 
     private fun <T> tryOrNull(block: () -> T) = try {
         block()
     } catch (t: Throwable) {
         null
-    }
-
-
-    private fun getData(page: Int): Document? {
-        val jsoup = Jsoup.connect(SEARCH_BASE_URL)
-            .timeout(DEFAULT_API_TIMEOUT)
-            .data(SORT_QUERY, sortQuery)
-            .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(LAST_MODE, LAST_QUERY)
-            .data(COLUM_QUERY, FIELD_DEFAULT_PARAM)
-            .data(RES_CONST, PAGE_SIZE)
-            .data(SORT_TYPE, sortType)
-            .data(PAGE_CONST, page.toString())
-        return jsoup.get()
     }
 }

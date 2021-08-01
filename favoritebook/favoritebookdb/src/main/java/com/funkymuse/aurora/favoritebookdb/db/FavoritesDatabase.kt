@@ -24,6 +24,7 @@ abstract class FavoritesDatabase : RoomDatabase() {
 
     companion object : ParameterizedSingleton<FavoritesDatabase, Context>({
         Room.databaseBuilder(it, FavoritesDatabase::class.java, FAVORITES_DB_NAME)
+            .fallbackToDestructiveMigration()
             .build()
     })
 }

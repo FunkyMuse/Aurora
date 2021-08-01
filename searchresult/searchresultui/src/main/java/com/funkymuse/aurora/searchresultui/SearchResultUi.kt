@@ -52,9 +52,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SearchResult(
-        onBookClicked: (mirrors: List<String>) -> Unit
-) {
+fun SearchResult() {
     val searchResultViewModelViewModel: SearchResultHandleDataViewModel = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
     var checkedSortPosition by rememberIntSaveableDefaultZero()
@@ -183,8 +181,7 @@ fun SearchResult(
                         item ?: return@items
 
                         Book(item) {
-                            val bookID = item.id?.toInt() ?: return@Book
-                            onBookClicked(item.mirrors?.toList() ?: emptyList())
+                            val bookID = item.id
                             searchResultViewModelViewModel.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                         }
                     }

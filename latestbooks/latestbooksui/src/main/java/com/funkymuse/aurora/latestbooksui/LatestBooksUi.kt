@@ -40,8 +40,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LatestBooks(
-
-        onBookClicked: (List<String>) -> Unit
 ) {
     val latestBooksVM: LatestBooksVM = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
@@ -151,8 +149,7 @@ fun LatestBooks(
                 items(pagingItems) { item ->
                     item ?: return@items
                     Book(item) {
-                        val bookID = item.id?.toInt() ?: return@Book
-                        onBookClicked(item.mirrors?.toList() ?: emptyList())
+                        val bookID = item.id
                         latestBooksVM.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                     }
                 }

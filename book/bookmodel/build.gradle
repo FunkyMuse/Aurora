@@ -6,7 +6,4 @@ applyMoshiDeps(this)
 
 dependencies {
     api project(path: ':book:generalbook')
-
-    //jsoup
-    implementation "it.skrape:skrapeit:$skrapeit"
 }

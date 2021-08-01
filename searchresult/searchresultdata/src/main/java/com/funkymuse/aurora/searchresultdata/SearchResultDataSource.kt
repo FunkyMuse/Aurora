@@ -7,12 +7,18 @@ import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
+import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import it.skrape.core.htmlDocument
+import it.skrape.fetcher.HttpFetcher
+import it.skrape.fetcher.response
+import it.skrape.fetcher.skrape
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -27,7 +33,8 @@ class SearchResultDataSource @AssistedInject constructor(
     @Assisted(FIELDS_QUERY_CONST) private val searchInFieldsPosition: Int,
     @Assisted(SORT_QUERY) private val sortQuery: String,
     @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
-    @Assisted(SORT_TYPE) private val sortType: String
+    @Assisted(SORT_TYPE) private val sortType: String,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -44,18 +51,13 @@ class SearchResultDataSource @AssistedInject constructor(
     var canLoadMore = true
 
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
 
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         val page = params.key ?: 1
 
         return if (context.isOnline) {
             try {
-                val it = withContext(Dispatchers.IO) { getData(page) }
-                if (it == null) {
-                    canNotLoadMoreContent()
-                } else {
-                    tryToLoadBooks(page, it)
-                }
+                withContext(dispatcher) { tryToLoadBooks(page) }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
@@ -64,56 +66,74 @@ class SearchResultDataSource @AssistedInject constructor(
         }
     }
 
-    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, Book> {
+    private suspend fun tryToLoadBooks(page: Int): LoadResult.Page<Int, Book> {
         return if (canLoadMore) {
-            loadBooks(it, page)
+            loadBooks(page)
         } else {
             canNotLoadMoreContent()
         }
     }
 
-    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, Book> {
-        val list = processDocument(it)
+
+    private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
+        val list = fetch()
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {
-            val prevKey =
-                if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
+            val prevKey = if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
             val nextKey = if (list.count() == 0) null else page.plus(1)
             LoadResult.Page(list, prevKey, nextKey)
         }
     }
 
-
-    private fun getData(page: Int): Document? {
-        val jsoup = Jsoup.connect(SEARCH_BASE_URL)
-            .timeout(DEFAULT_API_TIMEOUT)
-            .data(REQ_CONST, searchQuery)
-            .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(COLUM_QUERY, getFieldParamByPosition(searchInFieldsPosition))
-            .data(SEARCH_WITH_MASK, if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
-            .data(RES_CONST, PAGE_SIZE)
-            .data(SORT_QUERY, sortQuery)
-            .data(SORT_TYPE, sortType)
-            .data(PAGE_CONST, page.toString())
-
-        return jsoup.get()
-    }
-
-    private fun processDocument(doc: Document?): List<Book>? {
-        return doc?.let { document ->
-
-            val trs = document.select("table")[2].select("tr")
-            trs.removeAt(0)
-
-            if (trs.size < PAGE_SIZE.toInt()) {
-                //cant load more
-                canLoadMore = false
+    private suspend fun fetch(): List<Book> =
+        skrape(HttpFetcher) {
+            request {
+                timeout = DEFAULT_API_TIMEOUT
+                url = "$SEARCH_BASE_URL?$REQ_CONST=$searchQuery&$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_CONST&" +
+                        "$LAST_MODE=$LAST_QUERY&$COLUM_QUERY=${getFieldParamByPosition(searchInFieldsPosition)}&$SORT_TYPE=$sortType&"+
+                        "$SEARCH_WITH_MASK=${if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO}"
             }
+            response {
+                htmlDocument {
+                    findAll("table").drop(2).map {
 
-            return@let trs.map {
-                return@map Book(it)
+                        val trs =
+                            tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
+                                ?.map { it.findAll("td") }?.flatten()?.map { it.children }
+                                ?.flatten()
+
+                        val res = if (!trs.isNullOrEmpty()) {
+                            trs.dropLast(1).mapNotNull {
+                                val id = tryOrNull {
+                                    trs[2].eachLink.values.firstOrNull()?.substringAfter("md5=")
+                                }
+                                if (id == null) {
+                                    null
+                                } else {
+                                    Book(
+                                        image = tryOrNull { trs[0].eachImage.values.firstOrNull() },
+                                        title = tryOrNull { trs[2].text },
+                                        author = tryOrNull { trs[5].text },
+                                        id = id
+                                    )
+                                }
+                            }
+                        } else {
+                            canLoadMore = false
+                            emptyList()
+                        }
+
+                        res
+                    }.flatten()
+                }
             }
         }
+
+    private fun <T> tryOrNull(block: () -> T) = try {
+        block()
+    } catch (t: Throwable) {
+        null
     }
+
 }

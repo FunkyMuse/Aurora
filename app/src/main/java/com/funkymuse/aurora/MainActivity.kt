@@ -14,14 +14,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
-import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.addBookMirrors
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.BottomNav
@@ -102,7 +100,7 @@ fun AuroraScaffold(navigator: Navigator) {
                     addLatestBooks()
                     addSettings()
                     addSearchResult()
-                    addBookDetails(navController)
+                    addBookDetails()
                     addCrashes()
                 }
         )
@@ -124,17 +122,13 @@ private fun NavGraphBuilder.addSearch() {
 
 private fun NavGraphBuilder.addFavorites() {
     composable(FavoritesBottomNavRoute.route) {
-        Favorites { mirrors ->
-            it.addBookMirrors(mirrors)
-        }
+        Favorites()
     }
 }
 
 private fun NavGraphBuilder.addLatestBooks() {
     composable(LatestBooksBottomNavRoute.route) {
-        LatestBooks { mirrors ->
-            it.addBookMirrors(mirrors)
-        }
+        LatestBooks()
     }
 }
 
@@ -148,23 +142,16 @@ private fun NavGraphBuilder.addSettings() {
 private fun NavGraphBuilder.addSearchResult() {
     with(SearchResultDestination) {
         composable(route(), arguments) {
-            SearchResult { mirrors ->
-                it.addBookMirrors(mirrors)
-            }
+            SearchResult()
         }
     }
 }
 
 
-private fun NavGraphBuilder.addBookDetails(
-        navController: NavHostController
-) {
+private fun NavGraphBuilder.addBookDetails() {
     with(BookDetailsDestination) {
         composable(route(), arguments) {
-            it.arguments?.apply {
-                //workaround since we can't pass parcelable as nav arguments :(
-                ShowDetailedBook(navController.previousBackStackEntry?.getBookMirrors())
-            }
+            ShowDetailedBook()
         }
     }
 }

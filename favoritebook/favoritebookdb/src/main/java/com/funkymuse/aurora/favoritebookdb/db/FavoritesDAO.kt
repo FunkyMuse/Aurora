@@ -17,21 +17,21 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoritesDAO {
 
-    @Query("select * from favoriteBooks")
+    @Query("select * from favorite_books")
     fun getAllFavorites(): PagingSource<Int, FavoriteBook>
 
-    @Query("select count(*) from favoriteBooks")
+    @Query("select count(*) from favorite_books")
     fun favoriteItemsCount(): Flow<Int>
 
     @Delete
     suspend fun deleteFromFavorites(favoriteBook: FavoriteBook)
 
-    @Query("delete from favoriteBooks where id =:favID")
+    @Query("delete from favorite_books where id =:favID")
     suspend fun deleteFromFavoritesByID(favID: Int)
 
     @Insert(onConflict = REPLACE)
     suspend fun insertIntoFavorites(favoriteBook: FavoriteBook)
 
-    @Query("select * from favoriteBooks where id =:bookID limit 1")
-    fun getFavoriteById(bookID: Int): Flow<FavoriteBook?>
+    @Query("select * from favorite_books where id =:bookID limit 1")
+    fun getFavoriteById(bookID: String): Flow<FavoriteBook?>
 }

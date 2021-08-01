@@ -39,9 +39,7 @@ import kotlinx.coroutines.flow.conflate
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Favorites(
-        onBookClicked: (mirrors: List<String>) -> Unit
-) {
+fun Favorites() {
     val viewModel: FavoritesViewModel = hiltViewModel()
     val pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
@@ -112,7 +110,6 @@ fun Favorites(
                         Book(it, onLongClick = {
                             longClickedBook.value = it
                         }) {
-                            onBookClicked(it.mirrors ?: emptyList())
                             viewModel.navigate(BookDetailsDestination.createBookDetailsRoute(it.id))
                         }
                     }
@@ -132,7 +129,7 @@ fun DeleteBook(
                     R.string.remove_book_from_favs,
                     it.title.toString()
             ), onDismiss = onDismiss, onConfirm = {
-        onConfirm(it.id)
+        onConfirm(it.id.toInt())
     }, confirmText = stringResource(id = R.string.remove)
     )
 }

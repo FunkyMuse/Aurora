@@ -26,7 +26,7 @@ const val SORT_QUERY = "sort"
 const val SORT_TYPE = "sortmode"
 
 const val VIEW_QUERY = "view"
-const val VIEW_QUERY_PARAM = "simple"
+const val VIEW_QUERY_PARAM = "detailed"
 
 const val SEARCH_WITH_MASK = "phrase"
 const val SEARCH_WITH_MASK_YES = "0"
