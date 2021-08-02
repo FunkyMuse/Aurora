@@ -27,4 +27,16 @@ data class FavoriteBook(
     @ColumnInfo(name = "author")
     override val author: String? = null,
 
+    @ColumnInfo(name = "extension")
+    override val extension: String? = null,
+
+    @ColumnInfo(name = "pages")
+    override val pages: String? = null,
+
+    @ColumnInfo(name = "size")
+    override val size: String? = null,
+
+    @ColumnInfo(name = "year")
+    override val year: String? = null,
+
 ) : GeneralBook

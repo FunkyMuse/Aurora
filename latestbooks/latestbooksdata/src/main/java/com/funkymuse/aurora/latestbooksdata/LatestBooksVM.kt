@@ -1,7 +1,6 @@
 package com.funkymuse.aurora.latestbooksdata
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -79,7 +78,6 @@ class LatestBooksVM @Inject constructor(
     }
 
     fun refresh() {
-        Log.d("REFERSH", "LATEST BOOKS")
         resetOnSort()
     }
 

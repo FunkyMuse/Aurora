@@ -5,11 +5,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
+import com.crazylegend.common.tryOrNull
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
+import com.funkymuse.aurora.skraper.BookScraper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -31,7 +33,8 @@ class SearchResultDataSource @AssistedInject constructor(
     @Assisted(SORT_QUERY) private val sortQuery: String,
     @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
     @Assisted(SORT_TYPE) private val sortType: String,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val scraper:BookScraper
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -61,9 +64,8 @@ class SearchResultDataSource @AssistedInject constructor(
         }
     }
 
-
     private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
-        val list = fetch(page)
+        val list = scraper.fetch(scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord))
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {
@@ -71,56 +73,6 @@ class SearchResultDataSource @AssistedInject constructor(
             val nextKey = if (list.count() == 0) null else page.plus(1)
             LoadResult.Page(list, prevKey, nextKey)
         }
-    }
-
-    private suspend fun fetch(page:Int): List<Book> =
-        skrape(HttpFetcher) {
-            request {
-                timeout = DEFAULT_API_TIMEOUT
-                url = "$SEARCH_BASE_URL?$REQ_CONST=${searchQuery.replace(" ", "+")}&$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_SIZE&" +
-                        "&$COLUM_QUERY=${getFieldParamByPosition(searchInFieldsPosition)}&$SORT_TYPE=$sortType&"+
-                        "$SEARCH_WITH_MASK=${if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO}&" +
-                        "$PAGE_CONST=$page"
-            }
-            response {
-                htmlDocument {
-                    findAll("table").asSequence().drop(2).map {
-
-                        val elementList =
-                            tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
-                                ?.map { it.findAll("td") }?.flatten()?.map { it.children }
-                                ?.flatten()
-
-                        val res = if (!elementList.isNullOrEmpty()) {
-                            elementList.dropLast(1).mapNotNull {
-                                val id = tryOrNull {
-                                    elementList[2].eachLink.values.firstOrNull()?.substringAfter("md5=")
-                                }
-                                if (id == null) {
-                                    null
-                                } else {
-                                    Book(
-                                        image = tryOrNull { elementList[0].eachImage.values.firstOrNull() },
-                                        title = tryOrNull { elementList[2].text },
-                                        author = tryOrNull { elementList[5].text },
-                                        id = id
-                                    )
-                                }
-                            }
-                        } else {
-                            emptyList()
-                        }
-
-                        res
-                    }.flatten().toSet().toList()
-                }
-            }
-        }
-
-    private fun <T> tryOrNull(block: () -> T) = try {
-        block()
-    } catch (t: Throwable) {
-        null
     }
 
 }

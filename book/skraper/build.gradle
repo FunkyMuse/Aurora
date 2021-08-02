@@ -1,0 +1,19 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+    implementation project(path: ':book:bookmodel')
+    implementation project(path: ':extensions')
+    implementation project(path: ':serverconstants')
+
+
+    //jsoup
+    implementation "it.skrape:skrapeit:$skrapeit"
+
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
+    implementation project(path: ':coroutines:dispatchers')
+
+}

@@ -63,7 +63,7 @@ subprojects {
         case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
               "bookdetailsdestination", "favoritebookdb", "favoritebookmodel",
               "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
-              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions"]:
+              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions", "skraper"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
