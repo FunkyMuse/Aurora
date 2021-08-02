@@ -27,7 +27,7 @@ interface FavoritesDAO {
     suspend fun deleteFromFavorites(favoriteBook: FavoriteBook)
 
     @Query("delete from favorite_books where id =:favID")
-    suspend fun deleteFromFavoritesByID(favID: Int)
+    suspend fun deleteFromFavoritesByID(favID: String)
 
     @Insert(onConflict = REPLACE)
     suspend fun insertIntoFavorites(favoriteBook: FavoriteBook)

@@ -2,9 +2,10 @@ package com.funkymuse.aurora.favoritebookmodel
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.funkymuse.aurora.generalbook.GeneralBook
+import com.funkymuse.aurora.serverconstants.COVERS_APPEND
 
 
 /**
@@ -22,7 +23,7 @@ data class FavoriteBook(
     override val title: String? = null,
 
     @ColumnInfo(name = "image")
-    override val image:String?=null,
+    val realImage: String? = null,
 
     @ColumnInfo(name = "author")
     override val author: String? = null,
@@ -34,9 +35,32 @@ data class FavoriteBook(
     override val pages: String? = null,
 
     @ColumnInfo(name = "size")
-    override val size: String? = null,
+    val favoriteSize: String? = null,
 
     @ColumnInfo(name = "year")
     override val year: String? = null,
 
-) : GeneralBook
+    ) : GeneralBook {
+
+    override val size get() = favoriteSize?.toLongOrNull()?.toFileSizeString()
+    override val image: String get() = COVERS_APPEND + realImage
+
+    @Ignore
+    private val fileSizeUnits = arrayOf("bytes", "Kb", "Mb", "GB", "TB", "PB", "EB", "ZB", "YB")
+
+    private fun Long.toFileSizeString(): String {
+        var bytesToCalculate = this
+        val sizeToReturn: String
+        var index = 0
+        while (index < fileSizeUnits.size) {
+            if (bytesToCalculate < 1024) {
+                break
+            }
+            bytesToCalculate /= 1024
+            index++
+        }
+        sizeToReturn = bytesToCalculate.toString() + " " + fileSizeUnits[index]
+        return sizeToReturn
+    }
+
+}

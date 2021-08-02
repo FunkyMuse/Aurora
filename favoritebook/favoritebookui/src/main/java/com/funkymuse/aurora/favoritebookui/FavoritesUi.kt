@@ -48,7 +48,7 @@ fun Favorites() {
 
     longClickedBook.value?.apply {
         DeleteBook(it = this,
-                onConfirm = { viewModel.removeFromFavorites(it) },
+                onConfirm = { viewModel.removeFromFavorites(id) },
                 onDismiss = { longClickedBook.value = null })
     }
 

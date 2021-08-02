@@ -57,7 +57,7 @@ class BookDetailsViewModel @Inject constructor(
         viewModelScope.launch { favoritesDAO.insertIntoFavorites(favoriteBook) }
     }
 
-    fun removeFromFavorites(favoriteBookID: Int) {
+    fun removeFromFavorites(favoriteBookID: String) {
         viewModelScope.launch { favoritesDAO.deleteFromFavoritesByID(favoriteBookID) }
     }
 

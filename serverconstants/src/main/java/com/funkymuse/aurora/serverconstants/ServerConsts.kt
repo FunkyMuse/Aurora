@@ -12,7 +12,9 @@ const val RES_CONST = "res"
 const val REQ_CONST = "req"
 const val PAGE_CONST = "page"
 const val PAGE_SIZE = "100"
-const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}covers/"
+
+const val COVERS_APPEND = "covers/"
+const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}$COVERS_APPEND"
 
 const val LIBGEN_BASE_URL = "http://gen.lib.rus.ec/"
 

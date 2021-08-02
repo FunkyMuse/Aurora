@@ -139,16 +139,20 @@ private fun favoritesClick(
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
                 FavoriteBook(
-                    bookModel.id.toString(),
+                    bookModel.md5.toString(),
                     bookModel.title,
                     bookModel.coverurl,
-                    bookModel.author
+                    bookModel.author,
+                    bookModel.extension?.uppercase(),
+                    bookModel.pagesInFile,
+                    bookModel.fileSize,
+                    bookModel.year
                 )
             )
         }
 
     } else {
-        bookDetailsViewModel.removeFromFavorites(favoritesBook.id.toInt())
+        bookDetailsViewModel.removeFromFavorites(favoritesBook.id)
     }
 }
 

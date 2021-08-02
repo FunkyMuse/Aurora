@@ -27,7 +27,7 @@ class FavoritesViewModel @Inject constructor(
 
     val count = favoritesDAO.favoriteItemsCount()
 
-    fun removeFromFavorites(id: Int) {
+    fun removeFromFavorites(id: String) {
         viewModelScope.launch(ioDispatcher) { favoritesDAO.deleteFromFavoritesByID(id) }
     }
 }
