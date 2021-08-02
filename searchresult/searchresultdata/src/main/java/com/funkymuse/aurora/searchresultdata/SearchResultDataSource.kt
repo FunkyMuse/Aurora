@@ -1,7 +1,6 @@
 package com.funkymuse.aurora.searchresultdata
 
 import android.content.Context
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
@@ -20,10 +19,7 @@ import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 
 /**
  * Created by funkymuse on 5/11/21 to long live and prosper !
@@ -67,7 +63,7 @@ class SearchResultDataSource @AssistedInject constructor(
 
 
     private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
-        val list = fetch()
+        val list = fetch(page)
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {
@@ -77,36 +73,36 @@ class SearchResultDataSource @AssistedInject constructor(
         }
     }
 
-    private suspend fun fetch(): List<Book> =
+    private suspend fun fetch(page:Int): List<Book> =
         skrape(HttpFetcher) {
             request {
                 timeout = DEFAULT_API_TIMEOUT
                 url = "$SEARCH_BASE_URL?$REQ_CONST=${searchQuery.replace(" ", "+")}&$SORT_QUERY=$sortQuery&$VIEW_QUERY=$VIEW_QUERY_PARAM&$RES_CONST=$PAGE_SIZE&" +
                         "&$COLUM_QUERY=${getFieldParamByPosition(searchInFieldsPosition)}&$SORT_TYPE=$sortType&"+
-                        "$SEARCH_WITH_MASK=${if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO}"
-                Log.d("URL REQUESt", url)
+                        "$SEARCH_WITH_MASK=${if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO}&" +
+                        "$PAGE_CONST=$page"
             }
             response {
                 htmlDocument {
                     findAll("table").asSequence().drop(2).map {
 
-                        val trs =
+                        val elementList =
                             tryOrNull { it.findAll("tr").filter { it.children.size >= 2 } }
                                 ?.map { it.findAll("td") }?.flatten()?.map { it.children }
                                 ?.flatten()
 
-                        val res = if (!trs.isNullOrEmpty()) {
-                            trs.dropLast(1).mapNotNull {
+                        val res = if (!elementList.isNullOrEmpty()) {
+                            elementList.dropLast(1).mapNotNull {
                                 val id = tryOrNull {
-                                    trs[2].eachLink.values.firstOrNull()?.substringAfter("md5=")
+                                    elementList[2].eachLink.values.firstOrNull()?.substringAfter("md5=")
                                 }
                                 if (id == null) {
                                     null
                                 } else {
                                     Book(
-                                        image = tryOrNull { trs[0].eachImage.values.firstOrNull() },
-                                        title = tryOrNull { trs[2].text },
-                                        author = tryOrNull { trs[5].text },
+                                        image = tryOrNull { elementList[0].eachImage.values.firstOrNull() },
+                                        title = tryOrNull { elementList[2].text },
+                                        author = tryOrNull { elementList[5].text },
                                         id = id
                                     )
                                 }
