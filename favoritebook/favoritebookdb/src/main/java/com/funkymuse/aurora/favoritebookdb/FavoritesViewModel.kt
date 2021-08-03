@@ -16,17 +16,14 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val favoritesDAO: FavoritesDAO,
-    pagingDataProvider: PagingDataProvider,
-    private val navigator: Navigator,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+        private val favoritesDAO: FavoritesDAO,
+        pagingDataProvider: PagingDataProvider,
+        private val navigator: Navigator,
+        @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), Navigator by navigator {
 
     val favoritesData =
-        pagingDataProvider.providePagingData(
-            viewModelScope,
-            ioDispatcher
-        ) { favoritesDAO.getAllFavorites() }
+            pagingDataProvider.providePagingData(viewModelScope, ioDispatcher) { favoritesDAO.getAllFavorites() }
 
     val count = favoritesDAO.favoriteItemsCount()
 

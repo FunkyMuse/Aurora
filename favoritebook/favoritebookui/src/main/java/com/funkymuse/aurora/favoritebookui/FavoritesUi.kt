@@ -49,29 +49,29 @@ fun Favorites() {
 
     longClickedBook.value?.apply {
         DeleteBook(it = this,
-            onConfirm = { viewModel.removeFromFavorites(id) },
-            onDismiss = { longClickedBook.value = null })
+                onConfirm = { viewModel.removeFromFavorites(id) },
+                onDismiss = { longClickedBook.value = null })
     }
 
 
     //gotta make this workaround bcuz the paging library itemCount always starts with 0 :(
     val isDatabaseEmpty = viewModel.count.conflate()
-        .collectAsState(1).value == 0
+            .collectAsState(1).value == 0
 
     progressVisibility =
-        pagingUIProviderViewModel.progressBarVisibility(favorites)
+            pagingUIProviderViewModel.progressBarVisibility(favorites)
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (loading) = createRefs()
         AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-            .constrainAs(loading) {
-                top.linkTo(parent.top)
-                centerHorizontallyTo(parent)
-            }
-            .wrapContentSize()
-            .systemBarsPadding()
-            .padding(top = 4.dp)
-            .zIndex(2f)) {
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .systemBarsPadding()
+                .padding(top = 4.dp)
+                .zIndex(2f)) {
             CircularProgressIndicator()
         }
 
@@ -79,19 +79,19 @@ fun Favorites() {
             ErrorMessage(text = R.string.no_favorites_expl)
         } else {
             pagingUIProviderViewModel.onPaginationReachedError(
-                favorites.appendState,
-                R.string.no_more_favorite_books
+                    favorites.appendState,
+                    R.string.no_more_favorite_books
             )
         }
 
         val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
         SwipeRefresh(
-            state = swipeToRefreshState, onRefresh = {
-                swipeToRefreshState.isRefreshing = true
-                favorites.refresh()
-                swipeToRefreshState.isRefreshing = false
-            },
-            modifier = Modifier.fillMaxSize()
+                state = swipeToRefreshState, onRefresh = {
+            swipeToRefreshState.isRefreshing = true
+            favorites.refresh()
+            swipeToRefreshState.isRefreshing = false
+        },
+                modifier = Modifier.fillMaxSize()
         ) {
 
             LazyColumn(
@@ -117,16 +117,16 @@ fun Favorites() {
 
 @Composable
 fun DeleteBook(
-    it: FavoriteBook = FavoriteBook(),
-    onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
+        it: FavoriteBook = FavoriteBook(),
+        onDismiss: () -> Unit = {}, onConfirm: (id: Int) -> Unit = {}
 ) {
     ConfirmationDialog(
-        title = stringResource(
-            R.string.remove_book_from_favs,
-            it.title.toString()
-        ), onDismiss = onDismiss, onConfirm = {
-            onConfirm(it.id.toInt())
-        }, confirmText = stringResource(id = R.string.remove)
+            title = stringResource(
+                    R.string.remove_book_from_favs,
+                    it.title.toString()
+            ), onDismiss = onDismiss, onConfirm = {
+        onConfirm(it.id.toInt())
+    }, confirmText = stringResource(id = R.string.remove)
     )
 }
 

@@ -45,9 +45,9 @@ object NetworkingModule {
     @Provides
     @Singleton
     fun okHttpClientBuilder(
-        interceptorsSet: Set<@JvmSuppressWildcards Interceptor>,
-        @Named(TIMEOUT_NAMED) timeOut: Long,
-        @Named(TIME_UNIT_NAMED) timeOutUnit: TimeUnit
+            interceptorsSet: Set<@JvmSuppressWildcards Interceptor>,
+            @Named(TIMEOUT_NAMED) timeOut: Long,
+            @Named(TIME_UNIT_NAMED) timeOutUnit: TimeUnit
     ): OkHttpClient.Builder = OkHttpClient.Builder().also { client ->
         interceptorsSet.forEach { client.addInterceptor(it) }
         client.callTimeout(timeOut, timeOutUnit)
@@ -56,9 +56,9 @@ object NetworkingModule {
     @Provides
     @Singleton
     fun retrofitBuilder(
-        retrofitResultAdapterFactory: RetrofitResultAdapterFactory,
-        moshiConverterFactory: MoshiConverterFactory
+            retrofitResultAdapterFactory: RetrofitResultAdapterFactory,
+            moshiConverterFactory: MoshiConverterFactory
     ): Retrofit.Builder = Retrofit.Builder()
-        .addCallAdapterFactory(retrofitResultAdapterFactory)
-        .addConverterFactory(moshiConverterFactory)
+            .addCallAdapterFactory(retrofitResultAdapterFactory)
+            .addConverterFactory(moshiConverterFactory)
 }

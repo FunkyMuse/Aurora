@@ -40,31 +40,31 @@ fun AuroraBottomNavigation(navController: NavHostController, bottomNavList: List
     }
 
     BottomNavigation(
-        modifier = size
-            .clip(BottomSheetShapes.large)
-            .navigationBarsPadding()
+            modifier = size
+                    .clip(BottomSheetShapes.large)
+                    .navigationBarsPadding()
     ) {
         hideBottomNav = currentRoute in BottomNav.hideBottomNavOnDestinations
         bottomNavList.forEach { bottomEntry ->
             BottomNavigationItem(
-                selected = currentRoute == bottomEntry.screen.route,
-                alwaysShowLabel = false,
-                onClick = {
-                    navController.navigate(bottomEntry.screen.route) {
-                        restoreState = true
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+                    selected = currentRoute == bottomEntry.screen.route,
+                    alwaysShowLabel = false,
+                    onClick = {
+                        navController.navigate(bottomEntry.screen.route) {
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
                         }
-                        launchSingleTop = true
+                    },
+                    label = { Text(text = stringResource(id = bottomEntry.screen.resourceID)) },
+                    icon = {
+                        Icon(
+                                imageVector = bottomEntry.icon,
+                                contentDescription = stringResource(id = bottomEntry.screen.resourceID)
+                        )
                     }
-                },
-                label = { Text(text = stringResource(id = bottomEntry.screen.resourceID)) },
-                icon = {
-                    Icon(
-                        imageVector = bottomEntry.icon,
-                        contentDescription = stringResource(id = bottomEntry.screen.resourceID)
-                    )
-                }
             )
         }
     }

@@ -23,7 +23,7 @@ fun PreviewBackButton() {
 }
 
 @Composable
-fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit = {}, ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),

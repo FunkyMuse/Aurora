@@ -3,6 +3,7 @@ package com.funkymuse.aurora.di
 import android.content.Context
 import coil.ImageLoader
 import coil.request.CachePolicy
+import com.funkymuse.aurora.R
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

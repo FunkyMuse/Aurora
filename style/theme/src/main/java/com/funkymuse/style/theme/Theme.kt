@@ -35,11 +35,7 @@ onSurface = Color.Black,
 )
 
 @Composable
-fun AuroraTheme(
-    darkThemeFlow: Flow<Boolean>,
-    defaultValue: Boolean,
-    content: @Composable () -> Unit
-) {
+fun AuroraTheme(darkThemeFlow: Flow<Boolean>, defaultValue: Boolean, content: @Composable () -> Unit) {
     val isSystemInDark = darkThemeFlow.collectAsState(initial = defaultValue).value
 
     val colors = if (isSystemInDark) {
@@ -49,8 +45,8 @@ fun AuroraTheme(
     }
 
     MaterialTheme(
-        colors = colors,
-        typography = Typography,
+            colors = colors,
+            typography = Typography,
         shapes = Shapes,
         content = content
     )

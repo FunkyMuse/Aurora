@@ -9,10 +9,6 @@ import kotlinx.coroutines.flow.Flow
 interface Navigator {
 
     fun navigateUp(): Boolean
-    fun navigate(
-        route: String,
-        builder: NavOptionsBuilder.() -> Unit = { launchSingleTop = true }
-    ): Boolean
-
+    fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit = { launchSingleTop = true }): Boolean
     val destinations: Flow<NavigatorEvent>
 }

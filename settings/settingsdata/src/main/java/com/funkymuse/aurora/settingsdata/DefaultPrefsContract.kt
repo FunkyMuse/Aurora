@@ -9,7 +9,7 @@ interface DefaultPrefsContract {
     val darkTheme: Flow<Boolean>
     suspend fun changeTheme(isDarkThemeEnabled: Boolean)
 
-    companion object {
+    companion object{
         const val DARK_THEME_KEY = "dark_theme"
     }
 

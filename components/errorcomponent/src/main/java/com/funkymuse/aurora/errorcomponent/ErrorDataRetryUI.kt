@@ -115,9 +115,7 @@ fun ErrorMessage(
     @StringRes text: Int,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .zIndex(3f),
+        modifier = Modifier.fillMaxSize().zIndex(3f),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

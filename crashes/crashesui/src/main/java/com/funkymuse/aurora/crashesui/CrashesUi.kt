@@ -46,11 +46,11 @@ fun Crashes() {
     }
 
     Scaffold(modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBarBookDetails {
-                navigator.navigateUp()
-            }
-        }) {
+            topBar = {
+                TopAppBarBookDetails {
+                    navigator.navigateUp()
+                }
+            }) {
         LazyColumn {
             itemsIndexed(crashes) { index, item ->
                 CrashItem(index + 1, item, showToast)
@@ -67,31 +67,25 @@ fun CrashItem(index: Int, item: String, showToast: () -> Unit) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 18.dp)
-        .padding(top = 18.dp)
-        .wrapContentHeight(), onClick = {
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp)
+            .padding(top = 18.dp)
+            .wrapContentHeight(), onClick = {
         clipboardManager.apply {
             clipboardManager.setText(AnnotatedString(text = item))
             showToast()
             context.openWebPage(CRASHES_URL)
         }
     }) {
-        Text(
-            text = stringResource(id = R.string.crash_number, index),
-            modifier = Modifier.padding(16.dp)
-        )
+        Text(text = stringResource(id = R.string.crash_number, index), modifier = Modifier.padding(16.dp))
     }
 }
 
 @Composable
 fun TopAppBarBookDetails(
-    onBackClicked: () -> Unit
+        onBackClicked: () -> Unit
 ) {
-    TopAppBar(
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        modifier = Modifier.statusBarsPadding()
-    ) {
+    TopAppBar(backgroundColor = MaterialTheme.colors.primaryVariant, modifier = Modifier.statusBarsPadding()) {
         BackButton(modifier = Modifier.padding(8.dp), onClick = onBackClicked)
     }
 }

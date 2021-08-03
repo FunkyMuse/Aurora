@@ -28,7 +28,7 @@ class LatestBooksDataSource @AssistedInject constructor(
     @Assisted(COLUM_QUERY) private val sortQuery: String,
     @Assisted(SORT_TYPE) private val sortType: String,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val scraper: BookScraper
+    private val scraper:BookScraper
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
