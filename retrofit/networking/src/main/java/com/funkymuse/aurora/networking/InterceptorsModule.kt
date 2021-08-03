@@ -22,13 +22,13 @@ object InterceptorsModule {
     @Singleton
     @IntoSet
     fun connectivityInterceptor(@ApplicationContext context: Context) =
-            ConnectivityInterceptor(context)
+        ConnectivityInterceptor(context)
 
     @Provides
     @Singleton
     @IntoSet
     fun loggingInterceptor(): Interceptor = HttpLoggingInterceptor().also {
         it.level =
-                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
     }
 }

@@ -47,7 +47,8 @@ class SearchResultHandleDataViewModel @Inject constructor(
             maskWord ?: searchWithMaskWord,
             sortType ?: ""
         )
-    val booksData = dataProvider.providePagingData(viewModelScope, ioDispatcher) { searchResultDataSource }
+    val booksData =
+        dataProvider.providePagingData(viewModelScope, ioDispatcher) { searchResultDataSource }
 
     private val searchQuery: String? by stateHandleDelegate(SEARCH_PARAM)
 

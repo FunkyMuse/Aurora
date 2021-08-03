@@ -16,7 +16,7 @@ val LazyPagingItems<*>.refreshState get() = loadState.refresh
 val LazyPagingItems<*>.prependState get() = loadState.prepend
 
 fun <T : Any> canNotLoadMoreContent(): PagingSource.LoadResult.Page<Int, T> =
-        PagingSource.LoadResult.Page(emptyList(), null, null)
+    PagingSource.LoadResult.Page(emptyList(), null, null)
 
 
 /*

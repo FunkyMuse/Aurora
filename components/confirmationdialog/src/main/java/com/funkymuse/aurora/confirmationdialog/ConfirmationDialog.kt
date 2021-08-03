@@ -29,21 +29,25 @@ fun ConfirmationDialog(
             onDismiss()
         },
         confirmButton = {
-            Button(onClick = {
-                onConfirm()
-                onDismiss()
-            }, modifier = Modifier
+            Button(
+                onClick = {
+                    onConfirm()
+                    onDismiss()
+                }, modifier = Modifier
                     .padding(horizontal = 4.dp)
-                    .padding(bottom = 8.dp)) {
+                    .padding(bottom = 8.dp)
+            ) {
                 Text(text = confirmText)
             }
         },
         dismissButton = {
-            Button(onClick = {
-                onDismiss()
-            }, modifier = Modifier
+            Button(
+                onClick = {
+                    onDismiss()
+                }, modifier = Modifier
                     .padding(horizontal = 4.dp)
-                    .padding(bottom = 8.dp)) {
+                    .padding(bottom = 8.dp)
+            ) {
                 Text(text = dismissText)
             }
         },

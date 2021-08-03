@@ -13,10 +13,14 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-        private val defaultPreferences: DefaultPreferences,
+    private val defaultPreferences: DefaultPreferences,
 ) : ViewModel() {
 
-    val darkTheme = defaultPreferences.darkTheme.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
+    val darkTheme = defaultPreferences.darkTheme.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(),
+        false
+    )
 
     fun changeTheme(isDarkThemeEnabled: Boolean) {
         viewModelScope.launch { defaultPreferences.changeTheme(isDarkThemeEnabled) }

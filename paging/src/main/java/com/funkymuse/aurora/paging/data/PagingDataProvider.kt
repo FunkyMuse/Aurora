@@ -18,11 +18,11 @@ class PagingDataProvider @Inject constructor() {
     internal val pagingConfig = PagingConfig(pageSize = 20, enablePlaceholders = true)
 
     inline fun <T : Any> providePagingData(
-            viewModelScope: CoroutineScope,
-            dispatcher: CoroutineDispatcher,
-            crossinline function: () -> PagingSource<Int, T>
+        viewModelScope: CoroutineScope,
+        dispatcher: CoroutineDispatcher,
+        crossinline function: () -> PagingSource<Int, T>
     ): Flow<PagingData<T>> =
-            Pager(pagingConfig) {
-                function()
-            }.flow.flowOn(dispatcher).cachedIn(viewModelScope)
+        Pager(pagingConfig) {
+            function()
+        }.flow.flowOn(dispatcher).cachedIn(viewModelScope)
 }

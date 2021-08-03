@@ -13,14 +13,14 @@ import kotlinx.coroutines.CoroutineScope
 interface PagingUIProviderContract {
 
     fun <T : Any> isDataEmptyWithError(
-            pagingItems: LazyPagingItems<T>
+        pagingItems: LazyPagingItems<T>
     ): Boolean
 
     fun <T : Any> isDataEmpty(pagingItems: LazyPagingItems<T>): Boolean
 
 
     fun <T : Any> progressBarVisibility(
-            pagingItems: LazyPagingItems<T>
+        pagingItems: LazyPagingItems<T>
     ): Boolean
 
     fun <T : Any> isSwipeToRefreshEnabled(pagingItems: LazyPagingItems<T>): Boolean
@@ -28,16 +28,16 @@ interface PagingUIProviderContract {
 
     @Composable
     fun <T : Any> OnError(
-            scope: CoroutineScope,
-            pagingItems: LazyPagingItems<T>,
-            noInternetUI: @Composable () -> Unit,
-            errorUI: @Composable () -> Unit
+        scope: CoroutineScope,
+        pagingItems: LazyPagingItems<T>,
+        noInternetUI: @Composable () -> Unit,
+        errorUI: @Composable () -> Unit
     )
 
     fun isLoadStateNoConnectionException(state: LoadState): Boolean =
-            state is LoadState.Error && state.error is NoConnectionException
+        state is LoadState.Error && state.error is NoConnectionException
 
 
     fun isLoadStateError(state: LoadState): Boolean =
-            state is LoadState.Error
+        state is LoadState.Error
 }

@@ -11,4 +11,4 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class InternetDetectorViewModel @Inject constructor(internetDetector: InternetDetector) :
-        ViewModel(), Flow<Boolean> by internetDetector.state
+    ViewModel(), Flow<Boolean> by internetDetector.state

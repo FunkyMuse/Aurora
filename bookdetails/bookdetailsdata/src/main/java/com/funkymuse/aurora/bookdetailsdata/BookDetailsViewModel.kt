@@ -24,15 +24,15 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
-        private val savedStateHandle: SavedStateHandle,
-        private val libgenAPI: LibgenAPI,
-        private val favoritesDAO: FavoritesDAO,
-        private val navigator: Navigator
+    private val savedStateHandle: SavedStateHandle,
+    private val libgenAPI: LibgenAPI,
+    private val favoritesDAO: FavoritesDAO,
+    private val navigator: Navigator
 ) : ViewModel(), Navigator by navigator {
 
     val id
         get() = savedStateHandle.get<String>(BOOK_ID_PARAM)
-                ?: throw IllegalStateException("Parameter book ID must not be null!")
+            ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()
