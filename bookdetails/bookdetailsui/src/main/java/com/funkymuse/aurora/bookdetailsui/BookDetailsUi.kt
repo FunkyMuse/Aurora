@@ -44,6 +44,7 @@ import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
+import com.funkymuse.aurora.serverconstants.mirrorsUrls
 import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
@@ -121,7 +122,7 @@ fun ShowDetailedBook() {
                     return@handle
                 }
                 detailedBook?.apply {
-                    DetailedBook(this, emptyList())
+                    DetailedBook(this)
                 }
 
             }
@@ -178,19 +179,21 @@ fun ScaffoldWithBackAndFavorites(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
 fun BookPreview() {
-    DetailedBook(book = DetailedBookModel.testBook, listOf("test", "test"))
+    DetailedBook(book = DetailedBookModel.testBook)
 }
 
 
 @Composable
 fun DetailedBook(
     book: DetailedBookModel,
-    dlMirrors: List<String>? = null
+
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
     val painter = rememberImagePainter(data = imageUrl)
+
+    val dlMirrors = book.md5?.let { mirrorsUrls(it) }
 
     Column(
         modifier = Modifier

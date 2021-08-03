@@ -75,4 +75,8 @@ const val SORT_PUBLISHER = "publisher"
 const val LAST_MODE = "mode"
 const val LAST_QUERY = "last"
 
+private fun libraryLolUrl(md5: String)= "http://library.lol/main/$md5"
+private fun libgenLcUrl(md5: String) = "http://libgen.lc/ads.php?md5=$md5"
+private fun zLibrary(md5: String) = "https://3lib.net/md5/$md5"
+fun mirrorsUrls(md5: String) = listOf(libraryLolUrl(md5), libgenLcUrl(md5), zLibrary(md5))
 fun torrentDownloadURL(md5: String) = "${BASE_URL}book/index.php?md5=$md5&oftorrent="
