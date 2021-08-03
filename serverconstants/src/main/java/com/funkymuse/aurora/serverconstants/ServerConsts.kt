@@ -16,7 +16,7 @@ const val PAGE_SIZE = "100"
 const val COVERS_APPEND = "covers/"
 const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}$COVERS_APPEND"
 
-const val LIBGEN_BASE_URL = "http://gen.lib.rus.ec/"
+const val LIBGEN_BASE_URL = BASE_URL
 
 const val JSON_PHP_PAGE_CONST = "json.php"
 

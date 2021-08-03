@@ -50,10 +50,10 @@ fun Book(
             modifier = Modifier
                 .combinedClickable(onLongClick = onLongClick, onClick = onClick)
         ) {
-            Row {
+            Row(modifier = Modifier.width(IntrinsicSize.Max)) {
                 Box(
                     modifier = Modifier
-                        .weight(0.3f)
+                        .weight(0.3f, false)
                         .padding(16.dp)
                 ) {
                     AddStaticImage(remoteImage = book.image)
@@ -127,7 +127,7 @@ private fun AddTitle(
     titleText: String?
 ) {
     Text(
-        modifier = Modifier.padding(end = 8.dp),
+        modifier = Modifier.padding(end = 8.dp, top = 8.dp),
         text = titleText ?: stringResource(id = R.string.not_available),
         overflow = TextOverflow.Ellipsis,
         maxLines = 3,

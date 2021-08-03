@@ -45,6 +45,7 @@ fun Favorites() {
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
+    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
 
     longClickedBook.value?.apply {
         DeleteBook(it = this,
@@ -94,15 +95,10 @@ fun Favorites() {
         ) {
 
             LazyColumn(
-                    modifier = Modifier
-                            .fillMaxSize()
-                            .systemBarsPadding()
-                            .padding(top = 8.dp),
-                    contentPadding = rememberInsetsPaddingValues(
-                            insets = LocalWindowInsets.current.navigationBars,
-                            applyTop = false,
-                            additionalBottom = 16.dp
-                    )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp, top = 8.dp),
+                contentPadding = listInsets
             ) {
 
                 items(favorites) { book ->
