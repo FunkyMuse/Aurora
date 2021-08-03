@@ -71,7 +71,7 @@ fun SearchResult() {
     progressVisibility =
             pagingUIUIProvider.progressBarVisibility(pagingItems)
 
-    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems)
+    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems) && !progressVisibility
     pagingUIUIProvider.onPaginationReachedError(
             pagingItems.appendState,
             R.string.no_more_books_by_query_to_load
