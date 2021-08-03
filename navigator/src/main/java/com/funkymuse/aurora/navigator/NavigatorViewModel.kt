@@ -9,5 +9,5 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class NavigatorViewModel @Inject constructor(
-        private val navigator: Navigator
+    private val navigator: Navigator
 ) : ViewModel(), Navigator by navigator

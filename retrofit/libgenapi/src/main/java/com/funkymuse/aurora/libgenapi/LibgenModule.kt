@@ -20,10 +20,10 @@ object LibgenModule {
     @Provides
     @Singleton
     fun libgenAPI(
-            retrofit: Retrofit.Builder,
-            httpClient: OkHttpClient.Builder
+        retrofit: Retrofit.Builder,
+        httpClient: OkHttpClient.Builder
     ): LibgenAPI = retrofit
-            .baseUrl(LIBGEN_BASE_URL)
-            .client(httpClient.build())
-            .build().create()
+        .baseUrl(LIBGEN_BASE_URL)
+        .client(httpClient.build())
+        .build().create()
 }

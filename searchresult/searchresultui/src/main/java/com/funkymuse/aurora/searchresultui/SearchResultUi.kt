@@ -58,7 +58,11 @@ fun SearchResult() {
     var checkedSortPosition by rememberIntSaveableDefaultZero()
     var filtersVisible by rememberBooleanSaveableDefaultFalse()
 
-    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(searchResultViewModelViewModel.searchInFieldsCheckedPosition) }
+    var searchInFieldsCheckedPosition by rememberSaveable {
+        mutableStateOf(
+            searchResultViewModelViewModel.searchInFieldsCheckedPosition
+        )
+    }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(searchResultViewModelViewModel.searchWithMaskWord) }
 
     var progressVisibility by rememberBooleanDefaultFalse()
@@ -69,12 +73,12 @@ fun SearchResult() {
 
 
     progressVisibility =
-            pagingUIUIProvider.progressBarVisibility(pagingItems)
+        pagingUIUIProvider.progressBarVisibility(pagingItems)
 
     filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems) && !progressVisibility
     pagingUIUIProvider.onPaginationReachedError(
-            pagingItems.appendState,
-            R.string.no_more_books_by_query_to_load
+        pagingItems.appendState,
+        R.string.no_more_books_by_query_to_load
     )
 
     val retry = {
@@ -83,74 +87,74 @@ fun SearchResult() {
     }
 
     ScaffoldWithBackFiltersAndContent(
-            checkedSortPosition,
-            searchInFieldsCheckedPosition,
-            searchWithMaskWord,
-            filtersVisible,
-            onBackClicked = { searchResultViewModelViewModel.navigateUp() },
-            onSortPositionClicked = {
-                checkedSortPosition = it
-                searchResultViewModelViewModel.sortByPosition(it)
-                pagingItems.refresh()
-            },
-            onSearchInFieldsCheckedPosition = {
-                searchInFieldsCheckedPosition = it
-                searchResultViewModelViewModel.searchInFieldsByPosition(it)
-                pagingItems.refresh()
-            },
-            onSearchWithMaskWord = {
-                searchWithMaskWord = it
-                searchResultViewModelViewModel.searchWithMaskedWord(it)
-                pagingItems.refresh()
-            }) {
+        checkedSortPosition,
+        searchInFieldsCheckedPosition,
+        searchWithMaskWord,
+        filtersVisible,
+        onBackClicked = { searchResultViewModelViewModel.navigateUp() },
+        onSortPositionClicked = {
+            checkedSortPosition = it
+            searchResultViewModelViewModel.sortByPosition(it)
+            pagingItems.refresh()
+        },
+        onSearchInFieldsCheckedPosition = {
+            searchInFieldsCheckedPosition = it
+            searchResultViewModelViewModel.searchInFieldsByPosition(it)
+            pagingItems.refresh()
+        },
+        onSearchWithMaskWord = {
+            searchWithMaskWord = it
+            searchResultViewModelViewModel.searchWithMaskedWord(it)
+            pagingItems.refresh()
+        }) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                    .constrainAs(loading) {
-                        top.linkTo(parent.top)
-                        centerHorizontallyTo(parent)
-                    }
-                    .wrapContentSize()
-                    .padding(top = 8.dp)
-                    .zIndex(2f)) {
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .padding(top = 8.dp)
+                .zIndex(2f)) {
                 CircularProgressIndicator()
             }
 
             pagingUIUIProvider.OnError(
-                    pagingItems = pagingItems,
-                    scope = scope,
-                    noInternetUI = {
-                        ErrorMessage(R.string.no_books_loaded_no_connect)
-                    },
-                    errorUI = {
-                        ErrorWithRetry(R.string.no_books_loaded_search) {
-                            retry()
-                        }
+                pagingItems = pagingItems,
+                scope = scope,
+                noInternetUI = {
+                    ErrorMessage(R.string.no_books_loaded_no_connect)
+                },
+                errorUI = {
+                    ErrorWithRetry(R.string.no_books_loaded_search) {
+                        retry()
                     }
+                }
             )
 
             val columnState = rememberLazyListState()
 
             val lastVisibleIndex = columnState.lastVisibleIndex()
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
-                    modifier = Modifier
-                            .constrainAs(backToTop) {
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(bottom = 22.dp, end = 4.dp)
-                            .zIndex(2f)) {
+                modifier = Modifier
+                    .constrainAs(backToTop) {
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 22.dp, end = 4.dp)
+                    .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
-                            modifier = Modifier
-                                    .navigationBarsPadding(),
-                            onClick = { scope.launch { columnState.scrollToItem(0) } },
+                        modifier = Modifier
+                            .navigationBarsPadding(),
+                        onClick = { scope.launch { columnState.scrollToItem(0) } },
                     ) {
                         Icon(
-                                Icons.Filled.ArrowUpward,
-                                contentDescription = stringResource(id = R.string.go_back_to_top),
-                                tint = Color.White
+                            Icons.Filled.ArrowUpward,
+                            contentDescription = stringResource(id = R.string.go_back_to_top),
+                            tint = Color.White
                         )
                     }
                 }
@@ -158,31 +162,35 @@ fun SearchResult() {
 
             val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
             SwipeRefresh(
-                    state = swipeToRefreshState, onRefresh = {
-                swipeToRefreshState.isRefreshing = true
-                retry()
-                swipeToRefreshState.isRefreshing = false
-            },
-                    modifier = Modifier
-                            .fillMaxSize()
+                state = swipeToRefreshState, onRefresh = {
+                    swipeToRefreshState.isRefreshing = true
+                    retry()
+                    swipeToRefreshState.isRefreshing = false
+                },
+                modifier = Modifier
+                    .fillMaxSize()
             ) {
 
                 LazyColumn(
-                        state = columnState,
-                        modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 8.dp),
-                        contentPadding = rememberInsetsPaddingValues(
-                                insets = LocalWindowInsets.current.navigationBars,
-                                additionalBottom = 84.dp
-                        )
+                    state = columnState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 8.dp),
+                    contentPadding = rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.navigationBars,
+                        additionalBottom = 84.dp
+                    )
                 ) {
-                    items(pagingItems, key = {it.id}) { item ->
+                    items(pagingItems, key = { it.id }) { item ->
                         item ?: return@items
 
                         Book(item) {
                             val bookID = item.id
-                            searchResultViewModelViewModel.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
+                            searchResultViewModelViewModel.navigate(
+                                BookDetailsDestination.createBookDetailsRoute(
+                                    bookID
+                                )
+                            )
                         }
                     }
                 }
@@ -193,8 +201,13 @@ fun SearchResult() {
 }
 
 @OptIn(ExperimentalMaterialApi::class)
-private fun backButtonLogic(bottomSheetState: BottomSheetState,
-                            scope: CoroutineScope, dropDownMenuExpanded: Boolean, onDropDownSetFalse: () -> Unit, onBackClicked: () -> Unit) {
+private fun backButtonLogic(
+    bottomSheetState: BottomSheetState,
+    scope: CoroutineScope,
+    dropDownMenuExpanded: Boolean,
+    onDropDownSetFalse: () -> Unit,
+    onBackClicked: () -> Unit
+) {
     when {
         bottomSheetState.isExpanded -> {
             scope.launch { bottomSheetState.collapse() }
@@ -207,15 +220,15 @@ private fun backButtonLogic(bottomSheetState: BottomSheetState,
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ScaffoldWithBackFiltersAndContent(
-        checkedSortPosition: Int,
-        searchInFieldsCheckedPosition: Int,
-        searchWithMaskWord: Boolean,
-        filtersVisible: Boolean,
-        onBackClicked: () -> Unit,
-        onSortPositionClicked: (Int) -> Unit,
-        onSearchInFieldsCheckedPosition: (Int) -> Unit,
-        onSearchWithMaskWord: (Boolean) -> Unit,
-        content: @Composable (PaddingValues) -> Unit
+    checkedSortPosition: Int,
+    searchInFieldsCheckedPosition: Int,
+    searchWithMaskWord: Boolean,
+    filtersVisible: Boolean,
+    onBackClicked: () -> Unit,
+    onSortPositionClicked: (Int) -> Unit,
+    onSearchInFieldsCheckedPosition: (Int) -> Unit,
+    onSearchWithMaskWord: (Boolean) -> Unit,
+    content: @Composable (PaddingValues) -> Unit
 ) {
 
     val bottomSheetState = rememberBottomSheetState(BottomSheetValue.Collapsed)
@@ -227,7 +240,13 @@ fun ScaffoldWithBackFiltersAndContent(
     val collapseDropDownMenu = { dropDownMenuExpanded = false }
 
     val onBack = {
-        backButtonLogic(bottomSheetState, scope, dropDownMenuExpanded, collapseDropDownMenu, onBackClicked)
+        backButtonLogic(
+            bottomSheetState,
+            scope,
+            dropDownMenuExpanded,
+            collapseDropDownMenu,
+            onBackClicked
+        )
     }
 
     BackHandler {
@@ -235,115 +254,117 @@ fun ScaffoldWithBackFiltersAndContent(
     }
 
     BottomSheetScaffold(
-            sheetContent = {
-                LazyColumn {
+        sheetContent = {
+            LazyColumn {
 
-                    item {
-                        Text(
-                                text = stringResource(R.string.search_in_fields), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                        )
-                    }
-
-                    itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
-                        RadioButtonWithText(
-                                text = item.title,
-                                isChecked = searchInFieldsCheckedPosition == index,
-                                onRadioButtonClicked = {
-                                    onSearchInFieldsCheckedPosition(index)
-                                    scope.launch { bottomSheetState.collapse() }
-                                })
-                    }
-
-                    item {
-                        Text(
-                                text = stringResource(R.string.mask_word), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                        )
-                    }
-
-                    item {
-                        RadioButtonWithText(
-                                text = R.string.search_with_mask_word,
-                                isChecked = searchWithMaskWord,
-                                onRadioButtonClicked = {
-                                    onSearchWithMaskWord(!searchWithMaskWord)
-                                })
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.padding(bottom = 64.dp))
-                    }
+                item {
+                    Text(
+                        text = stringResource(R.string.search_in_fields), modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    )
                 }
-            },
-            sheetPeekHeight = 0.dp,
-            modifier = Modifier.fillMaxSize(),
-            scaffoldState = scaffoldState,
-            sheetShape = BottomSheetShapes.large,
-            topBar = {
-                TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
-                    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                        val (backButton, filter) = createRefs()
-                        BackButton(
-                                modifier = Modifier
-                                        .constrainAs(backButton) {
-                                            start.linkTo(parent.start)
-                                            top.linkTo(parent.top)
-                                            bottom.linkTo(parent.bottom)
-                                        }
-                                        .padding(8.dp), onClick = {
+
+                itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
+                    RadioButtonWithText(
+                        text = item.title,
+                        isChecked = searchInFieldsCheckedPosition == index,
+                        onRadioButtonClicked = {
+                            onSearchInFieldsCheckedPosition(index)
+                            scope.launch { bottomSheetState.collapse() }
+                        })
+                }
+
+                item {
+                    Text(
+                        text = stringResource(R.string.mask_word), modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    )
+                }
+
+                item {
+                    RadioButtonWithText(
+                        text = R.string.search_with_mask_word,
+                        isChecked = searchWithMaskWord,
+                        onRadioButtonClicked = {
+                            onSearchWithMaskWord(!searchWithMaskWord)
+                        })
+                }
+
+                item {
+                    Spacer(modifier = Modifier.padding(bottom = 64.dp))
+                }
+            }
+        },
+        sheetPeekHeight = 0.dp,
+        modifier = Modifier.fillMaxSize(),
+        scaffoldState = scaffoldState,
+        sheetShape = BottomSheetShapes.large,
+        topBar = {
+            TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
+                ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+                    val (backButton, filter) = createRefs()
+                    BackButton(
+                        modifier = Modifier
+                            .constrainAs(backButton) {
+                                start.linkTo(parent.start)
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                            }
+                            .padding(8.dp), onClick = {
                             onBack()
                         }
-                        )
+                    )
 
-                        if (filtersVisible) {
-                            Button(
-                                    onClick = {
-                                        dropDownMenuExpanded = !dropDownMenuExpanded
-                                        scope.launch {
-                                            if (!bottomSheetState.isCollapsed) {
-                                                bottomSheetState.collapse()
-                                            }
-                                        } // only the filter menu is visible since it takes almost the whole screen
-                                    },
-                                    shape = Shapes.large,
-                                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
-                                    modifier = Modifier
-                                            .constrainAs(filter) {
-                                                end.linkTo(parent.end)
-                                                top.linkTo(parent.top)
-                                                bottom.linkTo(parent.bottom)
-                                            }
-                                            .padding(8.dp)
-                            ) {
-                                Icon(
-                                        imageVector = Icons.Default.FilterAlt,
-                                        contentDescription = stringResource(id = R.string.title_favorites)
-                                )
-                            }
-
-                            DropdownMenu(expanded = dropDownMenuExpanded,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    offset = DpOffset(32.dp, 32.dp),
-                                    onDismissRequest = collapseDropDownMenu) {
-                                searchViewModel.sortList.forEach {
-                                    DropdownMenuItem(onClick = {
-                                        onSortPositionClicked(it.first)
-                                        collapseDropDownMenu()
-                                    }) {
-                                        RadioButtonWithTextNotClickable(
-                                                text = it.second,
-                                                isChecked = checkedSortPosition == it.first
-                                        )
+                    if (filtersVisible) {
+                        Button(
+                            onClick = {
+                                dropDownMenuExpanded = !dropDownMenuExpanded
+                                scope.launch {
+                                    if (!bottomSheetState.isCollapsed) {
+                                        bottomSheetState.collapse()
                                     }
+                                } // only the filter menu is visible since it takes almost the whole screen
+                            },
+                            shape = Shapes.large,
+                            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
+                            modifier = Modifier
+                                .constrainAs(filter) {
+                                    end.linkTo(parent.end)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                }
+                                .padding(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.FilterAlt,
+                                contentDescription = stringResource(id = R.string.title_favorites)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = dropDownMenuExpanded,
+                            modifier = Modifier.fillMaxWidth(),
+                            offset = DpOffset(32.dp, 32.dp),
+                            onDismissRequest = collapseDropDownMenu
+                        ) {
+                            searchViewModel.sortList.forEach {
+                                DropdownMenuItem(onClick = {
+                                    onSortPositionClicked(it.first)
+                                    collapseDropDownMenu()
+                                }) {
+                                    RadioButtonWithTextNotClickable(
+                                        text = it.second,
+                                        isChecked = checkedSortPosition == it.first
+                                    )
                                 }
                             }
                         }
                     }
                 }
-            }) {
+            }
+        }) {
 
         ConstraintLayout {
             val filter = createRef()
@@ -351,45 +372,45 @@ fun ScaffoldWithBackFiltersAndContent(
             //add scrim
             if (bottomSheetState.isExpanded) {
                 Box(modifier = Modifier
-                        .fillMaxSize()
-                        .clickable(
-                                indication = null,
-                                interactionSource = MutableInteractionSource()
-                        ) {
-                            scope.launch { bottomSheetState.collapse() }
-                        }
-                        .background(brush = SolidColor(Color.Black), alpha = 0.5f)
-                        .zIndex(0.5f))
+                    .fillMaxSize()
+                    .clickable(
+                        indication = null,
+                        interactionSource = MutableInteractionSource()
+                    ) {
+                        scope.launch { bottomSheetState.collapse() }
+                    }
+                    .background(brush = SolidColor(Color.Black), alpha = 0.5f)
+                    .zIndex(0.5f))
             }
 
             Box(
-                    modifier = Modifier
-                            .fillMaxSize()
-                            .zIndex(if (bottomSheetState.isExpanded) 0.2f else 0f)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .zIndex(if (bottomSheetState.isExpanded) 0.2f else 0f)
             ) {
                 content(it)
             }
 
             Box(
-                    modifier = Modifier
-                            .constrainAs(filter) {
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(bottom = 22.dp)
-                            .zIndex(0.3f)
+                modifier = Modifier
+                    .constrainAs(filter) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(bottom = 22.dp)
+                    .zIndex(0.3f)
             ) {
                 if (filtersVisible) {
                     FloatingActionButton(
-                            modifier = Modifier
-                                    .navigationBarsPadding(),
-                            onClick = { scope.launch { bottomSheetState.expand() } },
+                        modifier = Modifier
+                            .navigationBarsPadding(),
+                        onClick = { scope.launch { bottomSheetState.expand() } },
                     ) {
                         Icon(
-                                Icons.Filled.FilterList,
-                                contentDescription = stringResource(id = R.string.filter),
-                                tint = Color.White
+                            Icons.Filled.FilterList,
+                            contentDescription = stringResource(id = R.string.filter),
+                            tint = Color.White
                         )
                     }
                 }

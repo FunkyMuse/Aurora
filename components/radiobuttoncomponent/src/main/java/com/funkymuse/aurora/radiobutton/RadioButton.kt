@@ -23,22 +23,22 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun RadioButtonWithText(
-        @StringRes text: Int,
-        isChecked: Boolean,
-        onRadioButtonClicked: () -> Unit
+    @StringRes text: Int,
+    isChecked: Boolean,
+    onRadioButtonClicked: () -> Unit
 ) {
     Row(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
         RadioButton(
-                selected = isChecked,
-                onClick = onRadioButtonClicked,
-                modifier = Modifier.align(Alignment.CenterVertically)
+            selected = isChecked,
+            onClick = onRadioButtonClicked,
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Text(
-                text = stringResource(id = text), modifier = Modifier
+            text = stringResource(id = text), modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(start = 8.dp)
                 .clickable { onRadioButtonClicked() }
@@ -48,21 +48,21 @@ fun RadioButtonWithText(
 
 @Composable
 fun RadioButtonWithTextNotClickable(
-        @StringRes text: Int,
-        isChecked: Boolean,
+    @StringRes text: Int,
+    isChecked: Boolean,
 ) {
     Row(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
     ) {
         Image(
-                imageVector = if (isChecked) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
-                modifier = Modifier.align(Alignment.CenterVertically),
-                contentDescription = null
+            imageVector = if (isChecked) Icons.Default.RadioButtonChecked else Icons.Default.RadioButtonUnchecked,
+            modifier = Modifier.align(Alignment.CenterVertically),
+            contentDescription = null
         )
         Text(
-                text = stringResource(id = text), modifier = Modifier
+            text = stringResource(id = text), modifier = Modifier
                 .align(Alignment.CenterVertically)
                 .padding(start = 8.dp)
         )

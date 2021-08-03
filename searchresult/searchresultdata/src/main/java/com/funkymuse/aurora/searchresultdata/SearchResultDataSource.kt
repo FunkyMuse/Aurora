@@ -34,7 +34,7 @@ class SearchResultDataSource @AssistedInject constructor(
     @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
     @Assisted(SORT_TYPE) private val sortType: String,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val scraper:BookScraper
+    private val scraper: BookScraper
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -65,7 +65,16 @@ class SearchResultDataSource @AssistedInject constructor(
     }
 
     private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
-        val list = scraper.fetch(scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord))
+        val list = scraper.fetch(
+            scraper.generateSearchDataUrl(
+                page,
+                searchQuery,
+                sortQuery,
+                sortType,
+                searchInFieldsPosition,
+                maskWord
+            )
+        )
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {

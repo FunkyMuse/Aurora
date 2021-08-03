@@ -20,6 +20,6 @@ object FavoritesModule {
     @Provides
     @Singleton
     fun favoritesDBDao(@ApplicationContext context: Context): FavoritesDAO =
-            FavoritesDatabase.getInstance(context).dao()
+        FavoritesDatabase.getInstance(context).dao()
 
 }

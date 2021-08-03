@@ -60,7 +60,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme, isDarkThemeEnabled) {
+            AuroraTheme(
+                darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme,
+                isDarkThemeEnabled
+            ) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     CompositionLocalProvider(LocalImageLoader provides imageLoader) {
                         Surface(color = MaterialTheme.colors.background) {
@@ -81,28 +84,31 @@ fun AuroraScaffold(navigator: Navigator) {
         navigator.destinations.collect {
             when (val event = it) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
-                is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
+                is NavigatorEvent.Directions -> navController.navigate(
+                    event.destination,
+                    event.builder
+                )
             }
         }
     }
 
     Scaffold(
-            bottomBar = {
-                AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
-            }
+        bottomBar = {
+            AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
+        }
     ) {
         NavHost(
-                navController = navController,
-                startDestination = SearchBottomNavRoute.route,
-                builder = {
-                    addSearch()
-                    addFavorites()
-                    addLatestBooks()
-                    addSettings()
-                    addSearchResult()
-                    addBookDetails()
-                    addCrashes()
-                }
+            navController = navController,
+            startDestination = SearchBottomNavRoute.route,
+            builder = {
+                addSearch()
+                addFavorites()
+                addLatestBooks()
+                addSettings()
+                addSearchResult()
+                addBookDetails()
+                addCrashes()
+            }
         )
     }
 }

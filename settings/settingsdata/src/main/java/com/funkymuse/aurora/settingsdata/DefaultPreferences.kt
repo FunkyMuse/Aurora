@@ -17,7 +17,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class DefaultPreferences @Inject constructor(@ApplicationContext private val context: Context) :
-        DefaultPrefsContract {
+    DefaultPrefsContract {
 
     private companion object {
         private const val SETTINGS_NAME = "settings"

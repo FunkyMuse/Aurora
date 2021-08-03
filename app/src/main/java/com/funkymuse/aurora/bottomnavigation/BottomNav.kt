@@ -19,29 +19,29 @@ import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 object BottomNav {
 
     val bottomNavigationEntries =
-            listOf(
-                    BottomEntry(
-                            SearchBottomNavRoute,
-                            Icons.Filled.Search
-                    ),
-                    BottomEntry(
-                            FavoritesBottomNavRoute,
-                            Icons.Filled.Favorite
-                    ),
-                    BottomEntry(
-                            LatestBooksBottomNavRoute,
-                            Icons.Filled.List
-                    ),
-                    BottomEntry(
-                            SettingsBottomNavRoute,
-                            Icons.Filled.Settings
-                    ),
-            )
+        listOf(
+            BottomEntry(
+                SearchBottomNavRoute,
+                Icons.Filled.Search
+            ),
+            BottomEntry(
+                FavoritesBottomNavRoute,
+                Icons.Filled.Favorite
+            ),
+            BottomEntry(
+                LatestBooksBottomNavRoute,
+                Icons.Filled.List
+            ),
+            BottomEntry(
+                SettingsBottomNavRoute,
+                Icons.Filled.Settings
+            ),
+        )
 
     val hideBottomNavOnDestinations = listOf(
-            BookDetailsDestination.route(),
-            SearchResultDestination.route(),
-            CrashesDestination.route()
+        BookDetailsDestination.route(),
+        SearchResultDestination.route(),
+        CrashesDestination.route()
     )
 
 }

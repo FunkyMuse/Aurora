@@ -21,21 +21,26 @@ import javax.inject.Inject
  */
 @ViewModelScoped
 class PagingUIProvider @Inject constructor(
-        private val toaster: Toaster,
-        private val internetDetector: InternetDetector
+    private val toaster: Toaster,
+    private val internetDetector: InternetDetector
 ) : PagingUIProviderContract {
 
     override fun <T : Any> isDataEmpty(pagingItems: LazyPagingItems<T>): Boolean =
-            pagingItems.itemCount == 0
+        pagingItems.itemCount == 0
 
     @Composable
-    override fun <T : Any> OnError(scope: CoroutineScope, pagingItems: LazyPagingItems<T>, noInternetUI: @Composable () -> Unit, errorUI: @Composable () -> Unit) {
+    override fun <T : Any> OnError(
+        scope: CoroutineScope,
+        pagingItems: LazyPagingItems<T>,
+        noInternetUI: @Composable () -> Unit,
+        errorUI: @Composable () -> Unit
+    ) {
         val append = pagingItems.appendState
         val refresh = pagingItems.refreshState
         val prepend = pagingItems.prependState
         if (isLoadStateNoConnectionException(refresh) ||
-                isLoadStateNoConnectionException(append) ||
-                isLoadStateNoConnectionException(prepend)
+            isLoadStateNoConnectionException(append) ||
+            isLoadStateNoConnectionException(prepend)
         ) {
 
             if (pagingItems.itemCount == 0) {
@@ -65,7 +70,8 @@ class PagingUIProvider @Inject constructor(
         return ((append is LoadState.Error || refresh is LoadState.Error || prepend is LoadState.Error) && itemCount == 0)
     }
 
-    override fun <T : Any> progressBarVisibility(pagingItems: LazyPagingItems<T>
+    override fun <T : Any> progressBarVisibility(
+        pagingItems: LazyPagingItems<T>
     ): Boolean {
         val append = pagingItems.appendState
         val refresh = pagingItems.refreshState

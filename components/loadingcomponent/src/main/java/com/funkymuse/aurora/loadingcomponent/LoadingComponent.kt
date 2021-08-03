@@ -33,27 +33,27 @@ import com.funkymuse.composed.core.density
 
 @Composable
 fun LoadingBubbles(
-        @StringRes text: Int = R.string.loading,
-        colorDurationTransition: Int = 3000,
-        scaleDuration: Int = 2000
+    @StringRes text: Int = R.string.loading,
+    colorDurationTransition: Int = 3000,
+    scaleDuration: Int = 2000
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     val color by infiniteTransition.animateColor(
-            initialValue = MaterialTheme.colors.secondary,
-            targetValue = MaterialTheme.colors.primary,
-            animationSpec = infiniteRepeatable(
-                    animation = tween(colorDurationTransition, easing = LinearEasing),
-                    repeatMode = RepeatMode.Reverse
-            )
+        initialValue = MaterialTheme.colors.secondary,
+        targetValue = MaterialTheme.colors.primary,
+        animationSpec = infiniteRepeatable(
+            animation = tween(colorDurationTransition, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
     )
 
     val scale by infiniteTransition.animateFloat(
-            initialValue = 0.1f,
-            targetValue = 1.3f,
-            animationSpec = infiniteRepeatable(
-                    animation = tween(scaleDuration),
-                    repeatMode = RepeatMode.Restart
-            )
+        initialValue = 0.1f,
+        targetValue = 1.3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(scaleDuration),
+            repeatMode = RepeatMode.Restart
+        )
     )
 
     Canvas(modifier = Modifier.fillMaxSize()) {
@@ -84,8 +84,8 @@ fun LoadingBubbles(
     }
 
     Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Text(text = stringResource(id = text), Modifier.graphicsLayer(scale, scale))
     }
@@ -99,14 +99,14 @@ private val defaultColors = listOf(
 
 @Composable
 fun CardShimmer(
-        imageHeight: Dp = 160.dp,
-        imageWidth: Dp? = null,
-        padding: Dp = 16.dp,
-        shimmerDelayDuration: Int = 300,
-        shimmerDuration: Int = 1600,
-        colors: List<Color> = defaultColors,
-        alphaDuration: Int = 400,
-        cardShape: Shape = MaterialTheme.shapes.large
+    imageHeight: Dp = 160.dp,
+    imageWidth: Dp? = null,
+    padding: Dp = 16.dp,
+    shimmerDelayDuration: Int = 300,
+    shimmerDuration: Int = 1600,
+    colors: List<Color> = defaultColors,
+    alphaDuration: Int = 400,
+    cardShape: Shape = MaterialTheme.shapes.large
 ) {
     val modifier = if (imageWidth != null) {
         Modifier.size(imageWidth, imageHeight)
@@ -127,13 +127,13 @@ fun CardShimmer(
 
 @Composable
 fun BoxShimmer(
-        imageHeight: Dp = 160.dp,
-        imageWidth: Dp? = null,
-        padding: Dp = 16.dp,
-        shimmerDelayDuration: Int = 300,
-        shimmerDuration: Int = 1600,
-        colors: List<Color> = defaultColors,
-        alphaDuration: Int = 400,
+    imageHeight: Dp = 160.dp,
+    imageWidth: Dp? = null,
+    padding: Dp = 16.dp,
+    shimmerDelayDuration: Int = 300,
+    shimmerDuration: Int = 1600,
+    colors: List<Color> = defaultColors,
+    alphaDuration: Int = 400,
 ) {
     val modifier = if (imageWidth != null) {
         Modifier.size(imageWidth, imageHeight)
@@ -218,27 +218,27 @@ private fun LoadingCard(
 
 @Composable
 private fun ShimmerSurfaceItem(
-        colors: List<Color>,
-        xShimmer: Float,
-        yShimmer: Float,
-        cardHeight: Dp,
-        gradientWidth: Float,
-        padding: Dp,
-        alpha: Float = 1f,
-        cardShape: Shape?
+    colors: List<Color>,
+    xShimmer: Float,
+    yShimmer: Float,
+    cardHeight: Dp,
+    gradientWidth: Float,
+    padding: Dp,
+    alpha: Float = 1f,
+    cardShape: Shape?
 ) {
     val brush = Brush.linearGradient(
-            colors,
-            start = Offset(xShimmer - gradientWidth, yShimmer - gradientWidth),
-            end = Offset(xShimmer, yShimmer)
+        colors,
+        start = Offset(xShimmer - gradientWidth, yShimmer - gradientWidth),
+        end = Offset(xShimmer, yShimmer)
     )
     Column(
-            modifier = Modifier
-                    .padding(padding)
-                    .alpha(alpha)
+        modifier = Modifier
+            .padding(padding)
+            .alpha(alpha)
     ) {
-        if (cardShape!=null){
-            Surface(shape = cardShape){
+        if (cardShape != null) {
+            Surface(shape = cardShape) {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -246,8 +246,8 @@ private fun ShimmerSurfaceItem(
                         .background(brush = brush)
                 )
             }
-        }else {
-            Surface{
+        } else {
+            Surface {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -261,28 +261,28 @@ private fun ShimmerSurfaceItem(
 
 @Composable
 private fun cardShimmerAxis(
-        cardWidthPx: Float,
-        infiniteTransition: InfiniteTransition,
-        gradientWidth: Float,
-        tweenAnim: DurationBasedAnimationSpec<Float>
+    cardWidthPx: Float,
+    infiniteTransition: InfiniteTransition,
+    gradientWidth: Float,
+    tweenAnim: DurationBasedAnimationSpec<Float>
 ): State<Float> {
     return infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = (cardWidthPx + gradientWidth),
-            animationSpec = infiniteRepeatable(
-                    animation = tweenAnim,
-                    repeatMode = RepeatMode.Restart
-            )
+        initialValue = 0f,
+        targetValue = (cardWidthPx + gradientWidth),
+        animationSpec = infiniteRepeatable(
+            animation = tweenAnim,
+            repeatMode = RepeatMode.Restart
+        )
     )
 }
 
 private fun tweenParameters(
-        shimmerDuration: Int,
-        shimmerDelayDuration: Int
+    shimmerDuration: Int,
+    shimmerDelayDuration: Int
 ): DurationBasedAnimationSpec<Float> {
     return tween(
-            durationMillis = shimmerDuration,
-            easing = LinearEasing,
-            delayMillis = shimmerDelayDuration
+        durationMillis = shimmerDuration,
+        easing = LinearEasing,
+        delayMillis = shimmerDelayDuration
     )
 }

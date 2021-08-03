@@ -33,7 +33,7 @@ inline fun <reified T : ViewModel> assistedViewModel(
 ): T =
     viewModel(factory = createAssistedViewModel(
         arguments = arguments,
-            owner = LocalSavedStateRegistryOwner.current
+        owner = LocalSavedStateRegistryOwner.current
     ) {
         viewModelProducer(it)
     })
