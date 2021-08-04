@@ -35,7 +35,10 @@ import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.radiobutton.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.searchdata.SearchViewModel
 import com.funkymuse.aurora.searchresultdata.SearchResultHandleDataViewModel
-import com.funkymuse.composed.core.*
+import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
+import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
+import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.funkymuse.style.shape.Shapes
@@ -131,8 +134,8 @@ fun SearchResult() {
 
             val columnState = rememberLazyListState()
 
-            val lastVisibleIndex = remember { columnState.lastVisibleIndex() }
-            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
+            val lastVisibleIndex by columnState.lastVisibleIndexState()
+            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex?:0 > 20,
                     modifier = Modifier
                         .constrainAs(backToTop) {
                             bottom.linkTo(parent.bottom)
@@ -170,8 +173,8 @@ fun SearchResult() {
                 LazyColumn(
                         state = columnState,
                         modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 8.dp),
+                            .fillMaxSize()
+                            .padding(top = 8.dp),
                         contentPadding = rememberInsetsPaddingValues(
                                 insets = LocalWindowInsets.current.navigationBars,
                                 additionalBottom = 84.dp
@@ -288,12 +291,12 @@ fun ScaffoldWithBackFiltersAndContent(
                         val (backButton, filter) = createRefs()
                         BackButton(
                                 modifier = Modifier
-                                        .constrainAs(backButton) {
-                                            start.linkTo(parent.start)
-                                            top.linkTo(parent.top)
-                                            bottom.linkTo(parent.bottom)
-                                        }
-                                        .padding(8.dp), onClick = {
+                                    .constrainAs(backButton) {
+                                        start.linkTo(parent.start)
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .padding(8.dp), onClick = {
                             onBack()
                         }
                         )
@@ -311,12 +314,12 @@ fun ScaffoldWithBackFiltersAndContent(
                                     shape = Shapes.large,
                                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                                     modifier = Modifier
-                                            .constrainAs(filter) {
-                                                end.linkTo(parent.end)
-                                                top.linkTo(parent.top)
-                                                bottom.linkTo(parent.bottom)
-                                            }
-                                            .padding(8.dp)
+                                        .constrainAs(filter) {
+                                            end.linkTo(parent.end)
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        }
+                                        .padding(8.dp)
                             ) {
                                 Icon(
                                         imageVector = Icons.Default.FilterAlt,

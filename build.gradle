@@ -10,7 +10,7 @@ buildscript {
         retrofit = "2.9.0"
         accompanist = "0.15.0"
         lifecycle = '2.4.0-alpha02'
-        composed = '0.0.12'
+        composed = '0.0.13'
         paging_compose = '1.0.0-alpha12'
         paging_runtime = '3.0.1'
         navigation = '2.4.0-alpha05'

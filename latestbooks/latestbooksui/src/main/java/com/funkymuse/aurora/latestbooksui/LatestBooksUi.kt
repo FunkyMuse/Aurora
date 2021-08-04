@@ -25,7 +25,7 @@ import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.latestbooksdata.LatestBooksVM
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.composed.core.lastVisibleIndex
+import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -79,9 +79,7 @@ fun LatestBooks(
         }
 
 
-        val lastVisibleIndexState = remember {
-            columnState.lastVisibleIndex()
-        }
+        val lastVisibleIndexState by columnState.lastVisibleIndexState()
 
         val isButtonVisible = lastVisibleIndexState?.let {
             it > 20
