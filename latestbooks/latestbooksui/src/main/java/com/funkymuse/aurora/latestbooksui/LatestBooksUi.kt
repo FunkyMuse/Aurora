@@ -50,7 +50,7 @@ fun LatestBooks(
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     progressVisibility =
-            pagingUIUIProvider.progressBarVisibility(pagingItems)
+        pagingUIUIProvider.progressBarVisibility(pagingItems)
     val retry = {
         latestBooksVM.refresh()
         pagingItems.refresh()
@@ -79,10 +79,8 @@ fun LatestBooks(
         }
 
 
-        val lastVisibleIndexState by remember {
-            derivedStateOf {
-                columnState.lastVisibleIndex()
-            }
+        val lastVisibleIndexState = remember {
+            columnState.lastVisibleIndex()
         }
 
         val isButtonVisible = lastVisibleIndexState?.let {
@@ -91,13 +89,13 @@ fun LatestBooks(
 
         AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
-                    .constrainAs(backToTop) {
-                        bottom.linkTo(parent.bottom)
-                        centerHorizontallyTo(parent)
-                    }
-                    .navigationBarsPadding(start = false, end = false)
-                    .padding(bottom = 64.dp)
-                    .zIndex(2f)) {
+                .constrainAs(backToTop) {
+                    bottom.linkTo(parent.bottom)
+                    centerHorizontallyTo(parent)
+                }
+                .navigationBarsPadding(start = false, end = false)
+                .padding(bottom = 64.dp)
+                .zIndex(2f)) {
 
             Box {
                 FloatingActionButton(
@@ -140,13 +138,13 @@ fun LatestBooks(
         ) {
 
             LazyColumn(
-                    state = columnState,
-                    modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = listInsets
+                state = columnState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp, top = 8.dp),
+                contentPadding = listInsets
             ) {
-                items(pagingItems, key = {it.id}) { item ->
+                items(pagingItems, key = { it.id }) { item ->
                     item ?: return@items
                     Book(item) {
                         val bookID = item.id
