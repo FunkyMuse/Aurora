@@ -106,13 +106,13 @@ fun SearchResult() {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                    .constrainAs(loading) {
-                        top.linkTo(parent.top)
-                        centerHorizontallyTo(parent)
-                    }
-                    .wrapContentSize()
-                    .padding(top = 8.dp)
-                    .zIndex(2f)) {
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .padding(top = 8.dp)
+                .zIndex(2f)) {
                 CircularProgressIndicator()
             }
 
@@ -131,15 +131,15 @@ fun SearchResult() {
 
             val columnState = rememberLazyListState()
 
-            val lastVisibleIndex = columnState.lastVisibleIndex()
+            val lastVisibleIndex = remember { columnState.lastVisibleIndex() }
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
                     modifier = Modifier
-                            .constrainAs(backToTop) {
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(bottom = 22.dp, end = 4.dp)
-                            .zIndex(2f)) {
+                        .constrainAs(backToTop) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(bottom = 22.dp, end = 4.dp)
+                        .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
