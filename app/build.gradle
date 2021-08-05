@@ -101,7 +101,6 @@ dependencies {
 
     //crashy
     implementation "com.github.FunkyMuse:Crashy:$crashy"
-    implementation "androidx.startup:startup-runtime:1.0.0"
 
     //compose
     implementation "androidx.compose.material:material:$compose_version"
