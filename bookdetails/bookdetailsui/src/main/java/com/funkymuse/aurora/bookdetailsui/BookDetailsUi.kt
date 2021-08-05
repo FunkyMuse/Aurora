@@ -39,10 +39,12 @@ import com.funkymuse.aurora.backbuttoncomponent.BackButton
 import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
+import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
+import com.funkymuse.aurora.serverconstants.mirrorsUrls
 import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
@@ -58,9 +60,7 @@ import java.util.*
 
 
 @Composable
-fun ShowDetailedBook(
-    mirrors: Array<String>?,
-) {
+fun ShowDetailedBook() {
     val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
     val internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel()
     val onBackClicked = {
@@ -83,7 +83,7 @@ fun ShowDetailedBook(
             onBackClicked()
         },
         onFavoritesClicked = {
-            favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel, mirrors)
+            favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel)
         }
     ) {
         book.handle(
@@ -122,7 +122,7 @@ fun ShowDetailedBook(
                     return@handle
                 }
                 detailedBook?.apply {
-                    DetailedBook(this, mirrors?.toList())
+                    DetailedBook(this)
                 }
 
             }
@@ -132,22 +132,22 @@ fun ShowDetailedBook(
 }
 
 private fun favoritesClick(
-    favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
+    favoritesBook: FavoriteBook?,
     detailedBook: DetailedBookModel?,
-    bookDetailsViewModel: BookDetailsViewModel,
-    mirrors: Array<String>?
+    bookDetailsViewModel: BookDetailsViewModel
 ) {
     if (favoritesBook == null) {
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
-                com.funkymuse.aurora.favoritebookmodel.FavoriteBook(
-                    bookModel.id.toString().toInt(),
+                FavoriteBook(
+                    bookModel.md5.toString(),
                     bookModel.title,
-                    bookModel.year,
-                    bookModel.pages,
-                    bookModel.extension,
+                    bookModel.coverurl,
                     bookModel.author,
-                    mirrors?.toList()
+                    bookModel.extension?.uppercase(),
+                    bookModel.pagesInFile,
+                    bookModel.fileSize,
+                    bookModel.year
                 )
             )
         }
@@ -160,7 +160,7 @@ private fun favoritesClick(
 @Composable
 fun ScaffoldWithBackAndFavorites(
     showFavoritesButton: Boolean,
-    favoritesBook: com.funkymuse.aurora.favoritebookmodel.FavoriteBook?,
+    favoritesBook: FavoriteBook?,
     onBackClicked: () -> Unit,
     onFavoritesClicked: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
@@ -179,19 +179,21 @@ fun ScaffoldWithBackAndFavorites(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
 fun BookPreview() {
-    DetailedBook(book = DetailedBookModel.testBook, listOf("test", "test"))
+    DetailedBook(book = DetailedBookModel.testBook)
 }
 
 
 @Composable
 fun DetailedBook(
     book: DetailedBookModel,
-    dlMirrors: List<String>? = null
+
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
     val painter = rememberImagePainter(data = imageUrl)
+
+    val dlMirrors = book.md5?.let { mirrorsUrls(it) }
 
     Column(
         modifier = Modifier

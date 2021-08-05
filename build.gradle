@@ -1,26 +1,26 @@
 buildscript {
     ext {
-        compose_version = '1.0.0'
-        kotlin_version = '1.5.10'
+        compose_version = '1.0.1'
+        kotlin_version = '1.5.21'
         room = "2.4.0-alpha04"
         KAHelpers = '3.0.8'
         moshi = "1.12.0"
         daggerVersion = '2.38.1'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
-        accompanist = "0.15.0"
-        lifecycle = '2.4.0-alpha02'
-        composed = '0.0.11'
+        accompanist = "0.16.0"
+        lifecycle = '2.4.0-alpha03'
+        composed = '0.0.14'
         paging_compose = '1.0.0-alpha12'
         paging_runtime = '3.0.1'
-        navigation = '2.4.0-alpha05'
-        constraint_layout = "1.0.0-beta01"
-        activity = "1.3.0"
+        navigation = '2.4.0-alpha06'
+        constraint_layout = "1.0.0-beta02"
+        activity = "1.3.1"
         navigation_compose = "1.0.0-alpha03"
-        jsoup = "1.14.1"
-        data_store = "1.0.0-rc02"
+        skrapeit = "1.1.5"
+        data_store = "1.0.0"
         coreKTX = "1.7.0-alpha01"
-        crashy = "1.1.0"
+        crashy = "1.2.0"
         coil = "1.3.1"
 
         //compilation
@@ -63,7 +63,7 @@ subprojects {
         case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
               "bookdetailsdestination", "favoritebookdb", "favoritebookmodel",
               "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
-              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions"]:
+              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions", "skraper"]:
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'

@@ -39,18 +39,17 @@ import kotlinx.coroutines.flow.conflate
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun Favorites(
-        onBookClicked: (mirrors: List<String>) -> Unit
-) {
+fun Favorites() {
     val viewModel: FavoritesViewModel = hiltViewModel()
     val pagingUIProviderViewModel: PagingUIProviderViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
+    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
 
     longClickedBook.value?.apply {
         DeleteBook(it = this,
-                onConfirm = { viewModel.removeFromFavorites(it) },
+                onConfirm = { viewModel.removeFromFavorites(id) },
                 onDismiss = { longClickedBook.value = null })
     }
 
@@ -96,15 +95,10 @@ fun Favorites(
         ) {
 
             LazyColumn(
-                    modifier = Modifier
-                            .fillMaxSize()
-                            .systemBarsPadding()
-                            .padding(top = 8.dp),
-                    contentPadding = rememberInsetsPaddingValues(
-                            insets = LocalWindowInsets.current.navigationBars,
-                            applyTop = false,
-                            additionalBottom = 16.dp
-                    )
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp, top = 8.dp),
+                contentPadding = listInsets
             ) {
 
                 items(favorites) { book ->
@@ -112,7 +106,6 @@ fun Favorites(
                         Book(it, onLongClick = {
                             longClickedBook.value = it
                         }) {
-                            onBookClicked(it.mirrors ?: emptyList())
                             viewModel.navigate(BookDetailsDestination.createBookDetailsRoute(it.id))
                         }
                     }
@@ -132,7 +125,7 @@ fun DeleteBook(
                     R.string.remove_book_from_favs,
                     it.title.toString()
             ), onDismiss = onDismiss, onConfirm = {
-        onConfirm(it.id)
+        onConfirm(it.id.toInt())
     }, confirmText = stringResource(id = R.string.remove)
     )
 }

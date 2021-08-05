@@ -5,18 +5,23 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
+import com.crazylegend.common.tryOrNull
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
+import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
 import com.funkymuse.aurora.serverconstants.*
+import com.funkymuse.aurora.skraper.BookScraper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
+import it.skrape.core.htmlDocument
+import it.skrape.fetcher.HttpFetcher
+import it.skrape.fetcher.response
+import it.skrape.fetcher.skrape
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 
 /**
  * Created by funkymuse on 5/11/21 to long live and prosper !
@@ -27,7 +32,9 @@ class SearchResultDataSource @AssistedInject constructor(
     @Assisted(FIELDS_QUERY_CONST) private val searchInFieldsPosition: Int,
     @Assisted(SORT_QUERY) private val sortQuery: String,
     @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
-    @Assisted(SORT_TYPE) private val sortType: String
+    @Assisted(SORT_TYPE) private val sortType: String,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val scraper:BookScraper
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -41,21 +48,14 @@ class SearchResultDataSource @AssistedInject constructor(
         ): SearchResultDataSource
     }
 
-    var canLoadMore = true
-
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
 
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         val page = params.key ?: 1
 
         return if (context.isOnline) {
             try {
-                val it = withContext(Dispatchers.IO) { getData(page) }
-                if (it == null) {
-                    canNotLoadMoreContent()
-                } else {
-                    tryToLoadBooks(page, it)
-                }
+                withContext(dispatcher) { loadBooks(page) }
             } catch (t: Throwable) {
                 return LoadResult.Error(t)
             }
@@ -64,56 +64,15 @@ class SearchResultDataSource @AssistedInject constructor(
         }
     }
 
-    private fun tryToLoadBooks(page: Int, it: Document): LoadResult.Page<Int, Book> {
-        return if (canLoadMore) {
-            loadBooks(it, page)
-        } else {
-            canNotLoadMoreContent()
-        }
-    }
-
-    private fun loadBooks(it: Document, page: Int): LoadResult.Page<Int, Book> {
-        val list = processDocument(it)
+    private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
+        val list = scraper.fetch(scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord))
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {
-            val prevKey =
-                if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
+            val prevKey = if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
             val nextKey = if (list.count() == 0) null else page.plus(1)
             LoadResult.Page(list, prevKey, nextKey)
         }
     }
 
-
-    private fun getData(page: Int): Document? {
-        val jsoup = Jsoup.connect(SEARCH_BASE_URL)
-            .timeout(DEFAULT_API_TIMEOUT)
-            .data(REQ_CONST, searchQuery)
-            .data(VIEW_QUERY, VIEW_QUERY_PARAM)
-            .data(COLUM_QUERY, getFieldParamByPosition(searchInFieldsPosition))
-            .data(SEARCH_WITH_MASK, if (maskWord) SEARCH_WITH_MASK_YES else SEARCH_WITH_MASK_NO)
-            .data(RES_CONST, PAGE_SIZE)
-            .data(SORT_QUERY, sortQuery)
-            .data(SORT_TYPE, sortType)
-            .data(PAGE_CONST, page.toString())
-
-        return jsoup.get()
-    }
-
-    private fun processDocument(doc: Document?): List<Book>? {
-        return doc?.let { document ->
-
-            val trs = document.select("table")[2].select("tr")
-            trs.removeAt(0)
-
-            if (trs.size < PAGE_SIZE.toInt()) {
-                //cant load more
-                canLoadMore = false
-            }
-
-            return@let trs.map {
-                return@map Book(it)
-            }
-        }
-    }
 }

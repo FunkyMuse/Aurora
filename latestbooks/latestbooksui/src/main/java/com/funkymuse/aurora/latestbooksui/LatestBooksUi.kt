@@ -25,7 +25,7 @@ import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.latestbooksdata.LatestBooksVM
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
-import com.funkymuse.composed.core.lastVisibleIndex
+import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -40,8 +40,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LatestBooks(
-
-        onBookClicked: (List<String>) -> Unit
 ) {
     val latestBooksVM: LatestBooksVM = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
@@ -52,7 +50,7 @@ fun LatestBooks(
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     progressVisibility =
-            pagingUIUIProvider.progressBarVisibility(pagingItems)
+        pagingUIUIProvider.progressBarVisibility(pagingItems)
     val retry = {
         latestBooksVM.refresh()
         pagingItems.refresh()
@@ -81,11 +79,7 @@ fun LatestBooks(
         }
 
 
-        val lastVisibleIndexState by remember {
-            derivedStateOf {
-                columnState.lastVisibleIndex()
-            }
-        }
+        val lastVisibleIndexState by columnState.lastVisibleIndexState()
 
         val isButtonVisible = lastVisibleIndexState?.let {
             it > 20
@@ -93,13 +87,13 @@ fun LatestBooks(
 
         AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
-                    .constrainAs(backToTop) {
-                        bottom.linkTo(parent.bottom)
-                        centerHorizontallyTo(parent)
-                    }
-                    .navigationBarsPadding(start = false, end = false)
-                    .padding(bottom = 64.dp)
-                    .zIndex(2f)) {
+                .constrainAs(backToTop) {
+                    bottom.linkTo(parent.bottom)
+                    centerHorizontallyTo(parent)
+                }
+                .navigationBarsPadding(start = false, end = false)
+                .padding(bottom = 64.dp)
+                .zIndex(2f)) {
 
             Box {
                 FloatingActionButton(
@@ -142,17 +136,16 @@ fun LatestBooks(
         ) {
 
             LazyColumn(
-                    state = columnState,
-                    modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = listInsets
+                state = columnState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 56.dp, top = 8.dp),
+                contentPadding = listInsets
             ) {
-                items(pagingItems) { item ->
+                items(pagingItems, key = { it.id }) { item ->
                     item ?: return@items
                     Book(item) {
-                        val bookID = item.id?.toInt() ?: return@Book
-                        onBookClicked(item.mirrors?.toList() ?: emptyList())
+                        val bookID = item.id
                         latestBooksVM.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                     }
                 }

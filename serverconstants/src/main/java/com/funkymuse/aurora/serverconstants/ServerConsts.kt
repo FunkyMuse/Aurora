@@ -12,9 +12,11 @@ const val RES_CONST = "res"
 const val REQ_CONST = "req"
 const val PAGE_CONST = "page"
 const val PAGE_SIZE = "100"
-const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}covers/"
 
-const val LIBGEN_BASE_URL = "http://gen.lib.rus.ec/"
+const val COVERS_APPEND = "covers/"
+const val LIBGEN_COVER_IMAGE_URL = "${BASE_URL}$COVERS_APPEND"
+
+const val LIBGEN_BASE_URL = BASE_URL
 
 const val JSON_PHP_PAGE_CONST = "json.php"
 
@@ -26,7 +28,7 @@ const val SORT_QUERY = "sort"
 const val SORT_TYPE = "sortmode"
 
 const val VIEW_QUERY = "view"
-const val VIEW_QUERY_PARAM = "simple"
+const val VIEW_QUERY_PARAM = "detailed"
 
 const val SEARCH_WITH_MASK = "phrase"
 const val SEARCH_WITH_MASK_YES = "0"
@@ -73,4 +75,8 @@ const val SORT_PUBLISHER = "publisher"
 const val LAST_MODE = "mode"
 const val LAST_QUERY = "last"
 
+private fun libraryLolUrl(md5: String)= "http://library.lol/main/$md5"
+private fun libgenLcUrl(md5: String) = "http://libgen.lc/ads.php?md5=$md5"
+private fun zLibrary(md5: String) = "https://3lib.net/md5/$md5"
+fun mirrorsUrls(md5: String) = listOf(libraryLolUrl(md5), libgenLcUrl(md5), zLibrary(md5))
 fun torrentDownloadURL(md5: String) = "${BASE_URL}book/index.php?md5=$md5&oftorrent="

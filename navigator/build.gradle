@@ -7,5 +7,6 @@ applyHiltDeps(this)
 dependencies {
 
     api "androidx.navigation:navigation-compose:$navigation"
+    implementation "androidx.compose.runtime:runtime:$compose_version"
 
 }

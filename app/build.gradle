@@ -36,6 +36,13 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += 'META-INF/DEPENDENCIES'
+        }
+    }
 }
 
 hilt { enableAggregatingTask = true }
@@ -94,7 +101,6 @@ dependencies {
 
     //crashy
     implementation "com.github.FunkyMuse:Crashy:$crashy"
-    implementation "androidx.startup:startup-runtime:1.0.0"
 
     //compose
     implementation "androidx.compose.material:material:$compose_version"

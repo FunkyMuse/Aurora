@@ -35,7 +35,10 @@ import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.radiobutton.RadioButtonWithTextNotClickable
 import com.funkymuse.aurora.searchdata.SearchViewModel
 import com.funkymuse.aurora.searchresultdata.SearchResultHandleDataViewModel
-import com.funkymuse.composed.core.*
+import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
+import com.funkymuse.composed.core.rememberBooleanSaveableDefaultFalse
+import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.funkymuse.style.shape.Shapes
@@ -52,9 +55,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SearchResult(
-        onBookClicked: (mirrors: List<String>) -> Unit
-) {
+fun SearchResult() {
     val searchResultViewModelViewModel: SearchResultHandleDataViewModel = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
     var checkedSortPosition by rememberIntSaveableDefaultZero()
@@ -73,7 +74,7 @@ fun SearchResult(
     progressVisibility =
             pagingUIUIProvider.progressBarVisibility(pagingItems)
 
-    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems)
+    filtersVisible = !pagingUIUIProvider.isDataEmptyWithError(pagingItems) && !progressVisibility
     pagingUIUIProvider.onPaginationReachedError(
             pagingItems.appendState,
             R.string.no_more_books_by_query_to_load
@@ -108,13 +109,13 @@ fun SearchResult(
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (loading, backToTop) = createRefs()
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                    .constrainAs(loading) {
-                        top.linkTo(parent.top)
-                        centerHorizontallyTo(parent)
-                    }
-                    .wrapContentSize()
-                    .padding(top = 8.dp)
-                    .zIndex(2f)) {
+                .constrainAs(loading) {
+                    top.linkTo(parent.top)
+                    centerHorizontallyTo(parent)
+                }
+                .wrapContentSize()
+                .padding(top = 8.dp)
+                .zIndex(2f)) {
                 CircularProgressIndicator()
             }
 
@@ -133,15 +134,15 @@ fun SearchResult(
 
             val columnState = rememberLazyListState()
 
-            val lastVisibleIndex = columnState.lastVisibleIndex()
-            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex > 20,
+            val lastVisibleIndex by columnState.lastVisibleIndexState()
+            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex?:0 > 20,
                     modifier = Modifier
-                            .constrainAs(backToTop) {
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                            }
-                            .padding(bottom = 22.dp, end = 4.dp)
-                            .zIndex(2f)) {
+                        .constrainAs(backToTop) {
+                            bottom.linkTo(parent.bottom)
+                            end.linkTo(parent.end)
+                        }
+                        .padding(bottom = 22.dp, end = 4.dp)
+                        .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
@@ -172,19 +173,18 @@ fun SearchResult(
                 LazyColumn(
                         state = columnState,
                         modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 8.dp),
+                            .fillMaxSize()
+                            .padding(top = 8.dp),
                         contentPadding = rememberInsetsPaddingValues(
                                 insets = LocalWindowInsets.current.navigationBars,
                                 additionalBottom = 84.dp
                         )
                 ) {
-                    items(pagingItems) { item ->
+                    items(pagingItems, key = {it.id}) { item ->
                         item ?: return@items
 
                         Book(item) {
-                            val bookID = item.id?.toInt() ?: return@Book
-                            onBookClicked(item.mirrors?.toList() ?: emptyList())
+                            val bookID = item.id
                             searchResultViewModelViewModel.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                         }
                     }
@@ -291,12 +291,12 @@ fun ScaffoldWithBackFiltersAndContent(
                         val (backButton, filter) = createRefs()
                         BackButton(
                                 modifier = Modifier
-                                        .constrainAs(backButton) {
-                                            start.linkTo(parent.start)
-                                            top.linkTo(parent.top)
-                                            bottom.linkTo(parent.bottom)
-                                        }
-                                        .padding(8.dp), onClick = {
+                                    .constrainAs(backButton) {
+                                        start.linkTo(parent.start)
+                                        top.linkTo(parent.top)
+                                        bottom.linkTo(parent.bottom)
+                                    }
+                                    .padding(8.dp), onClick = {
                             onBack()
                         }
                         )
@@ -314,12 +314,12 @@ fun ScaffoldWithBackFiltersAndContent(
                                     shape = Shapes.large,
                                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                                     modifier = Modifier
-                                            .constrainAs(filter) {
-                                                end.linkTo(parent.end)
-                                                top.linkTo(parent.top)
-                                                bottom.linkTo(parent.bottom)
-                                            }
-                                            .padding(8.dp)
+                                        .constrainAs(filter) {
+                                            end.linkTo(parent.end)
+                                            top.linkTo(parent.top)
+                                            bottom.linkTo(parent.bottom)
+                                        }
+                                        .padding(8.dp)
                             ) {
                                 Icon(
                                         imageVector = Icons.Default.FilterAlt,

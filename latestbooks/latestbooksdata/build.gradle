@@ -9,9 +9,11 @@ dependencies {
     implementation project(path: ':paging')
     implementation project(path: ':serverconstants')
     implementation project(path: ':book:bookmodel')
+    implementation project(path: ':book:skraper')
+    implementation project(path: ':extensions')
 
     //jsoup
-    implementation "org.jsoup:jsoup:$jsoup"
+    implementation "it.skrape:skrapeit:$skrapeit"
 
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
 

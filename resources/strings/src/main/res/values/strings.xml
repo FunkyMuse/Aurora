@@ -7,7 +7,7 @@
     <string name="no_books_for_query">No books have been found for your search term, try another one.</string>
     <string name="search_by_title">Search by title…</string>
     <string name="year">Year</string>
-    <string name="of_pages"># of pages</string>
+    <string name="pages">pages</string>
     <string name="file_format">File format</string>
     <string name="not_available">N/A</string>
     <string name="empty_or_short_input">Search must contain minimum 3 characters…</string>

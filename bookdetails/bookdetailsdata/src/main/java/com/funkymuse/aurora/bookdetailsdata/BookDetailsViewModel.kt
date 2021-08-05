@@ -31,7 +31,7 @@ class BookDetailsViewModel @Inject constructor(
 ) : ViewModel(), Navigator by navigator {
 
     val id
-        get() = savedStateHandle.get<Int>(BOOK_ID_PARAM)
+        get() = savedStateHandle.get<String>(BOOK_ID_PARAM)
                 ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
@@ -57,7 +57,7 @@ class BookDetailsViewModel @Inject constructor(
         viewModelScope.launch { favoritesDAO.insertIntoFavorites(favoriteBook) }
     }
 
-    fun removeFromFavorites(favoriteBookID: Int) {
+    fun removeFromFavorites(favoriteBookID: String) {
         viewModelScope.launch { favoritesDAO.deleteFromFavoritesByID(favoriteBookID) }
     }
 

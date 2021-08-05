@@ -17,3 +17,5 @@ inline fun Context.openWebPage(url: String, onCantHandleAction: () -> Unit = {})
         onCantHandleAction()
     }
 }
+
+fun String.removeBrackets(): String = replace("[", "", true).replace("]", "", true)

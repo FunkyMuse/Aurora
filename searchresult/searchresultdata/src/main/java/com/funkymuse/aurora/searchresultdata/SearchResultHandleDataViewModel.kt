@@ -69,7 +69,6 @@ class SearchResultHandleDataViewModel @Inject constructor(
     private fun resetOnSort() {
         sortQuery = ""
         sortType = ""
-        searchResultDataSource.canLoadMore = true
     }
 
     private fun sortByYearDESC() {
