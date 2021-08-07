@@ -5,7 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.common.isOnline
-import com.crazylegend.common.tryOrNull
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.dispatchers.IoDispatcher
@@ -16,10 +15,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
-import it.skrape.core.htmlDocument
-import it.skrape.fetcher.HttpFetcher
-import it.skrape.fetcher.response
-import it.skrape.fetcher.skrape
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
@@ -34,7 +29,7 @@ class SearchResultDataSource @AssistedInject constructor(
     @Assisted(SEARCH_WITH_MASK) private val maskWord: Boolean,
     @Assisted(SORT_TYPE) private val sortType: String,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val scraper:BookScraper
+    private val scraper: BookScraper
 ) : PagingSource<Int, Book>() {
 
     @AssistedFactory
@@ -64,8 +59,10 @@ class SearchResultDataSource @AssistedInject constructor(
         }
     }
 
-    private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
-        val list = scraper.fetch(scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord))
+    private fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
+        val list = scraper.fetch{
+            scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord, this)
+        }
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {

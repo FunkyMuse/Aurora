@@ -55,8 +55,10 @@ class LatestBooksDataSource @AssistedInject constructor(
         }
     }
 
-    private suspend fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
-        val list = scraper.fetch(scraper.generateLatestBooksUrl(page, sortQuery, sortType))
+    private fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
+        val list = scraper.fetch {
+            scraper.generateLatestBooksUrl(page, sortQuery, sortType, this)
+        }
         return if (list.isNullOrEmpty()) {
             canNotLoadMoreContent()
         } else {

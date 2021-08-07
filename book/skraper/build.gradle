@@ -11,7 +11,7 @@ dependencies {
 
 
     //jsoup
-    implementation "it.skrape:skrapeit:$skrapeit"
+    api "org.jsoup:jsoup:$jsoup"
 
     implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
     implementation project(path: ':coroutines:dispatchers')

@@ -12,9 +12,6 @@ dependencies {
     implementation project(path: ':book:skraper')
     implementation project(path: ':extensions')
 
-    //jsoup
-    implementation "it.skrape:skrapeit:$skrapeit"
-
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
 
     implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
