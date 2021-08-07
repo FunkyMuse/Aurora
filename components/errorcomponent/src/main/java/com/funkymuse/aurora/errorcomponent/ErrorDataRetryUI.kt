@@ -96,7 +96,7 @@ fun ErrorWithRetry(
     onRetryClicked: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().zIndex(1f),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -115,7 +115,7 @@ fun ErrorMessage(
     @StringRes text: Int,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().zIndex(3f),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -142,6 +142,10 @@ fun RetryOption(onRetryClicked: () -> Unit = {}) {
             onRetryClicked()
         }
         .padding(top = 16.dp)
+        .wrapContentSize()
+        .zIndex(3f),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = Icons.Filled.Replay,
