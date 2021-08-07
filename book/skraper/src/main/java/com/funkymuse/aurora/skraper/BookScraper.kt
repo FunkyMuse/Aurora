@@ -1,6 +1,5 @@
 package com.funkymuse.aurora.skraper
 
-import android.util.Log
 import com.crazylegend.common.tryOrNull
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.extensions.removeBrackets
@@ -58,7 +57,6 @@ class BookScraper @Inject constructor() {
             request {
                 timeout = DEFAULT_API_TIMEOUT
                 url = requestUrl
-                Log.d("URL REQUESt", url)
             }
             response {
                 htmlDocument {
