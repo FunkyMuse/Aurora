@@ -17,7 +17,7 @@ import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 const val FAVORITES_DB_NAME = "favorites-db"
 
 
-@Database(entities = [FavoriteBook::class], version = 1, exportSchema = false)
+@Database(entities = [FavoriteBook::class], version = 2, exportSchema = false)
 @TypeConverters(ArrayListStringConverter::class)
 abstract class FavoritesDatabase : RoomDatabase() {
     abstract fun dao(): FavoritesDAO
