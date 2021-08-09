@@ -53,6 +53,7 @@ applyHiltDeps(this)
 applyMoshiDeps(this)
 applyComposeUIDeps(this)
 applyCoilDep(this)
+applyWorkerDeps(this)
 
 dependencies {
     //navigation
@@ -80,6 +81,10 @@ dependencies {
     //book details
     implementation project(path: ':bookdetails:bookdetailsui')
     implementation project(path: ':bookdetails:bookdetailsdestination')
+
+    //book download
+    implementation project(path: ':book:bookdownloader')
+
 
     //settings
     implementation project(path: ':settings:settingsui')

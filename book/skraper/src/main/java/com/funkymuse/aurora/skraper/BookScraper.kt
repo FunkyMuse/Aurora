@@ -9,12 +9,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by funkymuse on 8/2/21 to long live and prosper !
  */
-@Singleton
 class BookScraper @Inject constructor() {
 
     private fun List<Element>.toBook(): Book? {

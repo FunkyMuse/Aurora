@@ -1,0 +1,12 @@
+
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+applyWorkerDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':resources:drawables')
+}

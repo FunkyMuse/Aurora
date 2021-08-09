@@ -40,7 +40,8 @@
     <string name="no_download_mirrors_available">No download links available.</string>
     <string name="year_asc">Year ASC</string>
     <string name="year_desc">Year DESC</string>
-    <string name="mirror_placeholder">Mirror %1$d</string>
+    <string name="direct_download">Direct Download</string>
+    <string name="web_download">Web Download</string>
     <string name="data_saver">Data saver</string>
     <string name="data_saver_expl">Enable this option to save data, images will not be loaded</string>
     <string name="torrent_download">Torrent download</string>
@@ -108,4 +109,8 @@
     <string name="crash_copied_to_clipboard">Crash copied to clipboard!</string>
     <string name="license">GPL 3.0</string>
     <string name="license_title">License</string>
+    <string name="download_books_channel_name">Download books channel</string>
+    <string name="download_books_channel_description">Use this channel when downloading a book</string>
+    <string name="aurora_download_service">"Aurora download service"</string>
+    <string name="downloading_placeholder">Downloading %1$s</string>
 </resources>

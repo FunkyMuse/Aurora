@@ -1,6 +1,7 @@
 package com.funkymuse.aurora.di
 
 import android.content.Context
+import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.request.CachePolicy
 import com.funkymuse.aurora.R
@@ -28,5 +29,7 @@ object AppModule {
             .memoryCachePolicy(CachePolicy.ENABLED)
             .networkCachePolicy(CachePolicy.ENABLED)
             .build()
+
+
 
 }

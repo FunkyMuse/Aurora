@@ -1,6 +1,7 @@
 package com.funkymuse.aurora
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
@@ -21,6 +22,7 @@ import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
+import com.funkymuse.aurora.bookdownloader.BookPath
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
@@ -42,6 +44,7 @@ import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import java.io.File
 import javax.inject.Inject
 
 
@@ -53,6 +56,11 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var navigator: Navigator
+
+    @Inject
+    @BookPath
+    lateinit var bookPath: File
+
 
     private val isDarkThemeEnabled get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
@@ -69,6 +77,9 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+        bookPath.listFiles()?.forEach {
+            Log.d("FILE", "${it.path} | size > ${it.length()}")
         }
     }
 
