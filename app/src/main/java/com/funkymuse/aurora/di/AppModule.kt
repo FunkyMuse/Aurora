@@ -23,6 +23,7 @@ object AppModule {
     fun imageLoader(@ApplicationContext context: Context): ImageLoader =
         ImageLoader.Builder(context)
             .crossfade(true)
+            .error(R.drawable.ic_logo)
             .diskCachePolicy(CachePolicy.ENABLED)
             .memoryCachePolicy(CachePolicy.ENABLED)
             .networkCachePolicy(CachePolicy.ENABLED)
