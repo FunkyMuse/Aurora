@@ -61,10 +61,6 @@ static def excludeParentFoldersFor(project) {
 
 subprojects {
 
-    if (it.getAllprojects().size() > 1) {
-        println it.getAllprojects().first().name
-    }
-
     switch (it.name) {
         case "app":
             apply plugin: 'com.android.application'
