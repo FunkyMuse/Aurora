@@ -1,16 +1,20 @@
 package com.funkymuse.aurora.bookdownloader
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker
+import com.crazylegend.toaster.Toaster
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 import java.net.URL
-import java.util.*
 import javax.inject.Inject
 
 
@@ -19,7 +23,9 @@ import javax.inject.Inject
  */
 class BookFileDownloader @Inject constructor(
     @BookPath private val localPath: File,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val toaster: Toaster,
+    @ApplicationContext private val context: Context
 ) {
 
     companion object {
@@ -27,10 +33,9 @@ class BookFileDownloader @Inject constructor(
     }
 
     fun buildForegroundInfo(
-        id: UUID,
         bookName: String
     ): ForegroundInfo {
-        val notification = notificationHelper.foregroundInfoNotification(id, bookName)
+        val notification = notificationHelper.foregroundInfoNotification(bookName)
         val notificationId = BookDownloadScheduler.NOTIFICATION_ID
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -43,34 +48,29 @@ class BookFileDownloader @Inject constructor(
 
     fun downloadFile(
         downloadUrl: String,
-        id: UUID,
         bookId: String,
         extension: String,
-        bookName: String
-    ): ListenableWorker.Result {
+        bookName: String,
+    ): ListenableWorker.Result = try {
+        downloadFileWithProgress(
+            downloadUrl,
+            File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}").path,
+            progress = {
+                notificationHelper.publishNotification(it, bookName)
+            })
+        ListenableWorker.Result.success()
+    } catch (t: SocketTimeoutException) {
+        toaster.longToast(R.string.server_time_out)
+        pasteToClipboard(downloadUrl)
+        ListenableWorker.Result.failure()
+    }
 
-        try {
-            downloadFileWithProgress(
-                downloadUrl,
-                File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}").path,
-                connectionCallBack = {
-                    Log.d("CONNECTION", "CODE $it")
-                },
-                onError = {
-                    it.printStackTrace()
-                },
-                progress = {
-                    notificationHelper.publishNotification(id, it, bookName)
-                    Log.d("PROGRESS", "$it")
-                }) {
-                Log.d("CALLBACK", it.toString())
-            }
-
-            return ListenableWorker.Result.success()
-        } catch (t: Throwable) {
-            return ListenableWorker.Result.failure()
+    private fun pasteToClipboard(downloadUrl: String) {
+        (context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)?.apply {
+            setPrimaryClip(ClipData.newPlainText("download url", downloadUrl))
         }
     }
+
 
     private fun downloadFileWithProgress(
         urlPath: String,

@@ -8,9 +8,7 @@ import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -19,7 +17,6 @@ import javax.inject.Inject
 class NotificationHelper @Inject constructor(
     @ApplicationContext private val context: Context,
     private val notificationManager: NotificationManagerCompat,
-    private val workManager: WorkManager
 ) {
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -27,23 +24,22 @@ class NotificationHelper @Inject constructor(
         }
     }
 
-    fun foregroundInfoNotification(id: UUID, bookName: String): Notification =
-        createNotification(id, bookName)
+    fun foregroundInfoNotification(bookName: String): Notification =
+        createNotification(bookName)
 
-    fun publishNotification(id: UUID, progress: Int, bookName: String) {
+    fun publishNotification(progress: Int, bookName: String) {
         notificationManager.notify(
             BookDownloadScheduler.NOTIFICATION_ID,
-            createNotification(id, bookName, progress)
+            createNotification(bookName, progress)
         )
     }
 
-    private fun createNotification(id: UUID, bookName: String, progress: Int = 0): Notification {
+    private fun createNotification(bookName: String, progress: Int = 0): Notification {
         val title = context.getString(R.string.aurora_download_service)
-        val cancel = context.getString(R.string.cancel)
         val downloading = context.getString(R.string.downloading_placeholder, bookName)
-        val intent = workManager.createCancelPendingIntent(id)
 
-        val builder = NotificationCompat.Builder(context, BookDownloadScheduler.NOTIFICATION_CHANNEL)
+        val builder =
+            NotificationCompat.Builder(context, BookDownloadScheduler.NOTIFICATION_CHANNEL)
                 .setContentTitle(title)
                 .setTicker(title)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(downloading))
@@ -51,7 +47,6 @@ class NotificationHelper @Inject constructor(
                 .setSmallIcon(R.drawable.ic_logo)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .addAction(android.R.drawable.ic_menu_delete, cancel, intent)
 
         if (progress == 0) {
             builder.setProgress(100, 0, true)

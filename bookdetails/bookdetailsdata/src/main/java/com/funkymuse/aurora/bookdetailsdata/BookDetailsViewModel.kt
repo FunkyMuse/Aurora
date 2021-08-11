@@ -14,14 +14,13 @@ import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.libgenapi.LibgenAPI
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.skraper.DownloadLinksExtractor
+import com.funkymuse.aurora.skraper.ScraperResult
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,7 +36,7 @@ class BookDetailsViewModel @Inject constructor(
     private val downloadLinksExtractor: DownloadLinksExtractor,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
     application: Application,
-    private val bookDownloadScheduler : BookDownloadScheduler
+    private val bookDownloadScheduler: BookDownloadScheduler
 ) : AndroidViewModel(application), Navigator by navigator {
 
     private val id
@@ -49,6 +48,9 @@ class BookDetailsViewModel @Inject constructor(
 
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)
     val favoriteBook = favoriteBookData.asStateFlow()
+
+    private val extractLinkEvent : Channel<ScraperResult> = Channel(Channel.BUFFERED)
+    val extractLink = extractLinkEvent.receiveAsFlow()
 
     init {
         loadBook()
@@ -75,17 +77,27 @@ class BookDetailsViewModel @Inject constructor(
         loadBook()
     }
 
-    fun downloadBook(link: String, extension:String, bookName:String) {
+    fun downloadBook(link: String, extension: String, bookName: String) {
+        viewModelScope.launch(dispatcher) {
+            when (val url = downloadLinksExtractor.extract(link)) {
+                ScraperResult.Loading -> {
 
-        try {
-            viewModelScope.launch(dispatcher) {
+                }
+                is ScraperResult.Success -> {
+                    bookDownloadScheduler.scheduleDownload(url.link, id, extension, bookName)
+                    Log.d("LINK EXTRACTED", url.link)
+                }
+                ScraperResult.TimeOut -> {
 
-                val url = downloadLinksExtractor.extract(link) ?: return@launch
-                bookDownloadScheduler.scheduleDownload(url, id, extension, bookName)
-                Log.d("LINK EXTRACTED", url)
+                }
+                ScraperResult.UrlNotFound -> {
+
+                }
+                ScraperResult.Idle -> {
+
+                }
             }
-        } catch (t: Throwable) {
-            t.printStackTrace()
+
         }
     }
 

@@ -113,4 +113,5 @@
     <string name="download_books_channel_description">Use this channel when downloading a book</string>
     <string name="aurora_download_service">"Aurora download service"</string>
     <string name="downloading_placeholder">Downloading %1$s</string>
+    <string name="server_time_out">Server time out, try again or choose a different download mirror!\nLink copied to clipboard!</string>
 </resources>

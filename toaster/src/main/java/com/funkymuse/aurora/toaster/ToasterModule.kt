@@ -18,5 +18,5 @@ object ToasterModule {
 
     @Provides
     @Singleton
-    fun toaster(@ApplicationContext context: Context) = Toaster(context)
+    fun toaster(@ApplicationContext context: Context) : Toaster = Toaster(context)
 }

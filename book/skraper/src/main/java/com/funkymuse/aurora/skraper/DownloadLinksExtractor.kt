@@ -17,13 +17,22 @@ class DownloadLinksExtractor @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
 
-    suspend fun extract(url: String): String? =
+    suspend fun extract(url: String): ScraperResult =
         when {
-            url.contains(LIBRARY_LOL, true) -> extractLibgenLolDownloadLink(url)
-            url.contains(LIBGEN_LC, true) -> extractLibgenLCDownloadLink(url)
-            else -> null
+            url.contains(LIBRARY_LOL, true) -> extractor { extractLibgenLolDownloadLink(url) }
+            url.contains(LIBGEN_LC, true) -> extractor { extractLibgenLCDownloadLink(url) }
+            else -> ScraperResult.Idle
         }
 
+    private suspend fun extractor(result: suspend () -> String?): ScraperResult {
+        try {
+            val url = result() ?: return ScraperResult.UrlNotFound
+            return ScraperResult.Success(url)
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+            return ScraperResult.TimeOut
+        }
+    }
 
     private suspend fun getDocument(url: String): Document =
         withContext(dispatcher) {

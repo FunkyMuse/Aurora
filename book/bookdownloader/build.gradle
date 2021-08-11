@@ -9,4 +9,5 @@ applyWorkerDeps(this)
 dependencies {
     implementation project(path: ':resources:strings')
     implementation project(path: ':resources:drawables')
+    implementation project(path: ':toaster')
 }
