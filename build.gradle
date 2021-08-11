@@ -50,7 +50,20 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+static def excludeParentFoldersFor(project) {
+    def name = ""
+    def allProjects = project.getAllprojects()
+    if (allProjects.size() > 1) {
+        name = allProjects.first().name
+    }
+    return name
+}
+
 subprojects {
+
+    if (it.getAllprojects().size() > 1) {
+        println it.getAllprojects().first().name
+    }
 
     switch (it.name) {
         case "app":
@@ -58,26 +71,14 @@ subprojects {
             apply plugin: 'kotlin-android'
             apply plugin: 'kotlin-kapt'
             apply plugin: 'dagger.hilt.android.plugin'
-            applyAndroid(it, true, true)
-            break
-
-    //disable compose
-        case ["strings", "colors", "drawables", "networking", "libgenapi", "toaster", "internetdetector", "bookdetailsdata",
-              "bookdetailsdestination", "favoritebookdb", "favoritebookmodel",
-              "latestbooksdata", "searchresultdata", "dispatchers", "appscope",
-              "searchresultdestination", "searchdata", "settingsdata", "crashesdestination", "extensions", "skraper",
-              "bookdownloader"]:
-            //setup gradle for libraries
-            apply plugin: 'com.android.library'
-            apply plugin: 'kotlin-android'
-            applyAndroid(it, false, false)
+            applyAndroid(it)
             break
 
     //ignore parent folders
-        case ["style", "resources", "retrofit", "bookdetails", "features", "favoritebook", "book", "components",
-              "latestbooks", "searchresult", "search", "settings", "coroutines", "crashes"]:
+        case excludeParentFoldersFor(it):
             break
 
+    // kotlin/java only modules
         case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel"]:
             apply plugin: 'java-library'
             apply plugin: 'kotlin'
@@ -88,10 +89,30 @@ subprojects {
             //setup gradle for libraries
             apply plugin: 'com.android.library'
             apply plugin: 'kotlin-android'
-            applyAndroid(it, false, true)
+            applyAndroid(it)
             break
     }
 
+}
+
+def enableCompose(project) {
+    project.android {
+        buildFeatures {
+            compose = true
+        }
+        composeOptions {
+            kotlinCompilerExtensionVersion compose_version
+        }
+    }
+
+}
+
+def enableBuildConfig(project) {
+    project.android {
+        buildFeatures {
+            buildConfig = true
+        }
+    }
 }
 
 def applyKotlinModule(project) {
@@ -101,7 +122,7 @@ def applyKotlinModule(project) {
     }
 }
 
-def applyAndroid(project, buildConfigCase, enableCompose) {
+def applyAndroid(project) {
     project.android {
 
         compileSdkVersion compileVersion
@@ -131,28 +152,17 @@ def applyAndroid(project, buildConfigCase, enableCompose) {
         }
 
         buildFeatures {
-            compose enableCompose
-        }
-
-        if (enableCompose) {
-            composeOptions {
-                kotlinCompilerExtensionVersion compose_version
-            }
-        }
-
-        buildFeatures {
             aidl = false
             renderScript = false
             resValues = false
             shaders = false
-            buildConfig = buildConfigCase
         }
     }
 
 }
 
 
-void applyRoomDeps(project) {
+def applyRoomDeps(project) {
     project.dependencies {
         //room
         implementation "androidx.room:room-ktx:$room"
@@ -160,7 +170,7 @@ void applyRoomDeps(project) {
     }
 }
 
-void applyDaggerDeps(project) {
+def applyDaggerDeps(project) {
     project.dependencies {
         //dagger
         implementation "com.google.dagger:dagger:$daggerVersion"
@@ -168,7 +178,7 @@ void applyDaggerDeps(project) {
     }
 }
 
-void applyHiltDeps(project) {
+def applyHiltDeps(project) {
     project.dependencies {
         //hilt
         implementation "com.google.dagger:hilt-android:$daggerVersion"
@@ -176,28 +186,29 @@ void applyHiltDeps(project) {
     }
 }
 
-void applyComposeUIDeps(project) {
+def applyComposeUIDeps(project) {
+    enableCompose(project)
     project.dependencies {
         implementation "androidx.compose.ui:ui:$compose_version"
         implementation "androidx.compose.ui:ui-tooling:$compose_version"
     }
 }
 
-void applyMoshiDeps(project) {
+def applyMoshiDeps(project) {
     project.dependencies {
         implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
         kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
     }
 }
 
-void applyCoilDep(project) {
+def applyCoilDep(project) {
     project.dependencies {
         implementation "io.coil-kt:coil-compose:$coil"
     }
 }
 
-void applyWorkerDeps(project){
-    project.dependencies{
+def applyWorkerDeps(project) {
+    project.dependencies {
         implementation "androidx.work:work-runtime-ktx:$work_version"
         implementation "androidx.hilt:hilt-work:$hilt_work"
         kapt "androidx.hilt:hilt-compiler:$hilt_work"

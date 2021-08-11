@@ -46,7 +46,7 @@ android {
 }
 
 hilt { enableAggregatingTask = true }
-
+enableBuildConfig(this)
 applyRoomDeps(this)
 applyDaggerDeps(this)
 applyHiltDeps(this)
