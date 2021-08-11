@@ -3,7 +3,7 @@ buildscript {
         compose_version = '1.0.1'
         kotlin_version = '1.5.21'
         room = "2.4.0-alpha04"
-        KAHelpers = '3.0.8'
+        KAHelpers = '3.0.11'
         moshi = "1.12.0"
         daggerVersion = '2.38.1'
         hiltJetpackVersion = '1.0.0'
@@ -192,7 +192,7 @@ def applyComposeUIDeps(project) {
 
 def applyMoshiDeps(project) {
     project.dependencies {
-        implementation "com.github.FunkyMuse.KAHelpers:moshi:$KAHelpers"
+        implementation "com.squareup.moshi:moshi:$moshi"
         kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
     }
 }
