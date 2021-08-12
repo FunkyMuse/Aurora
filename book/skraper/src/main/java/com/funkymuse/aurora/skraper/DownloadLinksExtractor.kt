@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 /**
@@ -28,9 +29,12 @@ class DownloadLinksExtractor @Inject constructor(
         try {
             val url = result() ?: return ScraperResult.UrlNotFound
             return ScraperResult.Success(url)
-        } catch (throwable: Throwable) {
+        } catch (throwable: SocketTimeoutException) {
             throwable.printStackTrace()
             return ScraperResult.TimeOut
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+            return ScraperResult.Error
         }
     }
 

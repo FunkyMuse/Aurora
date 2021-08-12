@@ -78,26 +78,13 @@ class BookDetailsViewModel @Inject constructor(
     }
 
     fun downloadBook(link: String, extension: String, bookName: String) {
+        extractLinkEvent.trySend(ScraperResult.Loading)
         viewModelScope.launch(dispatcher) {
-            when (val url = downloadLinksExtractor.extract(link)) {
-                ScraperResult.Loading -> {
-
-                }
-                is ScraperResult.Success -> {
-                    bookDownloadScheduler.scheduleDownload(url.link, id, extension, bookName)
-                    Log.d("LINK EXTRACTED", url.link)
-                }
-                ScraperResult.TimeOut -> {
-
-                }
-                ScraperResult.UrlNotFound -> {
-
-                }
-                ScraperResult.Idle -> {
-
-                }
+            val url = downloadLinksExtractor.extract(link)
+            extractLinkEvent.send(url)
+            if (url is ScraperResult.Success){
+                bookDownloadScheduler.scheduleDownload(url.link, id, extension, bookName)
             }
-
         }
     }
 

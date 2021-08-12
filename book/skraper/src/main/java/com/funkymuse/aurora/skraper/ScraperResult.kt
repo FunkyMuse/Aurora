@@ -10,4 +10,5 @@ sealed class ScraperResult {
     object UrlNotFound : ScraperResult()
     object TimeOut : ScraperResult()
     object Idle : ScraperResult()
+    object Error : ScraperResult()
 }
