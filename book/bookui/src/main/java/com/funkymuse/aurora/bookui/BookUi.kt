@@ -23,7 +23,7 @@ import coil.compose.rememberImagePainter
 import com.funkymuse.aurora.generalbook.GeneralBook
 import com.funkymuse.aurora.loadingcomponent.BoxShimmer
 import com.funkymuse.aurora.serverconstants.LIBGEN_BASE_URL
-import com.funkymuse.style.color.CardBackground
+
 import com.funkymuse.style.shape.Shapes
 
 /**
@@ -44,7 +44,6 @@ fun Book(
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight(),
-        backgroundColor = CardBackground
     ) {
         Box(
             modifier = Modifier
@@ -95,8 +94,7 @@ fun AddFormatPagesAndSize(extension: String?, pages: String?, size: String?) {
 
     Text(
         text = text,
-        color = Color.DarkGray,
-        style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp),
+        style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp, fontStyle = FontStyle.Italic),
         modifier = Modifier.padding(bottom = 8.dp),
     )
 }
@@ -106,8 +104,7 @@ private fun AddYear(year: String?) {
     year ?: return
     Text(
         text = year,
-        color = Color.DarkGray,
-        style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp)
+        style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp, fontStyle = FontStyle.Italic)
     )
 }
 

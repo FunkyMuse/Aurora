@@ -22,15 +22,12 @@ import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
-import com.funkymuse.aurora.bookdownloader.BookPath
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.BottomNav
-import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.*
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.crashesui.Crashes
+import com.funkymuse.aurora.downloadsui.DownloadsUi
 import com.funkymuse.aurora.favoritebookui.Favorites
 import com.funkymuse.aurora.latestbooksui.LatestBooks
 import com.funkymuse.aurora.navigator.Navigator
@@ -44,7 +41,6 @@ import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
-import java.io.File
 import javax.inject.Inject
 
 
@@ -57,18 +53,16 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
-    @Inject
-    @BookPath
-    lateinit var bookPath: File
-
-
     private val isDarkThemeEnabled get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme, isDarkThemeEnabled) {
+            AuroraTheme(
+                darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme,
+                isDarkThemeEnabled
+            ) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     CompositionLocalProvider(LocalImageLoader provides imageLoader) {
                         Surface(color = MaterialTheme.colors.background) {
@@ -77,9 +71,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-        bookPath.listFiles()?.forEach {
-            Log.d("FILE", "${it.path} | size > ${it.length()}")
         }
     }
 
@@ -92,29 +83,39 @@ fun AuroraScaffold(navigator: Navigator) {
         navigator.destinations.collect {
             when (val event = it) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
-                is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
+                is NavigatorEvent.Directions -> navController.navigate(
+                    event.destination,
+                    event.builder
+                )
             }
         }
     }
 
     Scaffold(
-            bottomBar = {
-                AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
-            }
+        bottomBar = {
+            AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
+        }
     ) {
         NavHost(
-                navController = navController,
-                startDestination = SearchBottomNavRoute.route,
-                builder = {
-                    addSearch()
-                    addFavorites()
-                    addLatestBooks()
-                    addSettings()
-                    addSearchResult()
-                    addBookDetails()
-                    addCrashes()
-                }
+            navController = navController,
+            startDestination = SearchBottomNavRoute.route,
+            builder = {
+                addSearch()
+                addFavorites()
+                addLatestBooks()
+                addDownloads()
+                addSettings()
+                addSearchResult()
+                addBookDetails()
+                addCrashes()
+            }
         )
+    }
+}
+
+private fun NavGraphBuilder.addDownloads() {
+    composable(DownloadsBottomNavRoute.route) {
+        DownloadsUi()
     }
 }
 

@@ -1,0 +1,12 @@
+plugins {
+    id 'kotlin-kapt'
+}
+
+applyHiltDeps(this)
+
+dependencies {
+    implementation project(path: ':coroutines:dispatchers')
+    implementation project(path: ':common')
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+
+}

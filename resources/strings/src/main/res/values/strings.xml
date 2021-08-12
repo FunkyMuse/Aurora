@@ -21,6 +21,7 @@
     <string name="no_book_loaded">Couldn\'t fetch details for this book, try again later !</string>
     <string name="no_book_loaded_no_connect">Couldn\'t fetch details for this book, establish an active internet connection and reloading will start automatically ! !</string>
     <string name="no_books_loaded_no_connect">Couldn\'t fetch books, establish active internet connection and reloading will start automatically ! !</string>
+    <string name="no_downloads">You haven\'t downloaded a book, you can do so by choosing one of the mirrors available when you find a book!</string>
     <string name="author_detail">Author/s:</string>
     <string name="language_detail">Language</string>
     <string name="title_detail">Title</string>
@@ -37,6 +38,7 @@
     <string name="description_detail">Description</string>
     <string name="search">Search</string>
     <string name="download">Download</string>
+    <string name="downloads">Downloads</string>
     <string name="no_download_mirrors_available">No download links available.</string>
     <string name="year_asc">Year ASC</string>
     <string name="year_desc">Year DESC</string>

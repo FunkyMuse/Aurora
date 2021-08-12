@@ -11,6 +11,7 @@ sealed class BottomNavScreen(val route: String, @StringRes val resourceID: Int) 
         const val SEARCH = "search"
         const val FAVORITES = "favorites"
         const val LATEST_BOOKS = "latestBooks"
+        const val DOWNLOADS = "downloads"
         const val SETTINGS = "settings"
     }
 

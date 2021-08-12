@@ -10,8 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import java.io.File
-import javax.inject.Singleton
 
 /**
  * Created by funkymuse on 8/9/21 to long live and prosper !
@@ -20,8 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object BookDownloaderModule {
-
-    private const val DOWNLOADS_PATH = "downloads"
 
     @Provides
     fun workManager(@ApplicationContext context: Context): WorkManager =
@@ -37,14 +33,5 @@ object BookDownloaderModule {
     @Provides
     fun notificationManager(@ApplicationContext context: Context): NotificationManagerCompat =
         NotificationManagerCompat.from(context)
-
-    @Provides
-    @BookPath
-    fun localPath(@ApplicationContext context: Context): File {
-        val localPath = context.filesDir
-        val directory = File(localPath.path + File.separator + DOWNLOADS_PATH)
-        directory.mkdirs()
-        return directory
-    }
 
 }

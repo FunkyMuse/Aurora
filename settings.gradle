@@ -51,7 +51,6 @@ include ':components:radiobuttoncomponent'
 include ':latestbooks:latestbooksui'
 include ':latestbooks:latestbooksdata'
 
-
 include ':search:searchui'
 include ':search:searchdata'
 
@@ -75,3 +74,6 @@ include ':book:generalbook'
 include ':scraper:skraper'
 include ':book:bookdownloader'
 include ':scraper:scrapermodel'
+include ':downloads:downloadsui'
+include ':downloads:downloadsdata'
+include ':common'

@@ -11,6 +11,7 @@ import android.os.Looper
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker
 import com.crazylegend.toaster.Toaster
+import com.funkymuse.aurora.common.downloads
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -24,11 +25,12 @@ import javax.inject.Inject
  * Created by funkymuse on 8/9/21 to long live and prosper !
  */
 class BookFileDownloader @Inject constructor(
-    @BookPath private val localPath: File,
     private val notificationHelper: NotificationHelper,
     private val toaster: Toaster,
     @ApplicationContext private val context: Context
 ) {
+
+    private val localPath get() = context.downloads()
 
     companion object {
         private const val TIMEOUT = 10000

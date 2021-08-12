@@ -51,7 +51,7 @@ import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.stateWhenStarted
-import com.funkymuse.style.color.CardBackground
+
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.flow.collect
@@ -483,7 +483,8 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         modifier = modifier
             .padding(start = 22.dp)
             .offset(y = 16.dp)
-            .zIndex(2f)
+            .zIndex(2f),
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
@@ -500,8 +501,7 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = Shapes.large,
-        backgroundColor = CardBackground
+        shape = Shapes.large
     ) {
         Column {
             Text(

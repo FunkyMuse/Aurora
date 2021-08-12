@@ -82,9 +82,8 @@ dependencies {
     implementation project(path: ':bookdetails:bookdetailsui')
     implementation project(path: ':bookdetails:bookdetailsdestination')
 
-    //book download
-    implementation project(path: ':book:bookdownloader')
-
+    //downloads
+    implementation project(path: ':downloads:downloadsui')
 
     //settings
     implementation project(path: ':settings:settingsui')
@@ -108,6 +107,7 @@ dependencies {
     implementation "com.github.FunkyMuse:Crashy:$crashy"
 
     //compose
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.navigation:navigation-compose:$navigation"
     implementation "androidx.activity:activity-compose:$activity"
