@@ -1,9 +1,7 @@
 package com.funkymuse.aurora.bookdetailsdata
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.crazylegend.retrofit.retrofitStateInitialLoading
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_ID_PARAM
@@ -14,7 +12,7 @@ import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.libgenapi.LibgenAPI
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.skraper.DownloadLinksExtractor
-import com.funkymuse.aurora.skraper.ScraperResult
+import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,13 +33,11 @@ class BookDetailsViewModel @Inject constructor(
     private val navigator: Navigator,
     private val downloadLinksExtractor: DownloadLinksExtractor,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    application: Application,
     private val bookDownloadScheduler: BookDownloadScheduler
-) : AndroidViewModel(application), Navigator by navigator {
+) : ViewModel(), Navigator by navigator {
 
     private val id
-        get() = savedStateHandle.get<String>(BOOK_ID_PARAM)
-            ?: throw IllegalStateException("Parameter book ID must not be null!")
+        get() = savedStateHandle.get<String>(BOOK_ID_PARAM) ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()
@@ -49,7 +45,7 @@ class BookDetailsViewModel @Inject constructor(
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)
     val favoriteBook = favoriteBookData.asStateFlow()
 
-    private val extractLinkEvent : Channel<ScraperResult> = Channel(Channel.BUFFERED)
+    private val extractLinkEvent: Channel<ScraperResult> = Channel(Channel.BUFFERED)
     val extractLink = extractLinkEvent.receiveAsFlow()
 
     init {
@@ -82,7 +78,7 @@ class BookDetailsViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             val url = downloadLinksExtractor.extract(link)
             extractLinkEvent.send(url)
-            if (url is ScraperResult.Success){
+            if (url is ScraperResult.Success) {
                 bookDownloadScheduler.scheduleDownload(url.link, id, extension, bookName)
             }
         }

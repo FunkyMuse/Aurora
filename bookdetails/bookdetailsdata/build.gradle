@@ -15,7 +15,7 @@ dependencies {
 
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
-    implementation project(path: ':book:skraper')
+    implementation project(path: ':scraper:skraper')
     implementation project(path: ':coroutines:dispatchers')
     implementation project(path: ':book:bookdownloader')
 

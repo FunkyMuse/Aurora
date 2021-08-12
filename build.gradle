@@ -75,7 +75,7 @@ subprojects {
             break
 
     // kotlin/java only modules
-        case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel"]:
+        case ["serverconstants", "generalbook", "bookdetailsmodel", "bookmodel", "scrapermodel"]:
             apply plugin: 'java-library'
             apply plugin: 'kotlin'
             applyKotlinModule(it)

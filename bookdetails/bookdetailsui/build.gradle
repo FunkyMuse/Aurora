@@ -1,8 +1,6 @@
 plugins {
     id 'kotlin-kapt'
 }
-
-
 applyComposeUIDeps(this)
 applyHiltDeps(this)
 applyCoilDep(this)
@@ -17,6 +15,7 @@ dependencies {
 
     implementation project(path: ':bookdetails:bookdetailsmodel')
     implementation project(path: ':bookdetails:bookdetailsdata')
+    implementation project(path: ':scraper:scrapermodel')
 
     implementation project(path: ':favoritebook:favoritebookdb')
 

@@ -1,9 +1,13 @@
 package com.funkymuse.aurora.skraper
 
+import android.content.Context
+import com.crazylegend.common.isOnline
 import com.funkymuse.aurora.dispatchers.IoDispatcher
+import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.aurora.serverconstants.DEFAULT_API_TIMEOUT
 import com.funkymuse.aurora.serverconstants.LIBGEN_LC
 import com.funkymuse.aurora.serverconstants.LIBRARY_LOL
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -16,14 +20,18 @@ import javax.inject.Inject
  */
 class DownloadLinksExtractor @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    @ApplicationContext private val context: Context
 ) {
 
-    suspend fun extract(url: String): ScraperResult =
-        when {
+    suspend fun extract(url: String): ScraperResult {
+        if (!context.isOnline) return ScraperResult.NoConnection
+
+        return when {
             url.contains(LIBRARY_LOL, true) -> extractor { extractLibgenLolDownloadLink(url) }
             url.contains(LIBGEN_LC, true) -> extractor { extractLibgenLCDownloadLink(url) }
             else -> ScraperResult.Idle
         }
+    }
 
     private suspend fun extractor(result: suspend () -> String?): ScraperResult {
         try {

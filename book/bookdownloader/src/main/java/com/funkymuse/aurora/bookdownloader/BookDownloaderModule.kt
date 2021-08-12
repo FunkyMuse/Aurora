@@ -24,7 +24,6 @@ object BookDownloaderModule {
     private const val DOWNLOADS_PATH = "downloads"
 
     @Provides
-    @Singleton
     fun workManager(@ApplicationContext context: Context): WorkManager =
         WorkManager.getInstance(context)
 

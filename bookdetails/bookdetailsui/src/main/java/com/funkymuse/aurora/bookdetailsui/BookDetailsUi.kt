@@ -44,13 +44,17 @@ import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
+import com.funkymuse.aurora.loadingcomponent.LoadingDialog
+import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.color.CardBackground
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.flow.collect
 import java.util.*
 
 /**
@@ -70,6 +74,11 @@ fun ShowDetailedBook() {
 
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
+
+    val showLoadingDialog = bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
+    if (showLoadingDialog) {
+        LoadingDialog()
+    }
 
 
     val retry = {
@@ -121,8 +130,12 @@ fun ShowDetailedBook() {
                     return@handle
                 }
                 detailedBook?.apply {
-                    DetailedBook(this){
-                        bookDetailsViewModel.downloadBook(it, extension.toString(), title.toString())
+                    DetailedBook(this) {
+                        bookDetailsViewModel.downloadBook(
+                            it,
+                            extension.toString(),
+                            title.toString()
+                        )
                     }
                 }
 
@@ -180,14 +193,14 @@ fun ScaffoldWithBackAndFavorites(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
 fun BookPreview() {
-    DetailedBook(book = DetailedBookModel.testBook){}
+    DetailedBook(book = DetailedBookModel.testBook) {}
 }
 
 
 @Composable
 fun DetailedBook(
     book: DetailedBookModel,
-    onDownloadLinkClicked: (String)->Unit
+    onDownloadLinkClicked: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
@@ -371,7 +384,7 @@ fun DetailedBook(
                 onDismissRequest = { menuExpanded = false }) {
                 dlMirrors?.forEach {
                     DropdownMenuItem(onClick = {
-                        if (it.value){
+                        if (it.value) {
                             onDownloadLinkClicked(it.key)
                         } else {
                             localContext.openWebPage(it.key)

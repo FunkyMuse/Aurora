@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.skraper
+package com.funkymuse.aurora.scrapermodel
 
 /**
  * Created by funkymuse on 8/10/21 to long live and prosper !
@@ -11,4 +11,5 @@ sealed class ScraperResult {
     object TimeOut : ScraperResult()
     object Idle : ScraperResult()
     object Error : ScraperResult()
+    object NoConnection : ScraperResult()
 }
