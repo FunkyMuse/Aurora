@@ -1,7 +1,11 @@
 package com.funkymuse.aurora.downloadsui
 
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,10 +29,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.funkymuse.aurora.downloadsdata.CreateFileContract
 import com.funkymuse.aurora.downloadsdata.DownloadsModel
 import com.funkymuse.aurora.downloadsdata.DownloadsViewModel
 import com.funkymuse.aurora.downloadsdata.FileModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
+import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.style.shape.Shapes
@@ -39,6 +45,7 @@ import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
+import java.io.File
 
 /**
  * Created by funkymuse on 8/12/21 to long live and prosper !
@@ -53,11 +60,33 @@ fun DownloadsUi() {
     val scope = rememberCoroutineScope()
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
+    val ctx = context
 
+    var clickedModel by remember { mutableStateOf<File?>(null) }
+    var uri by remember { mutableStateOf<Uri?>(null) }
     progressVisibility = downloadsModel is DownloadsModel.Loading
 
+    val launcher = rememberLauncherForActivityResult(contract = CreateFileContract(),
+        onResult = {
+            uri = it
+        })
+
+    clickedModel?.let { file ->
+        uri?.let {
+            CopyFileDialog(uri = it, filePath = file) {
+                clickedModel = null
+                uri = null
+            }
+        }
+    }
     val retry = {
         downloadsViewModel.retry()
+    }
+
+    val onBookClicked = { fileModel: FileModel ->
+        clickedModel = fileModel.file
+        val mimeType = fileModel.getMimeType(ctx)
+        launcher.launch(Pair(mimeType ?: "application/pdf", fileModel.fileNameAndExtension))
     }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -122,7 +151,7 @@ fun DownloadsUi() {
                     contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
                 ) {
                     items(list, itemContent = { item ->
-                        DownloadedBookItem(item)
+                        DownloadedBookItem(item, onBookClicked)
                     })
                 }
 
@@ -142,14 +171,18 @@ fun PreviewDownloadedItem() {
             "Femine fiction: Revisiting the Postmodern",
             125123L,
             "PDF",
-            "asdfajo234adsf"
+            "asdfajo234adsf",
+            File(context.filesDir, "")
         )
-    )
+    ) {
+
+    }
 }
 
 @Composable
 fun DownloadedBookItem(
-    fileModel: FileModel
+    fileModel: FileModel,
+    onBookClicked: (FileModel) -> Unit
 ) {
     Card(
         shape = Shapes.large,
@@ -157,11 +190,16 @@ fun DownloadedBookItem(
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable {
+                onBookClicked(fileModel)
+            }
     ) {
         Column(modifier = Modifier.width(IntrinsicSize.Max)) {
 
             Text(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 8.dp),
                 text = fileModel.fileName,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 3,

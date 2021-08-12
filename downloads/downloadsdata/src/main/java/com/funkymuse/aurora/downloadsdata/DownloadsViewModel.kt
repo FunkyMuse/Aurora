@@ -40,7 +40,8 @@ class DownloadsViewModel @Inject constructor(
                 it.nameWithoutExtension.substringBefore("-").trim(),
                 it.length(),
                 it.extension,
-                it.nameWithoutExtension.substringAfter("(").removeSuffix(")")
+                it.nameWithoutExtension.substringAfter("(").removeSuffix(")"),
+                it
             )
         } ?: emptyList()
         val removedDups = filesList.distinctBy { it.bookId }
