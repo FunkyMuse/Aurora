@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker
 import com.crazylegend.toaster.Toaster
@@ -60,7 +62,9 @@ class BookFileDownloader @Inject constructor(
             })
         ListenableWorker.Result.success()
     } catch (t: SocketTimeoutException) {
-        toaster.longToast(R.string.server_time_out)
+        Handler(Looper.getMainLooper()).post {
+            toaster.longToast(R.string.server_time_out)
+        }
         pasteToClipboard(downloadUrl)
         ListenableWorker.Result.failure()
     }
