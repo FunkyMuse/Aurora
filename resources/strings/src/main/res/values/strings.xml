@@ -89,6 +89,7 @@
     <string name="remove">Remove</string>
     <string name="delete">Delete</string>
     <string name="loading">Loading…</string>
+    <string name="preparing">Preparing…</string>
     <string name="filter">Filter</string>
     <string name="search_with_mask_word">Search with mask (word*)</string>
     <string name="mask_word">Mask word</string>

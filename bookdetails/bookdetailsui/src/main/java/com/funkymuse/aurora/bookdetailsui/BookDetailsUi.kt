@@ -77,7 +77,7 @@ fun ShowDetailedBook() {
 
     val showLoadingDialog = bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
     if (showLoadingDialog) {
-        LoadingDialog()
+        LoadingDialog(R.string.preparing)
     }
 
 

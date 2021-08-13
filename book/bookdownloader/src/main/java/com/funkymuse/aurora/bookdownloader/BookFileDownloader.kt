@@ -74,11 +74,7 @@ class BookFileDownloader @Inject constructor(
         bookName: String,
         bookId: String,
         extension: String
-    ): String {
-        val localFile = File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}")
-        if (localFile.exists()) localFile.delete()
-        return localFile.path
-    }
+    ) = File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}").path
 
     private fun pasteToClipboard(downloadUrl: String) {
         (context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)?.apply {
@@ -126,12 +122,8 @@ class BookFileDownloader @Inject constructor(
             onError(e)
             return
         } finally {
-            try {
-                output.close()
-                input?.close()
-            } catch (t: Throwable) {
-                t.printStackTrace()
-            }
+            output.close()
+            input?.close()
             connection.disconnect()
         }
         callback(uri)

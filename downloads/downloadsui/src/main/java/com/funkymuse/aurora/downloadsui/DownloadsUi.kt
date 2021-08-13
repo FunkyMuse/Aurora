@@ -158,7 +158,7 @@ fun DownloadsUi() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
+                    contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars, additionalBottom = 36.dp)
                 ) {
                     items(list, itemContent = { item ->
                         DownloadedBookItem(item, onBookClicked = onBookClicked, onLongBookClick = {
@@ -218,7 +218,7 @@ fun DownloadedBookItem(
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 text = fileModel.fileName,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 3,
@@ -231,8 +231,8 @@ fun DownloadedBookItem(
                     style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp),
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 10.dp),
+                        .padding(start = 16.dp)
+                        .padding(bottom = 14.dp),
                 )
 
                 Text(
@@ -240,8 +240,8 @@ fun DownloadedBookItem(
                     style = TextStyle(fontWeight = FontWeight.Light, fontSize = 17.sp),
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 10.dp),
+                        .padding(end = 16.dp)
+                        .padding(bottom = 14.dp),
                 )
             }
         }

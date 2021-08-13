@@ -4,12 +4,10 @@ import android.app.Application
 import android.os.FileObserver
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.funkymuse.aurora.common.downloads
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
 import javax.inject.Inject
 
@@ -23,10 +21,21 @@ class DownloadsViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private val downloads: File = application.downloads()
-    val files = downloads.fileEvents()
 
-    private fun loadDownloads() : DownloadsModel {
-        Log.d("LOADING", " AGAIN ?")
+    private val filesData: MutableStateFlow<DownloadsModel> =
+        MutableStateFlow(DownloadsModel.Loading)
+    val files = filesData.asStateFlow()
+
+    private val fileObserver = object : FileObserver(downloads) {
+        override fun onEvent(event: Int, path: String?) {
+            if (event == CLOSE_WRITE || event == DELETE || event == DELETE_SELF) {
+                loadDownloads()
+            }
+        }
+    }
+
+    private fun loadDownloads() {
+        filesData.value = DownloadsModel.Loading
         val filesList = downloads.listFiles()?.toList()?.map {
             FileModel(
                 it.nameWithoutExtension.substringBefore("-").trim(),
@@ -37,25 +46,21 @@ class DownloadsViewModel @Inject constructor(
             )
         } ?: emptyList()
         val removedDups = filesList.distinctBy { it.bookId }
-        return if (removedDups.isEmpty()) DownloadsModel.Empty else DownloadsModel.Success(removedDups)
+        filesData.value =
+            if (removedDups.isEmpty()) DownloadsModel.Empty else DownloadsModel.Success(removedDups)
+    }
+
+    init {
+        fileObserver.startWatching()
+        loadDownloads()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        fileObserver.stopWatching()
     }
 
     fun retry() {
         loadDownloads()
     }
-
-    private fun File.fileEvents() = callbackFlow {
-        val observer = object : FileObserver(this@fileEvents, MODIFY){
-            override fun onEvent(event: Int, path: String?) {
-                if (event == ACCESS){
-                    Log.d("FUCKING EVENT", event.toString(16))
-                    trySend(DownloadsModel.Loading)
-                    trySend(loadDownloads())
-                }
-            }
-        }
-        trySend(loadDownloads())
-        observer.startWatching()
-        awaitClose { observer.stopWatching() }
-    }.buffer(Channel.CONFLATED)
 }
