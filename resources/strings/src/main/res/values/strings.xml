@@ -88,7 +88,7 @@
     <string name="download_mirrors">Download mirrors</string>
     <string name="retry">Retry</string>
     <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
-    <string name="delete_downloads">Delete %1$s,\nfrom inside the app\'s storage.\n\nTo prevent having duplicates on your phone this won\'t delete the file you copied elsewhere, only the copy inside the application, proceed with deletion?</string>
+    <string name="delete_downloads">Delete %1$s,\nfrom inside the app\'s storage.\n\nTo prevent having duplicates on your phone this won\'t delete the file you copied elsewhere, only the copy inside this application, free up some space and proceed with deletion?</string>
     <string name="remove">Remove</string>
     <string name="delete">Delete</string>
     <string name="loading">Loading…</string>
