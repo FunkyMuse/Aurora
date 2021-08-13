@@ -85,7 +85,9 @@
     <string name="download_mirrors">Download mirrors</string>
     <string name="retry">Retry</string>
     <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
+    <string name="delete_downloads">Delete %1$s from downloads?</string>
     <string name="remove">Remove</string>
+    <string name="delete">Delete</string>
     <string name="loading">Loading…</string>
     <string name="filter">Filter</string>
     <string name="search_with_mask_word">Search with mask (word*)</string>

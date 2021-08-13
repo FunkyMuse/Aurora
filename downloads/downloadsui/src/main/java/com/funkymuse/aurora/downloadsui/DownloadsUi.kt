@@ -1,11 +1,11 @@
 package com.funkymuse.aurora.downloadsui
 
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,8 +17,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.FirstBaseline
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,11 +27,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
 import com.funkymuse.aurora.downloadsdata.CreateFileContract
 import com.funkymuse.aurora.downloadsdata.DownloadsModel
 import com.funkymuse.aurora.downloadsdata.DownloadsViewModel
 import com.funkymuse.aurora.downloadsdata.FileModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
+import com.funkymuse.composed.core.OnResume
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
@@ -51,18 +51,25 @@ import java.io.File
  * Created by funkymuse on 8/12/21 to long live and prosper !
  */
 
+const val DEFAULT_MIME_TYPE = "application/pdf"
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DownloadsUi() {
     val downloadsViewModel: DownloadsViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
-    val downloadsModel = downloadsViewModel.files.collectAsState().value
+    val downloadsModel = downloadsViewModel.files.collectAsState(DownloadsModel.Loading).value
     val scope = rememberCoroutineScope()
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
-    val ctx = context
+    val localContext = context
 
-    var clickedModel by remember { mutableStateOf<File?>(null) }
+    val retry = {
+        downloadsViewModel.retry()
+    }
+
+    var clickedModel by remember { mutableStateOf<FileModel?>(null) }
+    var longClickedModel by remember { mutableStateOf<FileModel?>(null) }
     var uri by remember { mutableStateOf<Uri?>(null) }
     progressVisibility = downloadsModel is DownloadsModel.Loading
 
@@ -71,22 +78,25 @@ fun DownloadsUi() {
             uri = it
         })
 
-    clickedModel?.let { file ->
+    longClickedModel?.apply {
+        DeleteDownload(it = this, onDismiss = { longClickedModel = null }) { retry() }
+    }
+
+    clickedModel?.let { fileModel ->
         uri?.let {
-            CopyFileDialog(uri = it, filePath = file) {
+            CopyFileDialog(uri = it, filePath = fileModel.file) {
+                longClickedModel = fileModel
                 clickedModel = null
                 uri = null
             }
         }
     }
-    val retry = {
-        downloadsViewModel.retry()
-    }
+
 
     val onBookClicked = { fileModel: FileModel ->
-        clickedModel = fileModel.file
-        val mimeType = fileModel.getMimeType(ctx)
-        launcher.launch(Pair(mimeType ?: "application/pdf", fileModel.fileNameAndExtension))
+        clickedModel = fileModel
+        val mimeType = fileModel.getMimeType(localContext)
+        launcher.launch(Pair(mimeType ?: DEFAULT_MIME_TYPE, fileModel.fileNameAndExtension))
     }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -151,7 +161,9 @@ fun DownloadsUi() {
                     contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
                 ) {
                     items(list, itemContent = { item ->
-                        DownloadedBookItem(item, onBookClicked)
+                        DownloadedBookItem(item, onBookClicked = onBookClicked, onLongBookClick = {
+                            longClickedModel = it
+                        })
                     })
                 }
 
@@ -179,9 +191,11 @@ fun PreviewDownloadedItem() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DownloadedBookItem(
     fileModel: FileModel,
+    onLongBookClick: (FileModel) -> Unit = {},
     onBookClicked: (FileModel) -> Unit
 ) {
     Card(
@@ -190,11 +204,16 @@ fun DownloadedBookItem(
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable {
-                onBookClicked(fileModel)
-            }
+
     ) {
-        Column(modifier = Modifier.width(IntrinsicSize.Max)) {
+        Column(modifier = Modifier
+            .width(IntrinsicSize.Max)
+            .combinedClickable(onLongClick = {
+                onLongBookClick(fileModel)
+            }, onClick = {
+                onBookClicked(fileModel)
+
+            })) {
 
             Text(
                 modifier = Modifier
@@ -227,4 +246,21 @@ fun DownloadedBookItem(
             }
         }
     }
+}
+
+@Composable
+fun DeleteDownload(
+    it: FileModel,
+    onDismiss: () -> Unit,
+    onDeleted: () -> Unit
+) {
+    ConfirmationDialog(
+        title = stringResource(
+            R.string.delete_downloads,
+            it.fileName
+        ), onDismiss = onDismiss, onConfirm = {
+            it.file.delete()
+            onDeleted()
+        }, confirmText = stringResource(id = R.string.delete)
+    )
 }

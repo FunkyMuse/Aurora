@@ -49,7 +49,6 @@ class BookFileDownloader @Inject constructor(
         }
     }
 
-
     fun downloadFile(
         downloadUrl: String,
         bookId: String,
@@ -58,7 +57,7 @@ class BookFileDownloader @Inject constructor(
     ): ListenableWorker.Result = try {
         downloadFileWithProgress(
             downloadUrl,
-            File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}").path,
+            localBookPath(bookName, bookId, extension),
             progress = {
                 notificationHelper.publishNotification(it, bookName)
             })
@@ -69,6 +68,16 @@ class BookFileDownloader @Inject constructor(
         }
         pasteToClipboard(downloadUrl)
         ListenableWorker.Result.failure()
+    }
+
+    private fun localBookPath(
+        bookName: String,
+        bookId: String,
+        extension: String
+    ): String {
+        val localFile = File(localPath.path, "$bookName - ($bookId).${extension.lowercase()}")
+        if (localFile.exists()) localFile.delete()
+        return localFile.path
     }
 
     private fun pasteToClipboard(downloadUrl: String) {

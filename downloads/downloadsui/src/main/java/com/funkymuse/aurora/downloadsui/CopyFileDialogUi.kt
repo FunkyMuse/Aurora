@@ -43,46 +43,44 @@ fun CopyFileDialog(uri: Uri, filePath: File, onDone: () -> Unit) {
     }
 
     if (openDialog){
-
+        Dialog(
+            onDismissRequest = {
+                openDialog = false
+            }, properties =
+            DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .background(MaterialTheme.colors.background, shape = Shapes.medium)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.copying_file),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(16.dp)
+                )
+                LinearProgressIndicator(
+                    progress = progress/100,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+                Text(
+                    text = "%${progress.toInt()}",
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 8.dp, bottom = 16.dp)
+                )
+            }
+        }
     } else {
         onDone()
     }
-    Dialog(
-        onDismissRequest = {
-            openDialog = false
-        }, properties =
-        DialogProperties(
-            dismissOnBackPress = false,
-            dismissOnClickOutside = false
-        )
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(MaterialTheme.colors.background, shape = Shapes.medium)
-        ) {
-            Text(
-                text = stringResource(id = R.string.copying_file),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(16.dp)
-            )
-            LinearProgressIndicator(
-                progress = progress,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-            Text(
-                text = "%${progress.toInt()}",
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 8.dp, bottom = 16.dp)
-            )
-        }
-    }
-
 }
 
 
