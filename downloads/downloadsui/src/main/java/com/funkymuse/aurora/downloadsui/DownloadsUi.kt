@@ -33,6 +33,7 @@ import com.funkymuse.aurora.downloadsdata.DownloadsModel
 import com.funkymuse.aurora.downloadsdata.DownloadsViewModel
 import com.funkymuse.aurora.downloadsdata.FileModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
+import com.funkymuse.aurora.toaster.ToasterViewModel
 import com.funkymuse.composed.core.OnResume
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
@@ -56,7 +57,8 @@ const val DEFAULT_MIME_TYPE = "application/pdf"
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DownloadsUi() {
-    val downloadsViewModel: DownloadsViewModel = hiltViewModel()
+    val downloadsViewModel = hiltViewModel<DownloadsViewModel>()
+    val toasterViewModel = hiltViewModel<ToasterViewModel>()
     var progressVisibility by rememberBooleanDefaultFalse()
     val downloadsModel = downloadsViewModel.files.collectAsState(DownloadsModel.Loading).value
     val scope = rememberCoroutineScope()
@@ -76,10 +78,15 @@ fun DownloadsUi() {
     val launcher = rememberLauncherForActivityResult(contract = CreateFileContract(),
         onResult = {
             uri = it
+            if (it == null) {
+                toasterViewModel.shortToast(R.string.operation_cancelled)
+            }
         })
 
     longClickedModel?.apply {
-        DeleteDownload(it = this, onDismiss = { longClickedModel = null }) { retry() }
+        DeleteDownload(it = this, onDismiss = { longClickedModel = null }) {
+            toasterViewModel.shortToast(R.string.deleted)
+        }
     }
 
     clickedModel?.let { fileModel ->
@@ -88,12 +95,14 @@ fun DownloadsUi() {
                 longClickedModel = fileModel
                 clickedModel = null
                 uri = null
+                toasterViewModel.shortToast(R.string.copying_file_success)
             }
         }
     }
 
 
     val onBookClicked = { fileModel: FileModel ->
+        toasterViewModel.longToast(R.string.copying_file_elsewhere)
         clickedModel = fileModel
         val mimeType = fileModel.getMimeType(localContext)
         launcher.launch(Pair(mimeType ?: DEFAULT_MIME_TYPE, fileModel.fileNameAndExtension))
@@ -158,7 +167,10 @@ fun DownloadsUi() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars, additionalBottom = 36.dp)
+                    contentPadding = rememberInsetsPaddingValues(
+                        insets = LocalWindowInsets.current.systemBars,
+                        additionalBottom = 36.dp
+                    )
                 ) {
                     items(list, itemContent = { item ->
                         DownloadedBookItem(item, onBookClicked = onBookClicked, onLongBookClick = {
@@ -213,7 +225,8 @@ fun DownloadedBookItem(
             }, onClick = {
                 onBookClicked(fileModel)
 
-            })) {
+            })
+        ) {
 
             Text(
                 modifier = Modifier

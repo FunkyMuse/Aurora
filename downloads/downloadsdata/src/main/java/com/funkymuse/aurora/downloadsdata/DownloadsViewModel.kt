@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DownloadsViewModel @Inject constructor(
-    application: Application
+    application: Application,
 ) : AndroidViewModel(application) {
 
     private val downloads: File = application.downloads()

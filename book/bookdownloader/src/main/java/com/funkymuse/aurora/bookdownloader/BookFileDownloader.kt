@@ -27,7 +27,8 @@ import javax.inject.Inject
 class BookFileDownloader @Inject constructor(
     private val notificationHelper: NotificationHelper,
     private val toaster: Toaster,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val handler: Handler
 ) {
 
     private val localPath get() = context.downloads()
@@ -63,7 +64,7 @@ class BookFileDownloader @Inject constructor(
             })
         ListenableWorker.Result.success()
     } catch (t: SocketTimeoutException) {
-        Handler(Looper.getMainLooper()).post {
+        handler.post {
             toaster.longToast(R.string.server_time_out)
         }
         pasteToClipboard(downloadUrl)
@@ -119,6 +120,9 @@ class BookFileDownloader @Inject constructor(
                 output.write(data, 0, count)
             }
         } catch (e: Throwable) {
+            handler.post {
+                toaster.shortToast(e.message?:context.getString(R.string.generic_error))
+            }
             onError(e)
             return
         } finally {

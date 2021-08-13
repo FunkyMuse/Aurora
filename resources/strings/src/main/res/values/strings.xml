@@ -10,6 +10,9 @@
     <string name="pages">pages</string>
     <string name="file_format">File format</string>
     <string name="copying_file">File copying in progress</string>
+    <string name="copying_file_elsewhere">Copy this file wherever you want on your phone</string>
+    <string name="copying_file_success">Copying successful!</string>
+    <string name="operation_cancelled">Operation cancelled!</string>
     <string name="not_available">N/A</string>
     <string name="empty_or_short_input">Search must contain minimum 3 characters…</string>
     <string name="no_connection_message_will_load_on_connection_achieved">No internet connection available, establish active internet connection and the content will automatically reload !</string>
@@ -71,7 +74,7 @@
     <string name="book_details">Book details</string>
     <string name="my_other_apps">My other apps</string>
     <string name="no_latest_books">Couldn\'t load latest books, seems like there\'s a problem with the server, the server can handle up to 40 simultaneous connections, try again later.</string>
-    <string name="deleted">Deleted</string>
+    <string name="deleted">Deleted!</string>
     <string name="launch_on_click">Launch on history click</string>
     <string name="launch_on_click_expl">Whenever you click on the history word, it\'ll automatically search for it.</string>
     <string name="enable">Enabled</string>
@@ -85,7 +88,7 @@
     <string name="download_mirrors">Download mirrors</string>
     <string name="retry">Retry</string>
     <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
-    <string name="delete_downloads">Delete %1$s from downloads?</string>
+    <string name="delete_downloads">Delete %1$s,\nfrom inside the app\'s storage.\n\nTo prevent having duplicates on your phone this won\'t delete the file you copied elsewhere, only the copy inside the application, proceed with deletion?</string>
     <string name="remove">Remove</string>
     <string name="delete">Delete</string>
     <string name="loading">Loading…</string>

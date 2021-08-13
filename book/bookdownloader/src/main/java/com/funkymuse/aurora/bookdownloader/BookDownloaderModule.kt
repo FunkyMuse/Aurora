@@ -1,6 +1,8 @@
 package com.funkymuse.aurora.bookdownloader
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -23,6 +25,8 @@ object BookDownloaderModule {
     fun workManager(@ApplicationContext context: Context): WorkManager =
         WorkManager.getInstance(context)
 
+    @Provides
+    fun handler(): Handler = Handler(Looper.getMainLooper())
 
     @Provides
     fun constraints(): Constraints = Constraints.Builder()

@@ -3,7 +3,9 @@ applyComposeUIDeps(this)
 dependencies {
     implementation project(path: ':resources:strings')
 
-    implementation project(path: ':paging')
+    implementation project(path: ':toaster')
+
+    implementation project(path: ':downloads:downloadsdata')
 
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')
@@ -22,5 +24,4 @@ dependencies {
 
     implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
-    implementation project(path: ':downloads:downloadsdata')
 }
