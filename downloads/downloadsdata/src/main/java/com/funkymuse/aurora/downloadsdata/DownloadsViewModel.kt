@@ -5,11 +5,15 @@ import android.os.FileObserver
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.funkymuse.aurora.common.downloads
 import com.funkymuse.aurora.downloadsdestination.BOOK_ID_PARAM
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -24,20 +28,27 @@ class DownloadsViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private val bookName get() = savedStateHandle.get<String>(BOOK_ID_PARAM)
-    init {
-        Log.d("BOOK NAME", bookName.toString())
-    }
+    private val highlightDownloadedBookData : Channel<String?> = Channel(Channel.BUFFERED)
+    val highlightDownloadedBook = highlightDownloadedBookData.receiveAsFlow()
+
     private val downloads: File = application.downloads()
 
     private val filesData: MutableStateFlow<DownloadsModel> =
         MutableStateFlow(DownloadsModel.Loading)
     val files = filesData.asStateFlow()
 
+    @Suppress("DEPRECATION")
     private val fileObserver = object : FileObserver(downloads.path, ALL_EVENTS) {
         override fun onEvent(event: Int, path: String?) {
             if (event == CLOSE_WRITE || event == DELETE || event == DELETE_SELF) {
                 loadDownloads()
             }
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            highlightDownloadedBookData.send(bookName)
         }
     }
 

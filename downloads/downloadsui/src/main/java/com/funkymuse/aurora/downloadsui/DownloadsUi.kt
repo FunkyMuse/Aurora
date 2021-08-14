@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +17,9 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,10 +37,8 @@ import com.funkymuse.aurora.downloadsdata.DownloadsViewModel
 import com.funkymuse.aurora.downloadsdata.FileModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.toaster.ToasterViewModel
-import com.funkymuse.composed.core.OnResume
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
-import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.navigationBarsPadding
@@ -59,12 +60,13 @@ const val DEFAULT_MIME_TYPE = "application/pdf"
 fun DownloadsUi() {
     val downloadsViewModel = hiltViewModel<DownloadsViewModel>()
     val toasterViewModel = hiltViewModel<ToasterViewModel>()
-    var progressVisibility by rememberBooleanDefaultFalse()
     val downloadsModel = downloadsViewModel.files.collectAsState(DownloadsModel.Loading).value
+    val progressVisibility by derivedStateOf { downloadsModel is DownloadsModel.Loading }
     val scope = rememberCoroutineScope()
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val localContext = context
+    val highlightBook = downloadsViewModel.highlightDownloadedBook.collectAsState(initial = null)
 
     val retry = {
         downloadsViewModel.retry()
@@ -73,7 +75,6 @@ fun DownloadsUi() {
     var clickedModel by remember { mutableStateOf<FileModel?>(null) }
     var longClickedModel by remember { mutableStateOf<FileModel?>(null) }
     var uri by remember { mutableStateOf<Uri?>(null) }
-    progressVisibility = downloadsModel is DownloadsModel.Loading
 
     val launcher = rememberLauncherForActivityResult(contract = CreateFileContract(),
         onResult = {
@@ -173,9 +174,13 @@ fun DownloadsUi() {
                     )
                 ) {
                     items(list, itemContent = { item ->
-                        DownloadedBookItem(item, onBookClicked = onBookClicked, onLongBookClick = {
-                            longClickedModel = it
-                        })
+                        DownloadedBookItem(
+                            item,
+                            highlightBook.value == item.bookId,
+                            onBookClicked = onBookClicked,
+                            onLongBookClick = {
+                                longClickedModel = it
+                            })
                     })
                 }
 
@@ -191,15 +196,33 @@ fun DownloadsUi() {
 @Preview
 fun PreviewDownloadedItem() {
     DownloadedBookItem(
+
         fileModel = FileModel(
             "Femine fiction: Revisiting the Postmodern",
             125123L,
             "PDF",
             "asdfajo234adsf",
             File(context.filesDir, "")
-        )
+        ),
+        true
     ) {
 
+    }
+}
+
+fun Modifier.blink(highlightBook: Boolean): Modifier = composed {
+    if (highlightBook) {
+        val alphaAnimation = remember { Animatable(0f) }
+        LaunchedEffect(alphaAnimation) {
+            alphaAnimation.animateTo(
+                1f, repeatable(
+                    3, tween(500, 80)
+                )
+            )
+        }
+        graphicsLayer(alpha = alphaAnimation.value)
+    } else {
+        this
     }
 }
 
@@ -207,25 +230,28 @@ fun PreviewDownloadedItem() {
 @Composable
 fun DownloadedBookItem(
     fileModel: FileModel,
+    highlightBook: Boolean = false,
     onLongBookClick: (FileModel) -> Unit = {},
     onBookClicked: (FileModel) -> Unit
 ) {
+
     Card(
         shape = Shapes.large,
         modifier = Modifier
             .padding(16.dp, 8.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-
+            .blink(highlightBook)
     ) {
-        Column(modifier = Modifier
-            .width(IntrinsicSize.Max)
-            .combinedClickable(onLongClick = {
-                onLongBookClick(fileModel)
-            }, onClick = {
-                onBookClicked(fileModel)
+        Column(
+            modifier = Modifier
+                .width(IntrinsicSize.Max)
+                .combinedClickable(onLongClick = {
+                    onLongBookClick(fileModel)
+                }, onClick = {
+                    onBookClicked(fileModel)
 
-            })
+                })
         ) {
 
             Text(

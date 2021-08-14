@@ -10,14 +10,14 @@ import com.funkymuse.aurora.navigator.NavigationDestination
 /**
  * Created by funkymuse on 8/14/21 to long live and prosper !
  */
-object DownloadsDestination : NavigationDestination {
+const val DOWNLOADS = "downloads"
 
-    private const val DOWNLOADS = "downloads"
+object DownloadsDestination : NavigationDestination {
 
     override fun route(): String = DOWNLOADS
 
     override val arguments: List<NamedNavArgument> = listOf(
-        navArgument(BOOK_ID_PARAM){
+        navArgument(BOOK_ID_PARAM) {
             type = NavType.StringType
             nullable = true
         }

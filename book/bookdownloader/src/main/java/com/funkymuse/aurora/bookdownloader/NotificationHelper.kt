@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
@@ -70,6 +71,7 @@ class NotificationHelper @Inject constructor(
             Intent.ACTION_VIEW,
             makeBookIdUri(bookId)
         )
+        Log.d("URI", makeBookIdUri(bookId).toString())
 
         val pendingIntent = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(taskDetailIntent)
