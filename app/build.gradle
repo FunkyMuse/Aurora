@@ -46,13 +46,14 @@ android {
 }
 
 hilt { enableAggregatingTask = true }
-
+enableBuildConfig(this)
 applyRoomDeps(this)
 applyDaggerDeps(this)
 applyHiltDeps(this)
 applyMoshiDeps(this)
 applyComposeUIDeps(this)
 applyCoilDep(this)
+applyWorkerDeps(this)
 
 dependencies {
     //navigation
@@ -81,6 +82,11 @@ dependencies {
     implementation project(path: ':bookdetails:bookdetailsui')
     implementation project(path: ':bookdetails:bookdetailsdestination')
 
+    //downloads
+    implementation project(path: ':downloads:downloadsui')
+    implementation project(path: ':downloads:downloadsdestination')
+
+
     //settings
     implementation project(path: ':settings:settingsui')
     implementation project(path: ':settings:settingsdata')
@@ -103,6 +109,7 @@ dependencies {
     implementation "com.github.FunkyMuse:Crashy:$crashy"
 
     //compose
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.navigation:navigation-compose:$navigation"
     implementation "androidx.activity:activity-compose:$activity"

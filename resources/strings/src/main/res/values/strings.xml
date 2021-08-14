@@ -9,6 +9,10 @@
     <string name="year">Year</string>
     <string name="pages">pages</string>
     <string name="file_format">File format</string>
+    <string name="copying_file">File copying in progress</string>
+    <string name="copying_file_elsewhere">Copy this file wherever you want on your phone</string>
+    <string name="copying_file_success">Copying successful!</string>
+    <string name="operation_cancelled">Operation cancelled!</string>
     <string name="not_available">N/A</string>
     <string name="empty_or_short_input">Search must contain minimum 3 characters…</string>
     <string name="no_connection_message_will_load_on_connection_achieved">No internet connection available, establish active internet connection and the content will automatically reload !</string>
@@ -21,6 +25,7 @@
     <string name="no_book_loaded">Couldn\'t fetch details for this book, try again later !</string>
     <string name="no_book_loaded_no_connect">Couldn\'t fetch details for this book, establish an active internet connection and reloading will start automatically ! !</string>
     <string name="no_books_loaded_no_connect">Couldn\'t fetch books, establish active internet connection and reloading will start automatically ! !</string>
+    <string name="no_downloads">You haven\'t downloaded a book, you can do so by choosing one of the mirrors available when you find a book!</string>
     <string name="author_detail">Author/s:</string>
     <string name="language_detail">Language</string>
     <string name="title_detail">Title</string>
@@ -37,10 +42,12 @@
     <string name="description_detail">Description</string>
     <string name="search">Search</string>
     <string name="download">Download</string>
+    <string name="downloads">Downloads</string>
     <string name="no_download_mirrors_available">No download links available.</string>
     <string name="year_asc">Year ASC</string>
     <string name="year_desc">Year DESC</string>
-    <string name="mirror_placeholder">Mirror %1$d</string>
+    <string name="direct_download">Direct Download</string>
+    <string name="web_download">Web Download</string>
     <string name="data_saver">Data saver</string>
     <string name="data_saver_expl">Enable this option to save data, images will not be loaded</string>
     <string name="torrent_download">Torrent download</string>
@@ -67,7 +74,7 @@
     <string name="book_details">Book details</string>
     <string name="my_other_apps">My other apps</string>
     <string name="no_latest_books">Couldn\'t load latest books, seems like there\'s a problem with the server, the server can handle up to 40 simultaneous connections, try again later.</string>
-    <string name="deleted">Deleted</string>
+    <string name="deleted">Deleted!</string>
     <string name="launch_on_click">Launch on history click</string>
     <string name="launch_on_click_expl">Whenever you click on the history word, it\'ll automatically search for it.</string>
     <string name="enable">Enabled</string>
@@ -81,8 +88,11 @@
     <string name="download_mirrors">Download mirrors</string>
     <string name="retry">Retry</string>
     <string name="remove_book_from_favs">Remove %1$s from favorites?</string>
+    <string name="delete_downloads">Delete %1$s,\nfrom inside the app\'s storage.\n\nTo prevent having duplicates on your phone this won\'t delete the file you copied elsewhere, only the copy inside this application, free up some space and proceed with deletion?</string>
     <string name="remove">Remove</string>
+    <string name="delete">Delete</string>
     <string name="loading">Loading…</string>
+    <string name="preparing">Preparing…</string>
     <string name="filter">Filter</string>
     <string name="search_with_mask_word">Search with mask (word*)</string>
     <string name="mask_word">Mask word</string>
@@ -108,4 +118,10 @@
     <string name="crash_copied_to_clipboard">Crash copied to clipboard!</string>
     <string name="license">GPL 3.0</string>
     <string name="license_title">License</string>
+    <string name="download_books_channel_name">Download books channel</string>
+    <string name="download_books_channel_description">Use this channel when downloading a book</string>
+    <string name="aurora_download_service">"Aurora download service"</string>
+    <string name="downloading_placeholder">Downloading %1$s</string>
+    <string name="downloading_success_placeholder">%1$s has been successfully downloaded, tap to open</string>
+    <string name="server_time_out">Server time out, try again or choose a different download mirror!\nLink copied to clipboard!</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.funkymuse.aurora
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
@@ -23,12 +24,11 @@ import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.BottomNav
-import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.*
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.crashesui.Crashes
+import com.funkymuse.aurora.downloadsdestination.DownloadsDestination
+import com.funkymuse.aurora.downloadsui.DownloadsUi
 import com.funkymuse.aurora.favoritebookui.Favorites
 import com.funkymuse.aurora.latestbooksui.LatestBooks
 import com.funkymuse.aurora.navigator.Navigator
@@ -60,7 +60,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            AuroraTheme(darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme, isDarkThemeEnabled) {
+            AuroraTheme(
+                darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme,
+                isDarkThemeEnabled
+            ) {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     CompositionLocalProvider(LocalImageLoader provides imageLoader) {
                         Surface(color = MaterialTheme.colors.background) {
@@ -81,29 +84,43 @@ fun AuroraScaffold(navigator: Navigator) {
         navigator.destinations.collect {
             when (val event = it) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
-                is NavigatorEvent.Directions -> navController.navigate(event.destination, event.builder)
+                is NavigatorEvent.Directions -> navController.navigate(
+                    event.destination,
+                    event.builder
+                )
             }
         }
     }
 
     Scaffold(
-            bottomBar = {
-                AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
-            }
+        bottomBar = {
+            AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
+        }
     ) {
         NavHost(
-                navController = navController,
-                startDestination = SearchBottomNavRoute.route,
-                builder = {
-                    addSearch()
-                    addFavorites()
-                    addLatestBooks()
-                    addSettings()
-                    addSearchResult()
-                    addBookDetails()
-                    addCrashes()
-                }
+            navController = navController,
+            startDestination = SearchBottomNavRoute.route,
+            builder = {
+                addSearch()
+                addFavorites()
+                addLatestBooks()
+                addDownloads()
+                addSettings()
+                addSearchResult()
+                addBookDetails()
+                addCrashes()
+            }
         )
+    }
+}
+
+private fun NavGraphBuilder.addDownloads() {
+    composable(
+        route = DownloadsDestination.route(),
+        arguments = DownloadsDestination.arguments,
+        deepLinks = DownloadsDestination.deepLinks
+    ) {
+        DownloadsUi()
     }
 }
 

@@ -8,6 +8,7 @@ applyMoshiDeps(this)
 dependencies {
     api project(path: ':book:generalbook')
     implementation project(path: ':serverconstants')
+    implementation project(path: ':common')
 
 
 }

@@ -1,15 +1,9 @@
 package com.funkymuse.aurora.bottomnavigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
-import com.funkymuse.aurora.bottomnavigation.destinations.FavoritesBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.LatestBooksBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SearchBottomNavRoute
-import com.funkymuse.aurora.bottomnavigation.destinations.SettingsBottomNavRoute
+import com.funkymuse.aurora.bottomnavigation.destinations.*
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 
@@ -23,6 +17,10 @@ object BottomNav {
                     BottomEntry(
                             SearchBottomNavRoute,
                             Icons.Filled.Search
+                    ),
+                    BottomEntry(
+                            DownloadsBottomNavRoute,
+                            Icons.Filled.Download
                     ),
                     BottomEntry(
                             FavoritesBottomNavRoute,

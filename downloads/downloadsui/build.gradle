@@ -1,0 +1,27 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+
+    implementation project(path: ':toaster')
+
+    implementation project(path: ':downloads:downloadsdata')
+
+    implementation project(path: ':style:shape')
+    implementation project(path: ':style:color')
+
+    implementation project(path: ':components:loadingcomponent')
+    implementation project(path: ':components:errorcomponent')
+    implementation project(path: ':components:confirmationdialog')
+
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
+
+    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+
+    implementation "com.github.FunkyMuse:Composed:$composed"
+
+    implementation "com.google.accompanist:accompanist-swiperefresh:$accompanist"
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+}

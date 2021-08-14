@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.bookdetailsui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -43,15 +44,17 @@ import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
 import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
-import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
-import com.funkymuse.aurora.serverconstants.mirrorsUrls
-import com.funkymuse.aurora.serverconstants.torrentDownloadURL
+import com.funkymuse.aurora.loadingcomponent.LoadingDialog
+import com.funkymuse.aurora.scrapermodel.ScraperResult
+import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
+import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.stateWhenStarted
-import com.funkymuse.style.color.CardBackground
+
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
+import kotlinx.coroutines.flow.collect
 import java.util.*
 
 /**
@@ -71,6 +74,11 @@ fun ShowDetailedBook() {
 
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
+
+    val showLoadingDialog = bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
+    if (showLoadingDialog) {
+        LoadingDialog(R.string.preparing)
+    }
 
 
     val retry = {
@@ -122,7 +130,13 @@ fun ShowDetailedBook() {
                     return@handle
                 }
                 detailedBook?.apply {
-                    DetailedBook(this)
+                    DetailedBook(this) {
+                        bookDetailsViewModel.downloadBook(
+                            it,
+                            extension.toString(),
+                            title.toString()
+                        )
+                    }
                 }
 
             }
@@ -179,21 +193,25 @@ fun ScaffoldWithBackAndFavorites(
 @Preview(showBackground = true, showSystemUi = true, device = Devices.PIXEL_4_XL, name = "Book")
 @Composable
 fun BookPreview() {
-    DetailedBook(book = DetailedBookModel.testBook)
+    DetailedBook(book = DetailedBookModel.testBook) {}
 }
 
 
 @Composable
 fun DetailedBook(
     book: DetailedBookModel,
-
+    onDownloadLinkClicked: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
     val painter = rememberImagePainter(data = imageUrl)
 
-    val dlMirrors = book.md5?.let { mirrorsUrls(it) }
+    val dlMirrors = book.md5?.let { mirrorsUrls(it) }?.associateWith {
+        val hasDirectDownload = it.contains(LIBGEN_LC, true) || it.contains(LIBRARY_LOL, true)
+        hasDirectDownload
+    }
+
 
     Column(
         modifier = Modifier
@@ -354,7 +372,7 @@ fun DetailedBook(
                 )
         }
 
-        if (dlMirrors.isNotNullOrEmpty) {
+        if (!dlMirrors?.values.isNullOrEmpty()) {
             var menuExpanded by remember { mutableStateOf(false) }
 
             DetailedButton(stringResource(id = R.string.download_mirrors)) {
@@ -364,9 +382,13 @@ fun DetailedBook(
                 modifier = Modifier.fillMaxWidth(),
                 offset = DpOffset(32.dp, 16.dp),
                 onDismissRequest = { menuExpanded = false }) {
-                dlMirrors?.forEachIndexed { index, it ->
+                dlMirrors?.forEach {
                     DropdownMenuItem(onClick = {
-                        localContext.openWebPage(it)
+                        if (it.value) {
+                            onDownloadLinkClicked(it.key)
+                        } else {
+                            localContext.openWebPage(it.key)
+                        }
                         menuExpanded = false
                     }) {
                         Icon(
@@ -375,7 +397,7 @@ fun DetailedBook(
                         )
 
                         Text(
-                            text = stringResource(id = R.string.mirror_placeholder, index + 1),
+                            text = stringResource(id = if (it.value) R.string.direct_download else R.string.web_download),
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -461,7 +483,8 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         modifier = modifier
             .padding(start = 22.dp)
             .offset(y = 16.dp)
-            .zIndex(2f)
+            .zIndex(2f),
+        backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
@@ -478,8 +501,7 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        shape = Shapes.large,
-        backgroundColor = CardBackground
+        shape = Shapes.large
     ) {
         Column {
             Text(
