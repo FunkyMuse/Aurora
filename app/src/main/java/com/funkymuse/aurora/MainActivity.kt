@@ -27,6 +27,7 @@ import com.funkymuse.aurora.bottomnavigation.BottomNav
 import com.funkymuse.aurora.bottomnavigation.destinations.*
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.crashesui.Crashes
+import com.funkymuse.aurora.downloadsdestination.DownloadsDestination
 import com.funkymuse.aurora.downloadsui.DownloadsUi
 import com.funkymuse.aurora.favoritebookui.Favorites
 import com.funkymuse.aurora.latestbooksui.LatestBooks
@@ -114,7 +115,11 @@ fun AuroraScaffold(navigator: Navigator) {
 }
 
 private fun NavGraphBuilder.addDownloads() {
-    composable(DownloadsBottomNavRoute.route) {
+    composable(
+        route = DownloadsDestination.route(),
+        arguments = DownloadsDestination.arguments,
+        deepLinks = DownloadsDestination.deepLinks
+    ) {
         DownloadsUi()
     }
 }

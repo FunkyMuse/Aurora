@@ -84,6 +84,8 @@ dependencies {
 
     //downloads
     implementation project(path: ':downloads:downloadsui')
+    implementation project(path: ':downloads:downloadsdestination')
+
 
     //settings
     implementation project(path: ':settings:settingsui')

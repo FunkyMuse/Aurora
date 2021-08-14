@@ -4,7 +4,9 @@ import android.app.Application
 import android.os.FileObserver
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.funkymuse.aurora.common.downloads
+import com.funkymuse.aurora.downloadsdestination.BOOK_ID_PARAM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,15 +20,20 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadsViewModel @Inject constructor(
     application: Application,
+    private val savedStateHandle: SavedStateHandle
 ) : AndroidViewModel(application) {
 
+    private val bookName get() = savedStateHandle.get<String>(BOOK_ID_PARAM)
+    init {
+        Log.d("BOOK NAME", bookName.toString())
+    }
     private val downloads: File = application.downloads()
 
     private val filesData: MutableStateFlow<DownloadsModel> =
         MutableStateFlow(DownloadsModel.Loading)
     val files = filesData.asStateFlow()
 
-    private val fileObserver = object : FileObserver(downloads) {
+    private val fileObserver = object : FileObserver(downloads.path, ALL_EVENTS) {
         override fun onEvent(event: Int, path: String?) {
             if (event == CLOSE_WRITE || event == DELETE || event == DELETE_SELF) {
                 loadDownloads()

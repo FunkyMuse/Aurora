@@ -12,4 +12,6 @@ dependencies {
     implementation project(path: ':toaster')
     implementation project(path: ':common')
     api project(path: ':scraper:scrapermodel')
+    implementation project(path: ':downloads:downloadsdestination')
+    implementation project(path: ':coroutines:appscope')
 }

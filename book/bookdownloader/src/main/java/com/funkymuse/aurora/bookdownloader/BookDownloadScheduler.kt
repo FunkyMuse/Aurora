@@ -19,6 +19,7 @@ class BookDownloadScheduler @Inject constructor(
         const val EXTENSION = "extension"
         const val BOOK_NAME = "bookName"
         const val NOTIFICATION_ID = 69
+        const val NOTIFICATION_GO_TO_DOWNLOADS = 666
         const val NOTIFICATION_CHANNEL = "420"
     }
 
