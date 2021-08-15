@@ -21,6 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
+import com.funkymuse.aurora.donatedestination.DonateDestination
 import com.funkymuse.aurora.extensions.openWebPage
 import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
@@ -42,6 +43,7 @@ fun Settings() {
             )
     ) {
         item { DarkTheme(viewModel.darkTheme) { viewModel.changeTheme(it) } }
+        item { DonateSettings { navigator.navigate(DonateDestination.route()) } }
         item { CrashesSettings { navigator.navigate(CrashesDestination.route()) } }
         item { MyOtherApps() }
         item { VersionNumber() }
@@ -87,13 +89,24 @@ fun VersionNumber() {
 
 @Composable
 fun CrashesSettings(navigateToCrashes: () -> Unit) {
-
     SettingsItem(modifier = Modifier
             .clickable {
                 navigateToCrashes()
             }
             .padding(vertical = 8.dp)) {
         Text(text = stringResource(id = R.string.crashes), modifier =
+        Modifier.padding(horizontal = 8.dp))
+    }
+}
+@Composable
+fun DonateSettings(navigateToDonations: () -> Unit) {
+
+    SettingsItem(modifier = Modifier
+            .clickable {
+                navigateToDonations()
+            }
+            .padding(vertical = 8.dp)) {
+        Text(text = stringResource(id = R.string.donate), modifier =
         Modifier.padding(horizontal = 8.dp))
     }
 }

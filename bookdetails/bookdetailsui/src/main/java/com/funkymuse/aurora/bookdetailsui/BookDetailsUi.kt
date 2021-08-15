@@ -1,6 +1,5 @@
 package com.funkymuse.aurora.bookdetailsui
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -28,7 +27,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
-import com.crazylegend.collections.isNotNullOrEmpty
 import com.crazylegend.intent.openWebPage
 import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.crazylegend.retrofit.retrofitResult.handle
@@ -49,12 +47,10 @@ import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
-import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.funkymuse.composed.core.stateWhenStarted
 
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
-import kotlinx.coroutines.flow.collect
 import java.util.*
 
 /**
@@ -63,7 +59,7 @@ import java.util.*
 
 
 @Composable
-fun ShowDetailedBook() {
+fun DetailedBook() {
     val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
     val internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel()
     val onBackClicked = {
@@ -460,6 +456,7 @@ fun AddToFavorites(
     isInFavorites: Boolean = false,
     onClicked: () -> Unit = {}
 ) {
+    context
     val favoritesIndicator =
         if (isInFavorites) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder
     Button(

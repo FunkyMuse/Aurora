@@ -8,6 +8,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Aurora"
 include ':app'
+include ':donate'
 
 include ':style:color'
 include ':style:shape'
@@ -78,3 +79,8 @@ include ':downloads:downloadsui'
 include ':downloads:downloadsdata'
 include ':common'
 include ':downloads:downloadsdestination'
+include ':donate:donatedestination'
+include ':donate:donateui'
+include ':components:topappbars'
+include ':components:scaffolds'
+include ':bottomnavigation'

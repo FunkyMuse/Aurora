@@ -1,11 +1,9 @@
 package com.funkymuse.aurora
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -14,30 +12,21 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
-import com.funkymuse.aurora.bookdetailsui.ShowDetailedBook
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
-import com.funkymuse.aurora.bottomnavigation.BottomNav
-import com.funkymuse.aurora.bottomnavigation.destinations.*
+import com.funkymuse.aurora.bottomnavigation.SearchRoute
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
-import com.funkymuse.aurora.crashesui.Crashes
-import com.funkymuse.aurora.downloadsdestination.DownloadsDestination
-import com.funkymuse.aurora.downloadsui.DownloadsUi
-import com.funkymuse.aurora.favoritebookui.Favorites
-import com.funkymuse.aurora.latestbooksui.LatestBooks
+import com.funkymuse.aurora.donatedestination.DonateDestination
+import com.funkymuse.aurora.navigation.addBottomNavigationDestinations
+import com.funkymuse.aurora.navigation.addDestinations
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.navigator.NavigatorEvent
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
-import com.funkymuse.aurora.searchresultui.SearchResult
-import com.funkymuse.aurora.searchui.Search
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
-import com.funkymuse.aurora.settingsui.Settings
 import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,8 +63,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }
+
+private val hideBottomNavFromDestinationRoutes = listOf(
+    CrashesDestination.route(),
+    BookDetailsDestination.route(),
+    SearchResultDestination.route(),
+    DonateDestination.route()
+)
 
 @Composable
 fun AuroraScaffold(navigator: Navigator) {
@@ -94,82 +89,20 @@ fun AuroraScaffold(navigator: Navigator) {
 
     Scaffold(
         bottomBar = {
-            AuroraBottomNavigation(navController, BottomNav.bottomNavigationEntries)
+            AuroraBottomNavigation(navController, hideBottomNavFromDestinationRoutes)
         }
     ) {
         NavHost(
             navController = navController,
-            startDestination = SearchBottomNavRoute.route,
+            startDestination = SearchRoute.route,
             builder = {
-                addSearch()
-                addFavorites()
-                addLatestBooks()
-                addDownloads()
-                addSettings()
-                addSearchResult()
-                addBookDetails()
-                addCrashes()
+                addDestinations()
+                addBottomNavigationDestinations()
             }
         )
     }
 }
 
-private fun NavGraphBuilder.addDownloads() {
-    composable(
-        route = DownloadsDestination.route(),
-        arguments = DownloadsDestination.arguments,
-        deepLinks = DownloadsDestination.deepLinks
-    ) {
-        DownloadsUi()
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-private fun NavGraphBuilder.addCrashes() {
-    composable(CrashesDestination.route()) {
-        Crashes()
-    }
-}
-
-private fun NavGraphBuilder.addSearch() {
-    composable(SearchBottomNavRoute.route) {
-        Search()
-    }
-}
-
-private fun NavGraphBuilder.addFavorites() {
-    composable(FavoritesBottomNavRoute.route) {
-        Favorites()
-    }
-}
-
-private fun NavGraphBuilder.addLatestBooks() {
-    composable(LatestBooksBottomNavRoute.route) {
-        LatestBooks()
-    }
-}
-
-private fun NavGraphBuilder.addSettings() {
-    composable(SettingsBottomNavRoute.route) {
-        Settings()
-    }
-}
 
 
-private fun NavGraphBuilder.addSearchResult() {
-    with(SearchResultDestination) {
-        composable(route(), arguments) {
-            SearchResult()
-        }
-    }
-}
-
-
-private fun NavGraphBuilder.addBookDetails() {
-    with(BookDetailsDestination) {
-        composable(route(), arguments) {
-            ShowDetailedBook()
-        }
-    }
-}
 

@@ -57,7 +57,7 @@ const val DEFAULT_MIME_TYPE = "application/pdf"
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun DownloadsUi() {
+fun Downloads() {
     val downloadsViewModel = hiltViewModel<DownloadsViewModel>()
     val toasterViewModel = hiltViewModel<ToasterViewModel>()
     val downloadsModel = downloadsViewModel.files.collectAsState(DownloadsModel.Loading).value

@@ -61,7 +61,6 @@ dependencies {
 
     //style
     implementation project(path: ':style:theme')
-    implementation project(path: ':style:shape')
 
     implementation project(path: ':resources:colors')
 
@@ -98,6 +97,10 @@ dependencies {
     implementation project(path: ':crashes:crashesui')
     implementation project(path: ':crashes:crashesdestination')
 
+    //donations
+    implementation project(path: ':donate:donateui')
+    implementation project(path: ':donate:donatedestination')
+
     //material
     implementation 'com.google.android.material:material:1.4.0'
 
@@ -111,8 +114,11 @@ dependencies {
     //compose
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.navigation:navigation-compose:$navigation"
     implementation "androidx.activity:activity-compose:$activity"
+
+    //navigation
+    implementation "androidx.navigation:navigation-compose:$navigation"
+    implementation project(path: ':bottomnavigation')
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"

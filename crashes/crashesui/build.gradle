@@ -11,9 +11,9 @@ dependencies {
 
     implementation project(path: ':style:shape')
     implementation project(path: ':components:backbuttoncomponent')
+    implementation project(path: ':components:scaffolds')
 
     implementation "com.github.FunkyMuse:Crashy:$crashy"
-
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"

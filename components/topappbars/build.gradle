@@ -1,0 +1,7 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation project(path: ':components:backbuttoncomponent')
+}

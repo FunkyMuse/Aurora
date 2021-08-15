@@ -1,0 +1,14 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation project(path: ':style:shape')
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':downloads:downloadsdestination')
+
+    //accompanist
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    //compose
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.navigation:navigation-compose:$navigation"
+}
