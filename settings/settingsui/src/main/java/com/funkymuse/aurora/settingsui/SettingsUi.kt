@@ -21,7 +21,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
-import com.funkymuse.aurora.donatedestination.DonateDestination
+import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.extensions.openWebPage
 import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS

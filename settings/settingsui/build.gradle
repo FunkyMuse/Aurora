@@ -16,5 +16,5 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
     implementation project(path: ':crashes:crashesdestination')
     implementation project(path: ':navigator')
-    implementation project(path: ':donate:donatedestination')
+    implementation project(path: ':donations:donationsdestination')
 }

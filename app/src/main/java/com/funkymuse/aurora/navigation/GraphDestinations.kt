@@ -8,8 +8,8 @@ import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsui.DetailedBook
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.crashesui.Crashes
-import com.funkymuse.aurora.donatedestination.DonateDestination
-import com.funkymuse.aurora.donateui.Donations
+import com.funkymuse.aurora.donationsdestination.DonateDestination
+import com.funkymuse.aurora.donationsui.Donations
 import com.funkymuse.aurora.downloadsdestination.DownloadsDestination
 import com.funkymuse.aurora.downloadsui.Downloads
 import com.funkymuse.aurora.navigator.NavigationDestination

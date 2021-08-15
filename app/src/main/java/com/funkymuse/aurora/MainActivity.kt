@@ -20,7 +20,7 @@ import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.SearchRoute
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
-import com.funkymuse.aurora.donatedestination.DonateDestination
+import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.navigation.addBottomNavigationDestinations
 import com.funkymuse.aurora.navigation.addDestinations
 import com.funkymuse.aurora.navigator.Navigator

@@ -98,8 +98,8 @@ dependencies {
     implementation project(path: ':crashes:crashesdestination')
 
     //donations
-    implementation project(path: ':donate:donateui')
-    implementation project(path: ':donate:donatedestination')
+    implementation project(path: ':donations:donationsui')
+    implementation project(path: ':donations:donationsdestination')
 
     //material
     implementation 'com.google.android.material:material:1.4.0'
