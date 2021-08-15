@@ -1,6 +1,9 @@
 package com.funkymuse.aurora.common
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.util.Base64
 import java.io.File
 
 /**
@@ -34,3 +37,12 @@ fun Long.toFileSizeString(): String {
     sizeToReturn = bytesToCalculate.toString() + " " + fileSizeUnits[index]
     return sizeToReturn
 }
+
+
+fun Context.copyToClipboard(text: String) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+    val clip = ClipData.newPlainText("label", text)
+    clipboard?.setPrimaryClip(clip)
+}
+
+val String.decodeBase64: String get() = Base64.decode(this, Base64.DEFAULT).toString(Charsets.UTF_8)

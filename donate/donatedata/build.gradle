@@ -1,0 +1,15 @@
+plugins {
+    id 'kotlin-kapt'
+}
+applyHiltDeps(this)
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':toaster')
+    implementation project(path: ':common')
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+
+}

@@ -117,6 +117,10 @@
     <string name="no_crashes">There are no crashes!</string>
     <string name="crash_number">Crash #%1$d</string>
     <string name="crash_copied_to_clipboard">Crash copied to clipboard!</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="ethereum">Ethereum</string>
+    <string name="patreon">Patreon</string>
+    <string name="github">Github</string>
     <string name="license">GPL 3.0</string>
     <string name="license_title">License</string>
     <string name="download_books_channel_name">Download books channel</string>
@@ -125,4 +129,9 @@
     <string name="downloading_placeholder">Downloading %1$s</string>
     <string name="downloading_success_placeholder">%1$s has been successfully downloaded, tap to open</string>
     <string name="server_time_out">Server time out, try again or choose a different download mirror!\nLink copied to clipboard!</string>
+    <string name="thank_you_for_the_support">Thank you for the support!</string>
+    <string name="bitcoin_address_copied_to_clipboard">Bitcoin address copied to clipboard!</string>
+    <string name="ethereum_address_copied_to_clipboard">Ethereum address copied to clipboard!</string>
+    <string name="github_url_copied_to_clipboard">Github url copied to clipboard!</string>
+    <string name="patreon_url_copied_to_clipboard">Patreon url copied to clipboard!</string>
 </resources>
