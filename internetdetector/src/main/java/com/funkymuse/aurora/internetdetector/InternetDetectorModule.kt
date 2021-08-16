@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object InternetDetectorModule {
 
-
     @Provides
     @Singleton
     fun internetDetector(@ApplicationContext context: Context) = InternetDetector(context)

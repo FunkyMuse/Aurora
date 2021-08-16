@@ -1,7 +1,7 @@
 # Aurora
 
 [![Kotlin Version](https://img.shields.io/badge/kotlin-1.5.21-blue.svg)](https://kotlinlang.org)
-[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
+[![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![GitHub release (including pre-releases)](https://img.shields.io/github/v/release/FunkyMuse/Aurora?include_prereleases)](https://github.com/FunkyMuse/Aurora/releases/latest)
 ![GitHub Repo Size](https://img.shields.io/github/repo-size/FunkyMuse/Aurora)
 

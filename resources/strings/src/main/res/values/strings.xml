@@ -1,6 +1,11 @@
 <resources>
     <string name="aurora_app_name">Aurora</string>
-    <string name="no_connection_message">No internet connection available !</string>
+    <string name="no_connection_message">No internet connection available!</string>
+    <string name="connection_mobile_data">Connected to mobile data</string>
+    <string name="connection_vpn">Connected to a VPN</string>
+    <string name="connection_wifi">Connected to a WiFi</string>
+    <string name="connection_ethernet">Connected to Ethernet</string>
+    <string name="connection_searching">Searching for connection…</string>
     <string name="search_input">Search…</string>
     <string name="search_text">Search by a book name, author or ISBN</string>
     <string name="search_result">Search result</string>

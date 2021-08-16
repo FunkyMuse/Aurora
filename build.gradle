@@ -27,7 +27,7 @@ buildscript {
 
         //compilation
         compileVersion = 30
-        minVersion = 21
+        minVersion = 24
 
         //updatable
         verCode = 3
