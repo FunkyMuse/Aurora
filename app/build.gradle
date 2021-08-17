@@ -100,9 +100,14 @@ dependencies {
     //donations
     implementation project(path: ':donations:donationsui')
     implementation project(path: ':donations:donationsdestination')
+    implementation project(path: ':donations:explanation:donationsexplanationdestination')
+    implementation project(path: ':donations:explanation:donationsexplanationui')
 
     //material
     implementation 'com.google.android.material:material:1.4.0'
+
+    //runCodeEveryXLaunch
+    implementation project(path: ':common:runCodeEveryXLaunch')
 
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"

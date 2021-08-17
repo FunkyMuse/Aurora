@@ -81,6 +81,8 @@
     <string name="md5">MD5</string>
     <string name="crashes">Crashes</string>
     <string name="donate">Donate</string>
+    <string name="support">Support</string>
+    <string name="donate_explanation">Hello,\n\nthis project is an open-source initiative and available for everyone, this is paid by my free time outside working hours.\n\nIt would be kind of you to support the further development so that this project remains open source and free.\n\nThanks for understanding!\n</string>
     <string name="no_more_latest_books">No more latest books available to load!</string>
     <string name="generic_error">An error has occurred, try again later!</string>
     <string name="no_more_favorite_books">No more favorite books to load!</string>
