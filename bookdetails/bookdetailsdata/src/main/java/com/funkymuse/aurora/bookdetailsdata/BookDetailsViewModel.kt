@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.bookdetailsdata
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,8 +37,8 @@ class BookDetailsViewModel @Inject constructor(
     private val bookDownloadScheduler: BookDownloadScheduler
 ) : ViewModel(), Navigator by navigator {
 
-    private val id
-        get() = savedStateHandle.get<String>(BOOK_ID_PARAM) ?: throw IllegalStateException("Parameter book ID must not be null!")
+     val id
+        get() = savedStateHandle.get<String>(BOOK_ID_PARAM)?.lowercase() ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()

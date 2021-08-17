@@ -32,6 +32,6 @@ interface FavoritesDAO {
     @Insert(onConflict = REPLACE)
     suspend fun insertIntoFavorites(favoriteBook: FavoriteBook)
 
-    @Query("select * from favorite_books where id =:bookID limit 1")
+    @Query("select * from favorite_books where id GLOB '*' || :bookID|| '*' limit 1")
     fun getFavoriteById(bookID: String): Flow<FavoriteBook?>
 }

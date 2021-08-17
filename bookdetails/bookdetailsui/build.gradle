@@ -21,6 +21,8 @@ dependencies {
 
     implementation project(path: ':common')
 
+    implementation project(path: ':settings:settingsdata')
+
     implementation project(path: ':internetdetector')
 
     implementation project(path: ':components:loadingcomponent')

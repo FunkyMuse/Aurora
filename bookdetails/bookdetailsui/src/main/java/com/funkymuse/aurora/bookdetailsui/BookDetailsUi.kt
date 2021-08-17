@@ -48,10 +48,10 @@ import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.loadingcomponent.LoadingDialog
 import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.aurora.serverconstants.*
+import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
-
 import com.funkymuse.style.shape.Shapes
 import com.google.accompanist.insets.statusBarsPadding
 import java.util.*
@@ -64,6 +64,7 @@ import java.util.*
 @Composable
 fun DetailedBook() {
     val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
     val internetDetectorViewModel: InternetDetectorViewModel = hiltViewModel()
     val onBackClicked = {
         bookDetailsViewModel.navigateUp()
@@ -73,6 +74,7 @@ fun DetailedBook() {
     val localContext = context
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
+    val isVPNWarningEnabled = settingsViewModel.vpnWarning.collectAsState().value
 
     val showLoadingDialog =
         bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
@@ -145,7 +147,7 @@ fun DetailedBook() {
                 }
                 detailedBook?.apply {
                     DetailedBook(this) {
-                        if (!localContext.hasVPN()) {
+                        if (!localContext.hasVPN() && isVPNWarningEnabled) {
                             bookDetailsViewModel.showNotOnVPN(
                                 it,
                                 extension.toString(),
@@ -186,18 +188,17 @@ private fun favoritesClick(
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
                 FavoriteBook(
-                    bookModel.md5.toString(),
-                    bookModel.title,
-                    bookModel.coverurl,
-                    bookModel.author,
-                    bookModel.extension?.uppercase(),
-                    bookModel.pagesInFile,
-                    bookModel.fileSize,
-                    bookModel.year
+                    id = bookModel.md5 ?: bookDetailsViewModel.id,
+                    title = bookModel.title,
+                    realImage = bookModel.coverurl,
+                    author = bookModel.author,
+                    extension = bookModel.extension?.uppercase(),
+                    pages = bookModel.pagesInFile,
+                    favoriteSize = bookModel.fileSize,
+                    year = bookModel.year
                 )
             )
         }
-
     } else {
         bookDetailsViewModel.removeFromFavorites(favoritesBook.id)
     }

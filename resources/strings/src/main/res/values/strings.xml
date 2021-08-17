@@ -36,6 +36,7 @@
     <string name="web_download">Web Download</string>
     <string name="torrent_download">Torrent download</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="do_not_show_warning_vpn">Warning when downloading without VPN</string>
     <string name="no_favorites_expl">You haven\'t any favorite books, try adding some by searching…</string>
     <string name="default_sort">Default</string>
     <string name="size_asc">Size ASC</string>
