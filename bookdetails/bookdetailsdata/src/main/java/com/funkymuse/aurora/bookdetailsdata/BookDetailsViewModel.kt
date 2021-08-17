@@ -48,6 +48,9 @@ class BookDetailsViewModel @Inject constructor(
     private val extractLinkEvent: Channel<ScraperResult> = Channel(Channel.BUFFERED)
     val extractLink = extractLinkEvent.receiveAsFlow()
 
+    private val showVPNWarningEvent : Channel<VPNWarningModel> = Channel(Channel.BUFFERED)
+    val showVPNWarning = showVPNWarningEvent.receiveAsFlow()
+
     init {
         loadBook()
     }
@@ -81,6 +84,18 @@ class BookDetailsViewModel @Inject constructor(
             if (url is ScraperResult.Success) {
                 bookDownloadScheduler.scheduleDownload(url.link, id, extension, bookName)
             }
+        }
+    }
+
+    fun showNotOnVPN(id: String, extension: String, title: String) {
+        viewModelScope.launch {
+            showVPNWarningEvent.send(VPNWarningModel.DownloadBook(id, extension, title))
+        }
+    }
+
+    fun dismissVPNWarning() {
+        viewModelScope.launch {
+            showVPNWarningEvent.send(VPNWarningModel.Dismiss)
         }
     }
 

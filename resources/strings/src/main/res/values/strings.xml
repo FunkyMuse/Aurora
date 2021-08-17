@@ -105,4 +105,6 @@
     <string name="ethereum_address_copied_to_clipboard">Ethereum address copied to clipboard!</string>
     <string name="github_url_copied_to_clipboard">Github url copied to clipboard!</string>
     <string name="patreon_url_copied_to_clipboard">Patreon url copied to clipboard!</string>
+    <string name="not_on_vpn_download_warning">You are about to download!\nDo note that this is illegal in some countries and might result in penalties by your authorities, the best way to circumvent this is to use a VPN that has access to the Libgen servers, do you understand the risk and want to continue downloading without VPN?</string>
+    <string name="continue_dl">Continue</string>
 </resources>

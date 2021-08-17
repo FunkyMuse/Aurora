@@ -1,8 +1,11 @@
 package com.funkymuse.aurora.common
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Base64
 import java.io.File
 
@@ -13,7 +16,7 @@ import java.io.File
 private const val DOWNLOADS_PATH = "downloads"
 
 
-fun Context.downloads() : File {
+fun Context.downloads(): File {
     val localPath = filesDir
     val directory = File(localPath.path + File.separator + DOWNLOADS_PATH)
     directory.mkdirs()
@@ -46,3 +49,9 @@ fun Context.copyToClipboard(text: String) {
 }
 
 val String.decodeBase64: String get() = Base64.decode(this, Base64.DEFAULT).toString(Charsets.UTF_8)
+
+@SuppressLint("MissingPermission")
+fun Context.hasVPN(): Boolean {
+    val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+    return connectivityManager?.getNetworkCapabilities(connectivityManager.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ?: false
+}

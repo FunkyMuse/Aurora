@@ -36,6 +36,9 @@ import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
 import com.funkymuse.aurora.backbuttoncomponent.BackButton
 import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
+import com.funkymuse.aurora.bookdetailsdata.VPNWarningModel
+import com.funkymuse.aurora.common.hasVPN
+import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
@@ -67,13 +70,28 @@ fun DetailedBook() {
     }
     val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
-
+    val localContext = context
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
 
-    val showLoadingDialog = bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
+    val showLoadingDialog =
+        bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
     if (showLoadingDialog) {
         LoadingDialog(R.string.preparing)
+    }
+
+    val vpnWarningModel =
+        bookDetailsViewModel.showVPNWarning.collectAsState(initial = VPNWarningModel.Idle).value
+    if (vpnWarningModel is VPNWarningModel.DownloadBook) {
+        ShowNotOnVpnDialog(onDismiss = {
+            bookDetailsViewModel.dismissVPNWarning()
+        }, onConfirm = {
+            bookDetailsViewModel.downloadBook(
+                vpnWarningModel.id,
+                vpnWarningModel.extension,
+                vpnWarningModel.title
+            )
+        })
     }
 
 
@@ -127,11 +145,19 @@ fun DetailedBook() {
                 }
                 detailedBook?.apply {
                     DetailedBook(this) {
-                        bookDetailsViewModel.downloadBook(
-                            it,
-                            extension.toString(),
-                            title.toString()
-                        )
+                        if (!localContext.hasVPN()) {
+                            bookDetailsViewModel.showNotOnVPN(
+                                it,
+                                extension.toString(),
+                                title.toString()
+                            )
+                        } else {
+                            bookDetailsViewModel.downloadBook(
+                                it,
+                                extension.toString(),
+                                title.toString()
+                            )
+                        }
                     }
                 }
 
@@ -139,6 +165,16 @@ fun DetailedBook() {
         )
     }
 
+}
+
+@Composable
+fun ShowNotOnVpnDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+    ConfirmationDialog(
+        stringResource(id = R.string.not_on_vpn_download_warning),
+        confirmText = stringResource(id = R.string.continue_dl),
+        onDismiss = onDismiss,
+        onConfirm = onConfirm
+    )
 }
 
 private fun favoritesClick(

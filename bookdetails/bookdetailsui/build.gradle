@@ -19,11 +19,14 @@ dependencies {
 
     implementation project(path: ':favoritebook:favoritebookdb')
 
+    implementation project(path: ':common')
+
     implementation project(path: ':internetdetector')
 
     implementation project(path: ':components:loadingcomponent')
     implementation project(path: ':components:errorcomponent')
     implementation project(path: ':components:backbuttoncomponent')
+    implementation project(path: ':components:confirmationdialog')
 
 
 
