@@ -6,7 +6,7 @@ import com.funkymuse.aurora.runcodeeveryxlaunch.RunCodePreferencesViewModel
 /**
  * Created by funkymuse on 8/17/21 to long live and prosper !
  */
-interface AssistedHiltInjectibles {
+interface AssistedHiltInjectables {
     val runCodePreferencesViewModelFactory: RunCodePreferencesViewModel.RunCodePreferencesViewModelFactory
     val oneTimePreferencesViewModelFactory: OneTimePreferencesViewModel.OneTimePreferencesViewModelFactory
 }

@@ -20,7 +20,7 @@ import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.SearchRoute
-import com.funkymuse.aurora.composeextensions.AssistedHiltInjectibles
+import com.funkymuse.aurora.composeextensions.AssistedHiltInjectables
 import com.funkymuse.aurora.composeextensions.assistedInjectable
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.donationsdestination.DonateDestination
@@ -46,7 +46,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), AssistedHiltInjectibles {
+class MainActivity : ComponentActivity(), AssistedHiltInjectables {
 
     @Inject
     lateinit var imageLoader: ImageLoader

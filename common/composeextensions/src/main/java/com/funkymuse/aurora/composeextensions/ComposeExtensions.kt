@@ -44,9 +44,9 @@ inline fun <reified T : ViewModel> assistedViewModel(
 
 
 @Composable
-inline fun <reified T : ViewModel> assistedInjectable(crossinline produce: AssistedHiltInjectibles.(handle : SavedStateHandle) -> T): T =
+inline fun <reified T : ViewModel> assistedInjectable(crossinline produce: AssistedHiltInjectables.(handle : SavedStateHandle) -> T): T =
     assistedViewModel(
         viewModelProducer = {
-            (LocalContext.current as AssistedHiltInjectibles).produce(it)
+            (LocalContext.current as AssistedHiltInjectables).produce(it)
         }
     )
