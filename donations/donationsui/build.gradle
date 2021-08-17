@@ -7,6 +7,8 @@ dependencies {
     implementation project(path: ':toaster')
     implementation project(path: ':common:commonextensions')
     implementation project(path: ':donations:donationsdata')
+    implementation project(path: ':common:composeextensions')
+    implementation project(path: ':common:onetimepreferences')
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
     implementation "androidx.compose.material:material:$compose_version"

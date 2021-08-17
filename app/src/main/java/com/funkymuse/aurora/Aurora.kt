@@ -18,6 +18,8 @@ import javax.inject.Inject
 @HiltAndroidApp
 class Aurora : Application(), Configuration.Provider {
 
+
+
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 

@@ -109,6 +109,12 @@ dependencies {
     //runCodeEveryXLaunch
     implementation project(path: ':common:runCodeEveryXLaunch')
 
+    //extensions
+    implementation project(path: ':common:composeextensions')
+
+    //oneTimePref
+    implementation project(path: ':common:onetimepreferences')
+
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "androidx.core:core-ktx:$coreKTX"

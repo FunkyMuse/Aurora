@@ -7,6 +7,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Base64
+import androidx.lifecycle.AndroidViewModel
 import java.io.File
 
 /**
@@ -55,3 +56,5 @@ fun Context.hasVPN(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
     return connectivityManager?.getNetworkCapabilities(connectivityManager.activeNetwork)?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ?: false
 }
+
+val AndroidViewModel.context: Context get() = getApplication()

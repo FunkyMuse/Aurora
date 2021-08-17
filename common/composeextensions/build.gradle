@@ -1,0 +1,9 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+    implementation project(path: ':common:onetimepreferences')
+    implementation project(path: ':common:runCodeEveryXLaunch')
+
+}

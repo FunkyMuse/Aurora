@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.crazylegend.common.exhaustive
 import com.crazylegend.intent.openWebPage
 import com.crazylegend.toaster.Toaster
+import com.funkymuse.aurora.commonextensions.context
 import com.funkymuse.aurora.commonextensions.copyToClipboard
 import com.funkymuse.aurora.commonextensions.decodeBase64
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +24,6 @@ class DonationsViewModel @Inject constructor(
     private val toaster: Toaster,
     application: Application
 ) : AndroidViewModel(application) {
-
-    private val context get() = getApplication<Application>() as Context
 
     private companion object {
         //prevent bots from crawling raw data

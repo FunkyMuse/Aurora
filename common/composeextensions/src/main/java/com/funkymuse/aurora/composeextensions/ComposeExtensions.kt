@@ -1,7 +1,8 @@
-package com.funkymuse.aurora.di
+package com.funkymuse.aurora.composeextensions
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSavedStateRegistryOwner
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
@@ -9,6 +10,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.savedstate.SavedStateRegistryOwner
 
+/**
+ * Created by funkymuse on 8/17/21 to long live and prosper !
+ */
 
 @PublishedApi
 internal inline fun <reified T : ViewModel> createAssistedViewModel(
@@ -33,9 +37,16 @@ inline fun <reified T : ViewModel> assistedViewModel(
 ): T =
     viewModel(factory = createAssistedViewModel(
         arguments = arguments,
-            owner = LocalSavedStateRegistryOwner.current
+        owner = LocalSavedStateRegistryOwner.current
     ) {
         viewModelProducer(it)
     })
 
 
+@Composable
+inline fun <reified T : ViewModel> assistedInjectable(crossinline produce: AssistedHiltInjectibles.(handle : SavedStateHandle) -> T): T =
+    assistedViewModel(
+        viewModelProducer = {
+            (LocalContext.current as AssistedHiltInjectibles).produce(it)
+        }
+    )

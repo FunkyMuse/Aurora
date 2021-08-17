@@ -9,7 +9,7 @@ dependencies {
     implementation project(path: ':bookdetails:bookdetailsdestination')
     implementation project(path: ':favoritebook:favoritebookdb')
 
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation project(path: ':common:commonextensions')
 
     api project(path: ':navigator')
 

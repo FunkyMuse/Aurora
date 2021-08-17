@@ -1,6 +1,5 @@
 package com.funkymuse.aurora
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,7 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.collectAsState
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -21,16 +20,22 @@ import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.SearchRoute
+import com.funkymuse.aurora.composeextensions.AssistedHiltInjectibles
+import com.funkymuse.aurora.composeextensions.assistedInjectable
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.donationsexplanationdestination.DONATE_PREFS_KEY
+import com.funkymuse.aurora.donationsexplanationdestination.DONATE_RESET_KEY
 import com.funkymuse.aurora.donationsexplanationdestination.DonationsExplanationDestination
+import com.funkymuse.aurora.donationsui.USER_DONATED_KEY
 import com.funkymuse.aurora.navigation.addBottomNavigationDestinations
 import com.funkymuse.aurora.navigation.addComposableDestinations
 import com.funkymuse.aurora.navigation.addDialogDestinations
 import com.funkymuse.aurora.navigator.Navigator
 import com.funkymuse.aurora.navigator.NavigatorEvent
-import com.funkymuse.aurora.runcodeeveryxlaunch.RunCodePreferences
+import com.funkymuse.aurora.navigator.NavigatorViewModel
+import com.funkymuse.aurora.onetimepreferences.OneTimePreferencesViewModel
+import com.funkymuse.aurora.runcodeeveryxlaunch.RunCodePreferencesViewModel
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.style.theme.AuroraTheme
@@ -41,7 +46,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), AssistedHiltInjectibles {
 
     @Inject
     lateinit var imageLoader: ImageLoader
@@ -52,9 +57,10 @@ class MainActivity : ComponentActivity() {
     private val isDarkThemeEnabled get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
     @Inject
-    lateinit var runCodePreferencesFactory: RunCodePreferences.RunCodePreferencesFactory
+    override lateinit var runCodePreferencesViewModelFactory: RunCodePreferencesViewModel.RunCodePreferencesViewModelFactory
 
-    val runCodeForDonationExplanation get() =  runCodePreferencesFactory.create(DONATE_PREFS_KEY)
+    @Inject
+    override lateinit var oneTimePreferencesViewModelFactory: OneTimePreferencesViewModel.OneTimePreferencesViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +92,6 @@ private val hideBottomNavFromDestinationRoutes = listOf(
 @Composable
 fun AuroraScaffold(navigator: Navigator) {
     val navController = rememberNavController()
-    val context = LocalContext.current
     LaunchedEffect(navController) {
         navigator.destinations.collect {
             when (val event = it) {
@@ -97,10 +102,6 @@ fun AuroraScaffold(navigator: Navigator) {
                 )
             }
         }
-    }
-
-    LaunchedEffect(navController){
-        launches(context)
     }
 
     Scaffold(
@@ -119,17 +120,42 @@ fun AuroraScaffold(navigator: Navigator) {
         )
     }
 
+    UserDonationsInfo()
+    ResetUserDonationsInfo()
 }
 
+@Composable
+fun UserDonationsInfo() {
+    val navigator = hiltViewModel<NavigatorViewModel>()
+    val oneTimePreferencesViewModel = assistedInjectable(produce = {
+        oneTimePreferencesViewModelFactory.create(USER_DONATED_KEY)
+    })
+    val oneTimePreferenceUserDonated = oneTimePreferencesViewModel.isEventFired.collectAsState().value
 
-suspend fun launches(context: Context) {
-    (context as MainActivity).apply {
-        runCodeForDonationExplanation.runCode(9){
-            navigator.navigate(DonationsExplanationDestination.route())
-        }
+    val runCodePreferenceRemindUserDonated = assistedInjectable(produce = {
+        runCodePreferencesViewModelFactory.create(DONATE_PREFS_KEY, 4)
+    })
+
+    val runCode = runCodePreferenceRemindUserDonated.runCode.collectAsState()
+    if (runCode.value && !oneTimePreferenceUserDonated) {
+        navigator.navigate(DonationsExplanationDestination.route())
     }
 }
 
+@Composable
+fun ResetUserDonationsInfo(){
+    val runCodePreferenceRemindUserDonated = assistedInjectable(produce = {
+        runCodePreferencesViewModelFactory.create(DONATE_RESET_KEY, 30)
+    })
 
+    val oneTimePreferencesViewModel = assistedInjectable(produce = {
+        oneTimePreferencesViewModelFactory.create(USER_DONATED_KEY)
+    })
+
+    val runCode = runCodePreferenceRemindUserDonated.runCode.collectAsState()
+    if (runCode.value){
+        oneTimePreferencesViewModel.setEventIsNotFired()
+    }
+}
 
 

@@ -1,0 +1,3 @@
+dependencies {
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+}
