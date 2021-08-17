@@ -1,15 +1,11 @@
 package com.funkymuse.aurora.runcodeeveryxlaunch
 
-import android.app.Application
-import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.funkymuse.aurora.commonextensions.context
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,30 +19,28 @@ import kotlinx.coroutines.launch
  * Created by funkymuse on 8/17/21 to long live and prosper !
  */
 
-const val ASSISTED_SETTINGS_NAME = "settings_name"
 const val LAUNCHES_UNTIL_RUN_NAME = "launches_name"
+const val COUNT_PREF_KEY_NAME = "countPrefKey"
 
 class RunCodePreferencesViewModel @AssistedInject constructor(
-    application: Application,
-    @Assisted(ASSISTED_SETTINGS_NAME) private val SETTINGS_NAME: String,
+    private val dataStore: DataStore<Preferences>,
+    @Assisted(COUNT_PREF_KEY_NAME) private val countPrefKeyName: String,
     @Assisted(LAUNCHES_UNTIL_RUN_NAME) private val LAUNCHES_UNTIL_RUN: Int
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     @AssistedFactory
     interface RunCodePreferencesViewModelFactory {
         fun create(
-            @Assisted(ASSISTED_SETTINGS_NAME) SETTINGS_NAME: String,
-            @Assisted(LAUNCHES_UNTIL_RUN_NAME) LAUNCHES_UNTIL_RUN: Int,
+            @Assisted(COUNT_PREF_KEY_NAME) countPrefKeyName: String,
+            @Assisted(LAUNCHES_UNTIL_RUN_NAME) LAUNCHES_UNTIL_RUN: Int
         ): RunCodePreferencesViewModel
     }
 
     private companion object {
-        private const val launchCountPref = "launchCount"
         private const val dateFirstLaunchPref = "dateFirLaunched"
     }
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = SETTINGS_NAME)
-    private val countPrefKey = longPreferencesKey(launchCountPref)
+    private val countPrefKey = longPreferencesKey(countPrefKeyName)
     private val dateFirstLaunchKey = longPreferencesKey(dateFirstLaunchPref)
 
     private val codeToRunChannel = Channel<Boolean>(Channel.BUFFERED)
@@ -59,7 +53,7 @@ class RunCodePreferencesViewModel @AssistedInject constructor(
 
     private fun runCode() {
         viewModelScope.launch {
-            context.dataStore.edit {
+            dataStore.edit {
                 // Increment launch counter
                 val launchCount = it[countPrefKey] ?: 0
                 it[countPrefKey] = launchCount + 1

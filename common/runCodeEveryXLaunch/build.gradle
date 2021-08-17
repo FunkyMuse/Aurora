@@ -8,4 +8,5 @@ dependencies {
     //data store
     api "androidx.datastore:datastore-preferences:$data_store"
     implementation project(path: ':common:commonextensions')
+    implementation project(path: ':settings:settingsdata')
 }
