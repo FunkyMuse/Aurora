@@ -101,9 +101,6 @@ dependencies {
     implementation project(path: ':donations:donationsui')
     implementation project(path: ':donations:donationsdestination')
 
-    //connection detector
-    implementation project(path: ':internetdetector')
-
     //material
     implementation 'com.google.android.material:material:1.4.0'
 

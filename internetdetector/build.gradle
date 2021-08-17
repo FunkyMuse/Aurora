@@ -7,5 +7,5 @@ applyHiltDeps(this)
 dependencies {
     api "com.github.FunkyMuse.KAHelpers:internetDetector:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
-
+    implementation project(path: ':serverconstants')
 }
