@@ -2,6 +2,7 @@ package com.funkymuse.aurora.settingsdata
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.funkymuse.aurora.settingsdata.contracts.DefaultPrefsContract
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,11 +15,11 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val defaultPreferences: DefaultPreferences,
-) : ViewModel() {
+    private val defaultPreferences: DefaultPreferences
+) : ViewModel(), DefaultPrefsContract {
 
-    val darkTheme = produceState(defaultPreferences.darkTheme)
-    val vpnWarning = produceState(defaultPreferences.vpnWarning)
+    override val darkTheme = produceState(defaultPreferences.darkTheme)
+    override val vpnWarning = produceState(defaultPreferences.vpnWarning)
 
     private fun produceState(flow: Flow<Boolean>) =
         flow.stateIn(

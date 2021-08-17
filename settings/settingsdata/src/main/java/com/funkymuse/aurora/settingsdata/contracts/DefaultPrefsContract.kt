@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.settingsdata
+package com.funkymuse.aurora.settingsdata.contracts
 
 import kotlinx.coroutines.flow.Flow
 
@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface DefaultPrefsContract {
     val darkTheme: Flow<Boolean>
     val vpnWarning: Flow<Boolean>
-    suspend fun changeTheme(isDarkThemeEnabled: Boolean)
-    suspend fun changeVPNWarning(isVPNWarningEnabled: Boolean)
 
     companion object {
         const val DARK_THEME_KEY = "dark_theme"
@@ -17,3 +15,4 @@ interface DefaultPrefsContract {
     }
 
 }
+

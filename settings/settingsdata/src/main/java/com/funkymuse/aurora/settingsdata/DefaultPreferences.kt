@@ -6,8 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
-import com.funkymuse.aurora.settingsdata.DefaultPrefsContract.Companion.DARK_THEME_KEY
-import com.funkymuse.aurora.settingsdata.DefaultPrefsContract.Companion.VPN_WARNING_KEY
+import com.funkymuse.aurora.settingsdata.contracts.DefaultPrefsContract
+import com.funkymuse.aurora.settingsdata.contracts.DefaultPrefsContract.Companion.DARK_THEME_KEY
+import com.funkymuse.aurora.settingsdata.contracts.DefaultPrefsContract.Companion.VPN_WARNING_KEY
+import com.funkymuse.aurora.settingsdata.contracts.DefaultPrefsStateChangeContract
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,7 +21,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class DefaultPreferences @Inject constructor(@ApplicationContext private val context: Context) :
-    DefaultPrefsContract {
+    DefaultPrefsContract, DefaultPrefsStateChangeContract {
 
     private companion object {
         private const val SETTINGS_NAME = "settings"
