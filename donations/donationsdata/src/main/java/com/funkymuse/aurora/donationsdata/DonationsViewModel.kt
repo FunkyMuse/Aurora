@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.crazylegend.common.exhaustive
 import com.crazylegend.intent.openWebPage
 import com.crazylegend.toaster.Toaster
-import com.funkymuse.aurora.common.copyToClipboard
-import com.funkymuse.aurora.common.decodeBase64
+import com.funkymuse.aurora.commonextensions.copyToClipboard
+import com.funkymuse.aurora.commonextensions.decodeBase64
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

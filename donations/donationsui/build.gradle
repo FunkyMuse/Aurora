@@ -5,7 +5,7 @@ dependencies {
     implementation project(path: ':resources:strings')
     implementation project(path: ':navigator')
     implementation project(path: ':toaster')
-    implementation project(path: ':common')
+    implementation project(path: ':common:commonextensions')
     implementation project(path: ':donations:donationsdata')
     implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
     implementation "com.google.accompanist:accompanist-insets:$accompanist"

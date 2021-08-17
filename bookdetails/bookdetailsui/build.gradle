@@ -19,7 +19,7 @@ dependencies {
 
     implementation project(path: ':favoritebook:favoritebookdb')
 
-    implementation project(path: ':common')
+    implementation project(path: ':common:commonextensions')
 
     implementation project(path: ':settings:settingsdata')
 

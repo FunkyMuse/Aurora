@@ -1,4 +1,4 @@
-package com.funkymuse.aurora.common
+package com.funkymuse.aurora.commonextensions
 
 import android.annotation.SuppressLint
 import android.content.ClipData

@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import com.funkymuse.aurora.common.toFileSizeString
+import com.funkymuse.aurora.commonextensions.toFileSizeString
 import com.funkymuse.aurora.generalbook.GeneralBook
 import com.funkymuse.aurora.serverconstants.COVERS_APPEND
 

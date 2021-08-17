@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.webkit.MimeTypeMap
-import com.funkymuse.aurora.common.toFileSizeString
+import com.funkymuse.aurora.commonextensions.toFileSizeString
 import java.io.File
 
 

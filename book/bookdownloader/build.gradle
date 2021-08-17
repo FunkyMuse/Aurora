@@ -10,7 +10,7 @@ dependencies {
     implementation project(path: ':resources:strings')
     implementation project(path: ':resources:drawables')
     implementation project(path: ':toaster')
-    implementation project(path: ':common')
+    implementation project(path: ':common:commonextensions')
     api project(path: ':scraper:scrapermodel')
     implementation project(path: ':downloads:downloadsdestination')
     implementation project(path: ':coroutines:appscope')

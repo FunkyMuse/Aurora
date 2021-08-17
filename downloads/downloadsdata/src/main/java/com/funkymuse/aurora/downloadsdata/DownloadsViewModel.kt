@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.funkymuse.aurora.common.downloads
+import com.funkymuse.aurora.commonextensions.downloads
 import com.funkymuse.aurora.downloadsdestination.BOOK_ID_PARAM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

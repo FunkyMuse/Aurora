@@ -37,7 +37,7 @@ import com.crazylegend.string.isNotNullOrEmpty
 import com.funkymuse.aurora.backbuttoncomponent.BackButton
 import com.funkymuse.aurora.bookdetailsdata.BookDetailsViewModel
 import com.funkymuse.aurora.bookdetailsdata.VPNWarningModel
-import com.funkymuse.aurora.common.hasVPN
+import com.funkymuse.aurora.commonextensions.hasVPN
 import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry

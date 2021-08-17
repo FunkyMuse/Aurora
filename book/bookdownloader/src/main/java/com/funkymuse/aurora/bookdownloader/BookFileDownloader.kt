@@ -10,7 +10,7 @@ import android.os.Handler
 import androidx.work.ForegroundInfo
 import androidx.work.ListenableWorker
 import com.crazylegend.toaster.Toaster
-import com.funkymuse.aurora.common.downloads
+import com.funkymuse.aurora.commonextensions.downloads
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
