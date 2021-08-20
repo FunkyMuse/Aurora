@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.*
@@ -24,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.radiobutton.RadioButtonWithText
@@ -60,8 +60,8 @@ fun Search() {
 
     ModalBottomSheetLayout(
             modifier = Modifier
-                    .navigationBarsPadding()
-                    .zIndex(zIndex),
+                .navigationBarsPadding()
+                .zIndex(zIndex),
             sheetState = state,
             sheetShape = BottomSheetShapes.large,
             sheetContent = {
@@ -103,37 +103,25 @@ fun Search() {
                     item {
                         Spacer(
                                 modifier = Modifier
-                                        .navigationBarsPadding()
-                                        .padding(bottom = 46.dp)
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 46.dp)
                         )
                     }
                 }
             }
     ) {
 
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (searchInput, searchInputExplanation, filter) = createRefs()
-            Box(modifier = Modifier.constrainAs(searchInput) {
-                centerHorizontallyTo(parent)
-                centerVerticallyTo(parent)
-            }) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxWidth().align(Alignment.Center)) {
                 SearchInput() {
                     navigatorViewModel.navigate(SearchResultDestination.createSearchRoute(it.trim(), searchInFieldsCheckedPosition, searchWithMaskWord))
                 }
-            }
-            Box(modifier = Modifier.constrainAs(searchInputExplanation) {
-                top.linkTo(searchInput.bottom)
-                centerHorizontallyTo(parent)
-            }) {
                 SearchInputExplained()
             }
 
             Box(
                     modifier = Modifier
-                            .constrainAs(filter) {
-                                bottom.linkTo(parent.bottom)
-                                centerHorizontallyTo(parent)
-                            }
+                            .align(Alignment.BottomCenter)
                             .padding(bottom = 74.dp)
             ) {
                 FloatingActionButton(
@@ -158,9 +146,9 @@ fun SearchInputExplained() {
             text = stringResource(id = R.string.search_text), fontSize = 12.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 36.dp, end = 24.dp)
-                    .animateContentSize()
+                .fillMaxWidth()
+                .padding(start = 36.dp, end = 24.dp)
+                .animateContentSize()
     )
 }
 
@@ -176,8 +164,8 @@ fun SearchInput(
     val invalidInput = inputText.isBlank() || inputText.length < 3
     OutlinedTextField(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp),
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp),
             isError = invalidInput,
             label = { Text(text = stringResource(id = R.string.search)) },
             value = inputText,

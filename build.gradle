@@ -14,7 +14,6 @@ buildscript {
         paging_compose = '1.0.0-alpha12'
         paging_runtime = '3.0.1'
         navigation = '2.4.0-alpha07'
-        constraint_layout = "1.0.0-beta02"
         activity = "1.3.1"
         navigation_compose = "1.0.0-alpha03"
         jsoup = "1.14.2"
