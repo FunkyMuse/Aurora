@@ -109,14 +109,10 @@ fun Downloads() {
         launcher.launch(Pair(mimeType ?: DEFAULT_MIME_TYPE, fileModel.fileNameAndExtension))
     }
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (loading, backToTop) = createRefs()
+    Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
             visible = progressVisibility, modifier = Modifier
-                .constrainAs(loading) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                }
+                .align(Alignment.TopCenter)
                 .wrapContentSize()
                 .systemBarsPadding()
                 .padding(top = 8.dp)
@@ -131,10 +127,7 @@ fun Downloads() {
 
         AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
-                .constrainAs(backToTop) {
-                    bottom.linkTo(parent.bottom)
-                    centerHorizontallyTo(parent)
-                }
+                .align(Alignment.BottomCenter)
                 .navigationBarsPadding(start = false, end = false)
                 .padding(bottom = 64.dp)
                 .zIndex(2f)) {

@@ -24,7 +24,6 @@ dependencies {
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
-    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
 
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:kotlinextensions:$KAHelpers"

@@ -9,6 +9,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -17,8 +18,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.donationsdestination.DonateDestination
@@ -209,22 +208,16 @@ fun CheckBoxWithText(
     isChecked: Boolean,
     checkChanged: (Boolean) -> Unit
 ) {
-    ConstraintLayout(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
     ) {
-        val (textWidget, checkboxWidget) = createRefs()
         Text(
             text = stringResource(id = text),
             modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(textWidget) {
-                    start.linkTo(parent.start)
-                    end.linkTo(checkboxWidget.start)
-                    width = Dimension.fillToConstraints
-                    centerVerticallyTo(parent)
-                }
+                .fillMaxWidth(0.7f)
+                .align(Alignment.CenterStart)
                 .padding(start = 8.dp, end = 4.dp),
             textAlign = TextAlign.Start
         )
@@ -232,10 +225,7 @@ fun CheckBoxWithText(
         Switch(
             checked = isChecked, onCheckedChange = checkChanged,
             modifier = Modifier
-                .constrainAs(checkboxWidget) {
-                    centerVerticallyTo(parent)
-                    end.linkTo(parent.end)
-                }
+                .align(Alignment.CenterEnd)
                 .padding(start = 8.dp, end = 4.dp)
         )
     }

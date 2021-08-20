@@ -3,7 +3,8 @@ package com.funkymuse.aurora.bookdownloader
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -66,13 +67,19 @@ class NotificationHelper @Inject constructor(
         val title = context.getString(R.string.aurora_download_service)
         val downloading = context.getString(R.string.downloading_success_placeholder, bookName)
 
+        val flags = if (Build.VERSION.SDK_INT < 31) {
+            FLAG_UPDATE_CURRENT
+        } else {
+            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
+        }
+
         val taskDetailIntent = Intent(
             Intent.ACTION_VIEW,
             makeBookIdUri(bookId)
         )
         val pendingIntent = TaskStackBuilder.create(context).run {
             addNextIntentWithParentStack(taskDetailIntent)
-            getPendingIntent(REQUEST_CODE, PendingIntent.FLAG_UPDATE_CURRENT)
+            getPendingIntent(REQUEST_CODE, flags)
         }
 
         val builder =

@@ -13,7 +13,7 @@ buildscript {
         composed = '0.0.14'
         paging_compose = '1.0.0-alpha12'
         paging_runtime = '3.0.1'
-        navigation = '2.4.0-alpha06'
+        navigation = '2.4.0-alpha07'
         constraint_layout = "1.0.0-beta02"
         activity = "1.3.1"
         navigation_compose = "1.0.0-alpha03"
@@ -22,11 +22,11 @@ buildscript {
         coreKTX = "1.7.0-alpha01"
         crashy = "1.2.0"
         coil = "1.3.2"
-        work_version = "2.6.0-rc01"
+        work_version = "2.7.0-alpha05"
         hilt_work = "1.0.0"
 
         //compilation
-        compileVersion = 30
+        compileVersion = 31
         minVersion = 24
 
         //updatable

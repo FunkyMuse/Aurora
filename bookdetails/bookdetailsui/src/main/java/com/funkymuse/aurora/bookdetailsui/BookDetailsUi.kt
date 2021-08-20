@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
@@ -459,26 +458,17 @@ fun TopAppBarBookDetails(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         modifier = Modifier.statusBarsPadding()
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (backButton, favorites) = createRefs()
+        Box(modifier = Modifier.fillMaxSize()) {
             BackButton(
                 modifier = Modifier
-                    .constrainAs(backButton) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
+                    .align(Alignment.CenterStart)
                     .padding(8.dp), onClick = onBackClicked
             )
 
             if (showFavoritesButton) {
                 AddToFavorites(
                     Modifier
-                        .constrainAs(favorites) {
-                            end.linkTo(parent.end)
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                        }
+                        .align(Alignment.CenterEnd)
                         .padding(8.dp), isInFavorites, onFavoritesClicked
                 )
             }

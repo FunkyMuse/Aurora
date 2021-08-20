@@ -9,12 +9,12 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -63,14 +63,10 @@ fun LatestBooks(
         )
     }
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (loading, backToTop) = createRefs()
+    Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
             visible = progressVisibility, modifier = Modifier
-                .constrainAs(loading) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                }
+                .align(Alignment.TopCenter)
                 .wrapContentSize()
                 .systemBarsPadding()
                 .padding(top = 8.dp)
@@ -87,10 +83,7 @@ fun LatestBooks(
 
         AnimatedVisibility(visible = isButtonVisible,
             modifier = Modifier
-                .constrainAs(backToTop) {
-                    bottom.linkTo(parent.bottom)
-                    centerHorizontallyTo(parent)
-                }
+                .align(Alignment.BottomCenter)
                 .navigationBarsPadding(start = false, end = false)
                 .padding(bottom = 64.dp)
                 .zIndex(2f)) {

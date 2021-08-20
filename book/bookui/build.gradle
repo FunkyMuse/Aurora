@@ -18,8 +18,6 @@ dependencies {
 
     implementation project(path: ':serverconstants')
 
-
-    implementation "androidx.constraintlayout:constraintlayout-compose:$constraint_layout"
     implementation "androidx.compose.material:material:$compose_version"
 
 }

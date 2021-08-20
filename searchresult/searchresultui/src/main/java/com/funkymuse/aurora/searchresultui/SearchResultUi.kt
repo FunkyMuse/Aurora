@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -20,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -106,13 +106,9 @@ fun SearchResult() {
                 searchResultViewModelViewModel.searchWithMaskedWord(it)
                 pagingItems.refresh()
             }) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (loading, backToTop) = createRefs()
+        Box(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                .constrainAs(loading) {
-                    top.linkTo(parent.top)
-                    centerHorizontallyTo(parent)
-                }
+                .align(Alignment.TopCenter)
                 .wrapContentSize()
                 .padding(top = 8.dp)
                 .zIndex(2f)) {
@@ -137,10 +133,7 @@ fun SearchResult() {
             val lastVisibleIndex by columnState.lastVisibleIndexState()
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex?:0 > 20,
                     modifier = Modifier
-                        .constrainAs(backToTop) {
-                            bottom.linkTo(parent.bottom)
-                            end.linkTo(parent.end)
-                        }
+                        .align(Alignment.BottomCenter)
                         .padding(bottom = 22.dp, end = 4.dp)
                         .zIndex(2f)) {
 
@@ -287,15 +280,10 @@ fun ScaffoldWithBackFiltersAndContent(
             sheetShape = BottomSheetShapes.large,
             topBar = {
                 TopAppBar(backgroundColor = PrimaryVariant, modifier = Modifier.statusBarsPadding()) {
-                    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                        val (backButton, filter) = createRefs()
+                    Box(modifier = Modifier.fillMaxSize()) {
                         BackButton(
                                 modifier = Modifier
-                                    .constrainAs(backButton) {
-                                        start.linkTo(parent.start)
-                                        top.linkTo(parent.top)
-                                        bottom.linkTo(parent.bottom)
-                                    }
+                                    .align(Alignment.BottomStart)
                                     .padding(8.dp), onClick = {
                             onBack()
                         }
@@ -314,11 +302,7 @@ fun ScaffoldWithBackFiltersAndContent(
                                     shape = Shapes.large,
                                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                                     modifier = Modifier
-                                        .constrainAs(filter) {
-                                            end.linkTo(parent.end)
-                                            top.linkTo(parent.top)
-                                            bottom.linkTo(parent.bottom)
-                                        }
+                                        .align(Alignment.BottomEnd)
                                         .padding(8.dp)
                             ) {
                                 Icon(
@@ -348,9 +332,7 @@ fun ScaffoldWithBackFiltersAndContent(
                 }
             }) {
 
-        ConstraintLayout {
-            val filter = createRef()
-
+        Box {
             //add scrim
             if (bottomSheetState.isExpanded) {
                 Box(modifier = Modifier
@@ -375,11 +357,7 @@ fun ScaffoldWithBackFiltersAndContent(
 
             Box(
                     modifier = Modifier
-                            .constrainAs(filter) {
-                                bottom.linkTo(parent.bottom)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                            }
+                            .align(Alignment.BottomCenter)
                             .padding(bottom = 22.dp)
                             .zIndex(0.3f)
             ) {
