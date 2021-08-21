@@ -13,5 +13,6 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:toaster:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:internetDetector:$KAHelpers"
     implementation "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
+    implementation "com.github.FunkyMuse.KAHelpers:common:$KAHelpers"
     implementation project(path: ':resources:strings')
 }

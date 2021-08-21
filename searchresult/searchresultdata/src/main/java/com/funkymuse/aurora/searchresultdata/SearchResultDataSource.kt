@@ -9,6 +9,8 @@ import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.funkymuse.aurora.bookmodel.Book
 import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.paging.canNotLoadMoreContent
+import com.funkymuse.aurora.paging.fetchPaginatedContent
+import com.funkymuse.aurora.paging.pagedResult
 import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.aurora.skraper.BookScraper
 import dagger.assisted.Assisted
@@ -45,31 +47,15 @@ class SearchResultDataSource @AssistedInject constructor(
 
     override fun getRefreshKey(state: PagingState<Int, Book>): Int? = null
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
-        val page = params.key ?: 1
-
-        return if (context.isOnline) {
-            try {
-                withContext(dispatcher) { loadBooks(page) }
-            } catch (t: Throwable) {
-                return LoadResult.Error(t)
-            }
-        } else {
-            return LoadResult.Error(NoConnectionException())
-        }
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> = fetchPaginatedContent(context, dispatcher, params){
+        loadBooks(it)
     }
 
     private fun loadBooks(page: Int): LoadResult.Page<Int, Book> {
         val list = scraper.fetch{
             scraper.generateSearchDataUrl(page, searchQuery, sortQuery, sortType, searchInFieldsPosition, maskWord, this)
         }
-        return if (list.isNullOrEmpty()) {
-            canNotLoadMoreContent()
-        } else {
-            val prevKey = if (list.isNotNullOrEmpty) if (page == 1) null else page - 1 else null
-            val nextKey = if (list.count() == 0) null else page.plus(1)
-            LoadResult.Page(list, prevKey, nextKey)
-        }
+        return pagedResult(list, page)
     }
 
 }
