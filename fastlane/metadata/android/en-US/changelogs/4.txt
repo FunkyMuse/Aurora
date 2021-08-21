@@ -1,0 +1,13 @@
+### Detailed release
+- Make downloads without the need to visit the url
+- Downloads section, from where you can copy the file elsewhere
+- Detect if you're not on a VPN when downloading
+- Fixed not being able to add books to favorites
+- Added donations
+- Ability to enable/disable warning when downloading without a VPN
+
+### Roadmap:
+- Detect if libgen can't be reached and add information screen about that
+- Make sure you'll be able to change the libgen url
+- Maybe add an ability to open books inside the app from the webpage of Libgen, idk?
+

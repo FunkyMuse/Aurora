@@ -29,8 +29,8 @@ buildscript {
         minVersion = 24
 
         //updatable
-        verCode = 3
-        verName = "1.1.1"
+        verCode = 4
+        verName = "1.2.0"
 
         testRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
