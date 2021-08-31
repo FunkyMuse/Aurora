@@ -13,5 +13,5 @@ import dagger.hilt.components.SingletonComponent
 internal abstract class NavigatorModule {
 
     @Binds
-    abstract fun navigator(navigator: NavigatorImpl): Navigator
+    abstract fun navigator(navigator: AuroraNavigatorImpl): AuroraNavigator
 }

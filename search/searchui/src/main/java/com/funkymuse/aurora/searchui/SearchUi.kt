@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.funkymuse.aurora.navigator.NavigatorViewModel
+import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.searchdata.SearchViewModel
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 fun Search() {
-    val navigatorViewModel: NavigatorViewModel = hiltViewModel()
+    val navigatorViewModel: AuroraNavigatorViewModel = hiltViewModel()
     val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
@@ -60,8 +60,8 @@ fun Search() {
 
     ModalBottomSheetLayout(
             modifier = Modifier
-                .navigationBarsPadding()
-                .zIndex(zIndex),
+                    .navigationBarsPadding()
+                    .zIndex(zIndex),
             sheetState = state,
             sheetShape = BottomSheetShapes.large,
             sheetContent = {
@@ -103,8 +103,8 @@ fun Search() {
                     item {
                         Spacer(
                                 modifier = Modifier
-                                    .navigationBarsPadding()
-                                    .padding(bottom = 46.dp)
+                                        .navigationBarsPadding()
+                                        .padding(bottom = 46.dp)
                         )
                     }
                 }
@@ -112,7 +112,9 @@ fun Search() {
     ) {
 
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.fillMaxWidth().align(Alignment.Center)) {
+            Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)) {
                 SearchInput() {
                     navigatorViewModel.navigate(SearchResultDestination.createSearchRoute(it.trim(), searchInFieldsCheckedPosition, searchWithMaskWord))
                 }
@@ -146,9 +148,9 @@ fun SearchInputExplained() {
             text = stringResource(id = R.string.search_text), fontSize = 12.sp,
             textAlign = TextAlign.Start,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 36.dp, end = 24.dp)
-                .animateContentSize()
+                    .fillMaxWidth()
+                    .padding(start = 36.dp, end = 24.dp)
+                    .animateContentSize()
     )
 }
 
@@ -164,8 +166,8 @@ fun SearchInput(
     val invalidInput = inputText.isBlank() || inputText.length < 3
     OutlinedTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp),
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp),
             isError = invalidInput,
             label = { Text(text = stringResource(id = R.string.search)) },
             value = inputText,

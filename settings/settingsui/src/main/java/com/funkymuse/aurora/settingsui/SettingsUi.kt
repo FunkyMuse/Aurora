@@ -22,7 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.extensions.openWebPage
-import com.funkymuse.aurora.navigator.NavigatorViewModel
+import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.context
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun Settings() {
     val viewModel: SettingsViewModel = hiltViewModel()
-    val navigator: NavigatorViewModel = hiltViewModel()
+    val navigator: AuroraNavigatorViewModel = hiltViewModel()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -67,8 +67,8 @@ private fun TitleWithSubtitleTextItem(titleText: String, subtitleText: String) {
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
+                    .fillMaxWidth()
+                    .wrapContentHeight()
         ) {
             Text(
                 text = titleText, modifier =
@@ -78,8 +78,8 @@ private fun TitleWithSubtitleTextItem(titleText: String, subtitleText: String) {
             Text(
                 text = subtitleText,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .padding(top = 4.dp),
+                        .padding(horizontal = 8.dp)
+                        .padding(top = 4.dp),
                 fontSize = 12.sp, color = Color.Gray
             )
 
@@ -101,10 +101,10 @@ fun VersionNumber() {
 @Composable
 fun CrashesSettings(navigateToCrashes: () -> Unit) {
     SettingsItem(modifier = Modifier
-        .clickable {
-            navigateToCrashes()
-        }
-        .padding(vertical = 8.dp)) {
+            .clickable {
+                navigateToCrashes()
+            }
+            .padding(vertical = 8.dp)) {
         Text(
             text = stringResource(id = R.string.crashes), modifier =
             Modifier.padding(horizontal = 8.dp)
@@ -116,10 +116,10 @@ fun CrashesSettings(navigateToCrashes: () -> Unit) {
 fun DonateSettings(navigateToDonations: () -> Unit) {
 
     SettingsItem(modifier = Modifier
-        .clickable {
-            navigateToDonations()
-        }
-        .padding(vertical = 8.dp)) {
+            .clickable {
+                navigateToDonations()
+            }
+            .padding(vertical = 8.dp)) {
         Text(
             text = stringResource(id = R.string.donate), modifier =
             Modifier.padding(horizontal = 8.dp)
@@ -131,10 +131,10 @@ fun DonateSettings(navigateToDonations: () -> Unit) {
 fun MyOtherApps() {
     val context = LocalContext.current
     SettingsItem(modifier = Modifier
-        .clickable {
-            context.openWebPage(MY_OTHER_APPS)
-        }
-        .padding(vertical = 8.dp)) {
+            .clickable {
+                context.openWebPage(MY_OTHER_APPS)
+            }
+            .padding(vertical = 8.dp)) {
         Text(
             text = stringResource(id = R.string.my_other_apps),
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -146,9 +146,9 @@ fun MyOtherApps() {
 fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> Unit) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(8.dp)
     ) {
         item(this)
     }
@@ -181,10 +181,10 @@ private fun Switch(
     condition: Boolean
 ) {
     SettingsItem(modifier = Modifier
-        .clickable {
-            callBack(!condition)
-        }
-        .padding(top = 8.dp)) {
+            .clickable {
+                callBack(!condition)
+            }
+            .padding(top = 8.dp)) {
         CheckBoxWithText(text = text,
             isChecked = condition,
             checkChanged = {
@@ -210,23 +210,23 @@ fun CheckBoxWithText(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp)
+                .fillMaxWidth()
+                .padding(vertical = 6.dp)
     ) {
         Text(
             text = stringResource(id = text),
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .align(Alignment.CenterStart)
-                .padding(start = 8.dp, end = 4.dp),
+                    .fillMaxWidth(0.7f)
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp, end = 4.dp),
             textAlign = TextAlign.Start
         )
 
         Switch(
             checked = isChecked, onCheckedChange = checkChanged,
             modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(start = 8.dp, end = 4.dp)
+                    .align(Alignment.CenterEnd)
+                    .padding(start = 8.dp, end = 4.dp)
         )
     }
 }

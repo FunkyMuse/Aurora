@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.favoritebookdb.db.FavoritesDAO
-import com.funkymuse.aurora.navigator.Navigator
+import com.funkymuse.aurora.navigator.AuroraNavigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,9 +18,9 @@ import javax.inject.Inject
 class FavoritesViewModel @Inject constructor(
         private val favoritesDAO: FavoritesDAO,
         pagingDataProvider: PagingDataProvider,
-        private val navigator: Navigator,
+        private val auroraNavigator: AuroraNavigator,
         @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) : ViewModel(), Navigator by navigator {
+) : ViewModel(), AuroraNavigator by auroraNavigator {
 
     val favoritesData =
             pagingDataProvider.providePagingData(viewModelScope, ioDispatcher) { favoritesDAO.getAllFavorites() }

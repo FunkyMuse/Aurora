@@ -10,7 +10,7 @@ import javax.inject.Singleton
  * Created by funkymuse on 6/25/21 to long live and prosper !
  */
 @Singleton
-internal class NavigatorImpl @Inject constructor() : Navigator {
+internal class AuroraNavigatorImpl @Inject constructor() : AuroraNavigator {
 
     private val navigationEvents = Channel<NavigatorEvent>()
     override val destinations = navigationEvents.receiveAsFlow()

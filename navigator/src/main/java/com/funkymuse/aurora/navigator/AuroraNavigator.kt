@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Created by funkymuse on 6/25/21 to long live and prosper !
  */
-interface Navigator {
+interface AuroraNavigator {
 
     fun navigateUp(): Boolean
     fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit = { launchSingleTop = true }): Boolean

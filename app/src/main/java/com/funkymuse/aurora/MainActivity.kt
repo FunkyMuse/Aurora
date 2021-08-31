@@ -31,9 +31,9 @@ import com.funkymuse.aurora.donationsui.USER_DONATED_KEY
 import com.funkymuse.aurora.navigation.addBottomNavigationDestinations
 import com.funkymuse.aurora.navigation.addComposableDestinations
 import com.funkymuse.aurora.navigation.addDialogDestinations
-import com.funkymuse.aurora.navigator.Navigator
+import com.funkymuse.aurora.navigator.AuroraNavigator
+import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.navigator.NavigatorEvent
-import com.funkymuse.aurora.navigator.NavigatorViewModel
 import com.funkymuse.aurora.onetimepreferences.OneTimePreferencesViewModel
 import com.funkymuse.aurora.runcodeeveryxlaunch.RunCodePreferencesViewModel
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
     lateinit var imageLoader: ImageLoader
 
     @Inject
-    lateinit var navigator: Navigator
+    lateinit var auroraNavigator: AuroraNavigator
 
     private val isDarkThemeEnabled get() = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
                 ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
                     CompositionLocalProvider(LocalImageLoader provides imageLoader) {
                         Surface(color = MaterialTheme.colors.background) {
-                            AuroraScaffold(navigator)
+                            AuroraScaffold(auroraNavigator)
                         }
                     }
                 }
@@ -90,15 +90,15 @@ private val hideBottomNavFromDestinationRoutes = listOf(
 )
 
 @Composable
-fun AuroraScaffold(navigator: Navigator) {
+fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
     val navController = rememberNavController()
     LaunchedEffect(navController) {
-        navigator.destinations.collect {
+        auroraNavigator.destinations.collect {
             when (val event = it) {
                 is NavigatorEvent.NavigateUp -> navController.navigateUp()
                 is NavigatorEvent.Directions -> navController.navigate(
-                    event.destination,
-                    event.builder
+                        event.destination,
+                        event.builder
                 )
             }
         }
@@ -126,7 +126,7 @@ fun AuroraScaffold(navigator: Navigator) {
 
 @Composable
 fun UserDonationsInfo() {
-    val navigator = hiltViewModel<NavigatorViewModel>()
+    val navigator = hiltViewModel<AuroraNavigatorViewModel>()
     val oneTimePreferencesViewModel = assistedInjectable(produce = {
         oneTimePreferencesViewModelFactory.create(USER_DONATED_KEY)
     })

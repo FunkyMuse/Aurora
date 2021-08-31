@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.composeextensions.assistedInjectable
 import com.funkymuse.aurora.donationsdata.DonationModel
 import com.funkymuse.aurora.donationsdata.DonationsViewModel
-import com.funkymuse.aurora.navigator.NavigatorViewModel
+import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
 
 /**
@@ -59,7 +59,7 @@ const val USER_DONATED_KEY = "userHasDonated"
 
 @Composable
 fun Donations() {
-    val navigator = hiltViewModel<NavigatorViewModel>()
+    val navigator = hiltViewModel<AuroraNavigatorViewModel>()
     val viewModel = hiltViewModel<DonationsViewModel>()
 
     val oneTimePreferencesViewModel = assistedInjectable(produce = {
@@ -87,25 +87,25 @@ fun DonationItem(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 18.dp)
-            .padding(top = 18.dp)
-            .wrapContentHeight()
-            .clickable { onItemClick() }
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+                .padding(top = 18.dp)
+                .wrapContentHeight()
+                .clickable { onItemClick() }
     ) {
         Row {
             Image(
                 modifier = Modifier
-                    .align(CenterVertically)
-                    .padding(start = 16.dp),
+                        .align(CenterVertically)
+                        .padding(start = 16.dp),
                 painter = painterResource(id = drawableRes),
                 contentDescription = null
             )
             Text(
                 text = stringResource(id = donationResId),
                 modifier = Modifier
-                    .align(CenterVertically)
-                    .padding(16.dp)
+                        .align(CenterVertically)
+                        .padding(16.dp)
             )
         }
     }

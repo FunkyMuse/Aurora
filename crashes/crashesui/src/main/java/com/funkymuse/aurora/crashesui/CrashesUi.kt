@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.crazylegend.crashyreporter.CrashyReporter
 import com.funkymuse.aurora.extensions.openWebPage
-import com.funkymuse.aurora.navigator.NavigatorViewModel
+import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
 import com.funkymuse.aurora.toaster.ToasterViewModel
 
@@ -30,7 +30,7 @@ import com.funkymuse.aurora.toaster.ToasterViewModel
 @ExperimentalMaterialApi
 @Composable
 fun Crashes() {
-    val navigator = hiltViewModel<NavigatorViewModel>()
+    val navigator = hiltViewModel<AuroraNavigatorViewModel>()
     val toaster = hiltViewModel<ToasterViewModel>()
     val crashes = remember {
         CrashyReporter.getLogsAsStrings()
@@ -62,10 +62,10 @@ fun CrashItem(index: Int, item: String, showToast: () -> Unit) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 18.dp)
-        .padding(top = 18.dp)
-        .wrapContentHeight(), onClick = {
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp)
+            .padding(top = 18.dp)
+            .wrapContentHeight(), onClick = {
         clipboardManager.apply {
             clipboardManager.setText(AnnotatedString(text = item))
             showToast()

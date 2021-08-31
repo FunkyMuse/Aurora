@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.funkymuse.aurora.dispatchers.IoDispatcher
-import com.funkymuse.aurora.navigator.Navigator
+import com.funkymuse.aurora.navigator.AuroraNavigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
 import com.funkymuse.aurora.paging.stateHandleArgument
@@ -24,13 +24,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchResultHandleDataViewModel @Inject constructor(
-    application: Application,
-    override val savedStateHandle: SavedStateHandle,
-    dataProvider: PagingDataProvider,
-    private val navigator: Navigator,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val searchResultDataSourceFactory: SearchResultDataSource.SearchResultDataSourceFactory
-) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
+        application: Application,
+        override val savedStateHandle: SavedStateHandle,
+        dataProvider: PagingDataProvider,
+        private val auroraNavigator: AuroraNavigator,
+        @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+        private val searchResultDataSourceFactory: SearchResultDataSource.SearchResultDataSourceFactory
+) : AndroidViewModel(application), PagingDataSourceHandle, AuroraNavigator by auroraNavigator {
 
     private companion object {
         private const val SEARCH_IN_FIELDS_CHECKED_POSITION_KEY = "searchInFieldsCheckedPosition"

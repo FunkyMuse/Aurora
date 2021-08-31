@@ -1,6 +1,5 @@
 package com.funkymuse.aurora.bookdetailsdata
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,9 +10,9 @@ import com.funkymuse.aurora.dispatchers.IoDispatcher
 import com.funkymuse.aurora.favoritebookdb.db.FavoritesDAO
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.libgenapi.LibgenAPI
-import com.funkymuse.aurora.navigator.Navigator
-import com.funkymuse.aurora.skraper.DownloadLinksExtractor
+import com.funkymuse.aurora.navigator.AuroraNavigator
 import com.funkymuse.aurora.scrapermodel.ScraperResult
+import com.funkymuse.aurora.skraper.DownloadLinksExtractor
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,17 +27,18 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private val libgenAPI: LibgenAPI,
-    private val favoritesDAO: FavoritesDAO,
-    private val navigator: Navigator,
-    private val downloadLinksExtractor: DownloadLinksExtractor,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher,
-    private val bookDownloadScheduler: BookDownloadScheduler
-) : ViewModel(), Navigator by navigator {
+        private val savedStateHandle: SavedStateHandle,
+        private val libgenAPI: LibgenAPI,
+        private val favoritesDAO: FavoritesDAO,
+        private val auroraNavigator: AuroraNavigator,
+        private val downloadLinksExtractor: DownloadLinksExtractor,
+        @IoDispatcher private val dispatcher: CoroutineDispatcher,
+        private val bookDownloadScheduler: BookDownloadScheduler
+) : ViewModel(), AuroraNavigator by auroraNavigator {
 
-     val id
-        get() = savedStateHandle.get<String>(BOOK_ID_PARAM)?.lowercase() ?: throw IllegalStateException("Parameter book ID must not be null!")
+    val id
+        get() = savedStateHandle.get<String>(BOOK_ID_PARAM)?.lowercase()
+                ?: throw IllegalStateException("Parameter book ID must not be null!")
 
     private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
     val book = bookData.asStateFlow()

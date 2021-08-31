@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.funkymuse.aurora.dispatchers.IoDispatcher
-import com.funkymuse.aurora.navigator.Navigator
+import com.funkymuse.aurora.navigator.AuroraNavigator
 import com.funkymuse.aurora.paging.data.PagingDataProvider
 import com.funkymuse.aurora.paging.data.PagingDataSourceHandle
 import com.funkymuse.aurora.paging.stateHandleDelegate
@@ -19,13 +19,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LatestBooksVM @Inject constructor(
-    application: Application,
-    override val savedStateHandle: SavedStateHandle,
-    dataProvider: PagingDataProvider,
-    private val navigator: Navigator,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-    private val latestBooksDataSourceFactory: LatestBooksDataSource.LatestBookDataSourceFactory
-) : AndroidViewModel(application), PagingDataSourceHandle, Navigator by navigator {
+        application: Application,
+        override val savedStateHandle: SavedStateHandle,
+        dataProvider: PagingDataProvider,
+        private val auroraNavigator: AuroraNavigator,
+        @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
+        private val latestBooksDataSourceFactory: LatestBooksDataSource.LatestBookDataSourceFactory
+) : AndroidViewModel(application), PagingDataSourceHandle, AuroraNavigator by auroraNavigator {
 
     private companion object {
         private const val SORT_QUERY_KEY = "sortQuery"
@@ -34,8 +34,8 @@ class LatestBooksVM @Inject constructor(
 
     private val latestBooksDataSource
         get() = latestBooksDataSourceFactory.create(
-            sortQuery ?: "",
-            sortType ?: ""
+                sortQuery ?: "",
+                sortType ?: ""
         )
 
     val pagingData =
