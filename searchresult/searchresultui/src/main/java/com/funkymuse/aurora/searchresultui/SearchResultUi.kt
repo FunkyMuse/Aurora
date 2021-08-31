@@ -108,10 +108,10 @@ fun SearchResult() {
             }) {
         Box(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-                .align(Alignment.TopCenter)
-                .wrapContentSize()
-                .padding(top = 8.dp)
-                .zIndex(2f)) {
+                    .align(Alignment.TopCenter)
+                    .wrapContentSize()
+                    .padding(top = 8.dp)
+                    .zIndex(2f)) {
                 CircularProgressIndicator()
             }
 
@@ -133,9 +133,9 @@ fun SearchResult() {
             val lastVisibleIndex by columnState.lastVisibleIndexState()
             AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex?:0 > 20,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 22.dp, end = 4.dp)
-                        .zIndex(2f)) {
+                            .align(Alignment.BottomEnd)
+                            .padding(bottom = 22.dp, end = 8.dp)
+                            .zIndex(2f)) {
 
                 Box {
                     FloatingActionButton(
@@ -166,8 +166,8 @@ fun SearchResult() {
                 LazyColumn(
                         state = columnState,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 8.dp),
+                                .fillMaxSize()
+                                .padding(top = 8.dp),
                         contentPadding = rememberInsetsPaddingValues(
                                 insets = LocalWindowInsets.current.navigationBars,
                                 additionalBottom = 84.dp
@@ -283,8 +283,8 @@ fun ScaffoldWithBackFiltersAndContent(
                     Box(modifier = Modifier.fillMaxSize()) {
                         BackButton(
                                 modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(8.dp), onClick = {
+                                        .align(Alignment.BottomStart)
+                                        .padding(8.dp), onClick = {
                             onBack()
                         }
                         )
@@ -302,8 +302,8 @@ fun ScaffoldWithBackFiltersAndContent(
                                     shape = Shapes.large,
                                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
                                     modifier = Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(8.dp)
+                                            .align(Alignment.BottomEnd)
+                                            .padding(8.dp)
                             ) {
                                 Icon(
                                         imageVector = Icons.Default.FilterAlt,
