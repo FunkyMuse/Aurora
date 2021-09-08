@@ -3,6 +3,7 @@ package com.funkymuse.aurora.bookui
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -10,8 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +26,6 @@ import coil.compose.rememberImagePainter
 import com.funkymuse.aurora.generalbook.GeneralBook
 import com.funkymuse.aurora.loadingcomponent.BoxShimmer
 import com.funkymuse.aurora.serverconstants.LIBGEN_BASE_URL
-
 import com.funkymuse.style.shape.Shapes
 
 /**
@@ -34,16 +36,17 @@ import com.funkymuse.style.shape.Shapes
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Book(
-    book: GeneralBook,
-    onLongClick: (() -> Unit)? = null,
-    onClick: () -> Unit = {}
+        book: GeneralBook,
+        onCopiedToClipBoard: (String) -> Unit = {},
+        onLongClick: (() -> Unit)? = null,
+        onClick: () -> Unit = {}
 ) {
     Card(
-        shape = Shapes.large,
-        modifier = Modifier
-            .padding(16.dp, 8.dp)
-            .fillMaxWidth()
-            .wrapContentHeight(),
+            shape = Shapes.large,
+            modifier = Modifier
+                    .padding(16.dp, 8.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
     ) {
         Box(
             modifier = Modifier
@@ -52,19 +55,19 @@ fun Book(
             Row(modifier = Modifier.width(IntrinsicSize.Max)) {
                 Box(
                     modifier = Modifier
-                        .weight(0.3f, false)
-                        .padding(16.dp)
+                            .weight(0.3f, false)
+                            .padding(16.dp)
                 ) {
                     AddStaticImage(remoteImage = book.image)
                 }
                 Box(
                     modifier = Modifier
-                        .weight(0.7f)
-                        .padding(8.dp)
+                            .weight(0.7f)
+                            .padding(8.dp)
                 ) {
                     Column {
                         AddTitle(titleText = book.title)
-                        AddAuthor(authorText = book.author)
+                        AddAuthor(authorText = book.author, onCopiedToClipBoard)
                         AddYear(year = book.year)
                         AddFormatPagesAndSize(book.extension, book.pages, book.size)
                     }
@@ -76,8 +79,11 @@ fun Book(
 
 @Composable
 fun AddFormatPagesAndSize(extension: String?, pages: String?, size: String?) {
+    val pagesNumber = if (pages == "0") "" else pages
+
     val pagesText =
-        if (pages.isNullOrBlank()) "" else "($pages ${stringResource(id = R.string.pages)})"
+            if (pagesNumber.isNullOrBlank()) "" else "($pages ${stringResource(id = R.string.pages)})"
+
     val extensionText = if (extension.isNullOrBlank()) "" else extension
     val sizeText = if (size.isNullOrBlank()) "" else size
 
@@ -108,14 +114,25 @@ private fun AddYear(year: String?) {
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun AddAuthor(
-    authorText: String?
+        authorText: String?,
+        onCopiedToClipBoard: (String) -> Unit
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    val authorCopyRes = stringResource(id = R.string.author_copied_to_clipboard)
     Text(
-        text = authorText ?: stringResource(id = R.string.not_available),
-        modifier = Modifier.padding(end = 8.dp),
-        fontStyle = FontStyle.Italic
+            text = authorText ?: stringResource(id = R.string.not_available),
+            modifier = Modifier
+                    .padding(end = 8.dp)
+                    .pointerInput(Unit) {
+                        detectTapGestures(onLongPress = {
+                            authorText?.let { clipboardManager.setText(AnnotatedString(it)) }
+                            onCopiedToClipBoard(authorCopyRes)
+                        })
+                    },
+            fontStyle = FontStyle.Italic
     )
 }
 

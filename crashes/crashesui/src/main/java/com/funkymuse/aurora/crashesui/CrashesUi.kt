@@ -22,6 +22,8 @@ import com.funkymuse.aurora.extensions.openWebPage
 import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
 import com.funkymuse.aurora.toaster.ToasterViewModel
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 /**
  * Created by funkymuse on 6/29/21 to long live and prosper !
@@ -44,9 +46,13 @@ fun Crashes() {
         navigator.navigateUp()
         return
     }
+    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars, additionalBottom = 16.dp)
+
 
     ScaffoldWithBack(onBackClicked = { navigator.navigateUp() }) {
-        LazyColumn {
+        LazyColumn(
+                contentPadding = listInsets
+        ) {
             itemsIndexed(crashes) { index, item ->
                 CrashItem(index + 1, item, showToast)
             }

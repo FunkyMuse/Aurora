@@ -72,6 +72,7 @@
     <string name="default_column">All columns</string>
     <string name="title">Title</string>
     <string name="author">Author(s)</string>
+    <string name="author_copied_to_clipboard">Author(s) copied to clipboard!</string>
     <string name="series">Series</string>
     <string name="publisher">Publisher</string>
     <string name="isbn">ISBN</string>

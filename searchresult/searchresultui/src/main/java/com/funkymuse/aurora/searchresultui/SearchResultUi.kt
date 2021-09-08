@@ -177,7 +177,7 @@ fun SearchResult() {
                         item ?: return@items
 
                         Book(item) {
-                            val bookID = item.id
+                            val bookID = item.id.lowercase()
                             searchResultViewModelViewModel.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                         }
                     }

@@ -187,14 +187,14 @@ private fun favoritesClick(
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
                 FavoriteBook(
-                    id = bookModel.md5 ?: bookDetailsViewModel.id,
-                    title = bookModel.title,
-                    realImage = bookModel.coverurl,
-                    author = bookModel.author,
-                    extension = bookModel.extension?.uppercase(),
-                    pages = bookModel.pagesInFile,
-                    favoriteSize = bookModel.fileSize,
-                    year = bookModel.year
+                        id = bookModel.md5?.lowercase() ?: bookDetailsViewModel.id.lowercase(),
+                        title = bookModel.title,
+                        realImage = bookModel.coverurl,
+                        author = bookModel.author,
+                        extension = bookModel.extension?.uppercase(),
+                        pages = bookModel.pagesInFile,
+                        favoriteSize = bookModel.fileSize,
+                        year = bookModel.year
                 )
             )
         }
@@ -247,15 +247,15 @@ fun DetailedBook(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState),
+                .fillMaxSize()
+                .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         val alignment = Modifier.align(Alignment.Start)
         val imageModifier = Modifier
-            .size(width = 200.dp, height = 240.dp)
-            .padding(top = 16.dp)
+                .size(width = 200.dp, height = 240.dp)
+                .padding(top = 16.dp)
 
         when (painter.state) {
             is ImagePainter.State.Loading -> {
@@ -274,8 +274,8 @@ fun DetailedBook(
 
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
             text = book.author ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.SemiBold,
@@ -285,8 +285,8 @@ fun DetailedBook(
 
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             text = book.title ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
@@ -461,15 +461,15 @@ fun TopAppBarBookDetails(
         Box(modifier = Modifier.fillMaxSize()) {
             BackButton(
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(8.dp), onClick = onBackClicked
+                        .align(Alignment.CenterStart)
+                        .padding(8.dp), onClick = onBackClicked
             )
 
             if (showFavoritesButton) {
                 AddToFavorites(
-                    Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(8.dp), isInFavorites, onFavoritesClicked
+                        Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(8.dp), isInFavorites, onFavoritesClicked
                 )
             }
         }
@@ -505,9 +505,9 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         elevation = 2.dp,
         shape = Shapes.medium,
         modifier = modifier
-            .padding(start = 22.dp)
-            .offset(y = 16.dp)
-            .zIndex(2f),
+                .padding(start = 22.dp)
+                .offset(y = 16.dp)
+                .zIndex(2f),
         backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -523,15 +523,15 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
     }
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         shape = Shapes.large
     ) {
         Column {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
                 text = text,
                 fontSize = 18.sp
             )

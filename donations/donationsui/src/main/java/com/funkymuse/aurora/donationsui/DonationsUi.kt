@@ -25,6 +25,8 @@ import com.funkymuse.aurora.donationsdata.DonationModel
 import com.funkymuse.aurora.donationsdata.DonationsViewModel
 import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
+import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 /**
  * Created by funkymuse on 8/15/21 to long live and prosper !
@@ -66,8 +68,12 @@ fun Donations() {
         oneTimePreferencesViewModelFactory.create(USER_DONATED_KEY)
     })
 
+    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars, additionalBottom = 16.dp)
+
     ScaffoldWithBack(onBackClicked = { navigator.navigateUp() }) {
-        LazyColumn {
+        LazyColumn(
+                contentPadding = listInsets
+        ) {
             items(adapterList) { item ->
                 DonationItem(donationResId = item.title, drawableRes = item.drawable) {
                     viewModel.onItemClick(item)

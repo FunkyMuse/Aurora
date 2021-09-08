@@ -16,6 +16,7 @@ dependencies {
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')
 
+    implementation project(path: ':toaster')
 
     implementation project(path: ':components:loadingcomponent')
     implementation project(path: ':components:errorcomponent')

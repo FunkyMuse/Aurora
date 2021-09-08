@@ -10,6 +10,7 @@ dependencies {
 
     implementation project(path: ':bookdetails:bookdetailsdestination')
 
+    implementation project(path: ':toaster')
 
     implementation project(path: ':style:shape')
     implementation project(path: ':style:color')

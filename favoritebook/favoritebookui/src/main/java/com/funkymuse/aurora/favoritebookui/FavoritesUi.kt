@@ -25,6 +25,7 @@ import com.funkymuse.aurora.favoritebookdb.FavoritesViewModel
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
+import com.funkymuse.aurora.toaster.ToasterViewModel
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
@@ -47,28 +48,29 @@ fun Favorites() {
     val favorites = viewModel.favoritesData.collectAsLazyPagingItems()
     val longClickedBook = remember { mutableStateOf<FavoriteBook?>(null) }
     val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
+    val toaster: ToasterViewModel = hiltViewModel()
 
     longClickedBook.value?.apply {
         DeleteBook(it = this,
-            onConfirm = { viewModel.removeFromFavorites(id) },
-            onDismiss = { longClickedBook.value = null })
+                onConfirm = { viewModel.removeFromFavorites(id) },
+                onDismiss = { longClickedBook.value = null })
     }
 
 
     //gotta make this workaround bcuz the paging library itemCount always starts with 0 :(
     val isDatabaseEmpty = viewModel.count.conflate()
-        .collectAsState(1).value == 0
+            .collectAsState(1).value == 0
 
     progressVisibility =
-        pagingUIProviderViewModel.progressBarVisibility(favorites)
+            pagingUIProviderViewModel.progressBarVisibility(favorites)
 
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(visible = progressVisibility, modifier = Modifier
-            .align(Alignment.TopCenter)
-            .wrapContentSize()
-            .systemBarsPadding()
-            .padding(top = 4.dp)
-            .zIndex(2f)) {
+                .align(Alignment.TopCenter)
+                .wrapContentSize()
+                .systemBarsPadding()
+                .padding(top = 4.dp)
+                .zIndex(2f)) {
             CircularProgressIndicator()
         }
 
@@ -76,33 +78,33 @@ fun Favorites() {
             ErrorMessage(text = R.string.no_favorites_expl)
         } else {
             pagingUIProviderViewModel.onPaginationReachedError(
-                favorites.appendState,
-                R.string.no_more_favorite_books
+                    favorites.appendState,
+                    R.string.no_more_favorite_books
             )
         }
 
         val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
         SwipeRefresh(
-            state = swipeToRefreshState, onRefresh = {
-                swipeToRefreshState.isRefreshing = true
-                favorites.refresh()
-                swipeToRefreshState.isRefreshing = false
-            },
-            modifier = Modifier.fillMaxSize()
+                state = swipeToRefreshState, onRefresh = {
+            swipeToRefreshState.isRefreshing = true
+            favorites.refresh()
+            swipeToRefreshState.isRefreshing = false
+        },
+                modifier = Modifier.fillMaxSize()
         ) {
 
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 56.dp, top = 8.dp),
-                contentPadding = listInsets
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 56.dp, top = 8.dp),
+                    contentPadding = listInsets
             ) {
 
                 items(favorites) { book ->
                     book?.let {
-                        Book(it, onLongClick = {
-                            longClickedBook.value = it
-                        }) {
+                        Book(it,
+                                onCopiedToClipBoard = { toaster.shortToast(it) },
+                                onLongClick = { longClickedBook.value = it }) {
                             viewModel.navigate(BookDetailsDestination.createBookDetailsRoute(it.id))
                         }
                     }
@@ -114,16 +116,16 @@ fun Favorites() {
 
 @Composable
 fun DeleteBook(
-    it: FavoriteBook = FavoriteBook(),
-    onDismiss: () -> Unit = {}, onConfirm: (id: String) -> Unit = {}
+        it: FavoriteBook = FavoriteBook(),
+        onDismiss: () -> Unit = {}, onConfirm: (id: String) -> Unit = {}
 ) {
     ConfirmationDialog(
-        title = stringResource(
-            R.string.remove_book_from_favs,
-            it.title.toString()
-        ), onDismiss = onDismiss, onConfirm = {
-            onConfirm(it.id)
-        }, confirmText = stringResource(id = R.string.remove)
+            title = stringResource(
+                    R.string.remove_book_from_favs,
+                    it.title.toString()
+            ), onDismiss = onDismiss, onConfirm = {
+        onConfirm(it.id)
+    }, confirmText = stringResource(id = R.string.remove)
     )
 }
 

@@ -25,6 +25,7 @@ import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.latestbooksdata.LatestBooksVM
 import com.funkymuse.aurora.paging.PagingUIProviderViewModel
 import com.funkymuse.aurora.paging.appendState
+import com.funkymuse.aurora.toaster.ToasterViewModel
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
 import com.google.accompanist.insets.*
@@ -43,6 +44,7 @@ fun LatestBooks(
 ) {
     val latestBooksVM: LatestBooksVM = hiltViewModel()
     val pagingUIUIProvider: PagingUIProviderViewModel = hiltViewModel()
+    val toaster: ToasterViewModel = hiltViewModel()
     var progressVisibility by rememberBooleanDefaultFalse()
     val pagingItems = latestBooksVM.pagingData.collectAsLazyPagingItems()
     val scope = rememberCoroutineScope()
@@ -50,7 +52,7 @@ fun LatestBooks(
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
 
     progressVisibility =
-        pagingUIUIProvider.progressBarVisibility(pagingItems)
+            pagingUIUIProvider.progressBarVisibility(pagingItems)
     val retry = {
         latestBooksVM.refresh()
         pagingItems.refresh()
@@ -58,14 +60,14 @@ fun LatestBooks(
 
     if (!pagingUIUIProvider.isDataEmpty(pagingItems)) {
         pagingUIUIProvider.onPaginationReachedError(
-            pagingItems.appendState,
-            R.string.no_more_latest_books
+                pagingItems.appendState,
+                R.string.no_more_latest_books
         )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AnimatedVisibility(
-            visible = progressVisibility, modifier = Modifier
+                visible = progressVisibility, modifier = Modifier
                 .align(Alignment.TopCenter)
                 .wrapContentSize()
                 .systemBarsPadding()
@@ -82,63 +84,63 @@ fun LatestBooks(
         } ?: false
 
         AnimatedVisibility(visible = isButtonVisible,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding(start = false, end = false)
-                .padding(bottom = 64.dp)
-                .zIndex(2f)) {
+                modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding(start = false, end = false)
+                        .padding(bottom = 64.dp)
+                        .zIndex(2f)) {
 
             Box {
                 FloatingActionButton(
-                    modifier = Modifier.padding(5.dp),
-                    onClick = { scope.launch { columnState.scrollToItem(0) } },
+                        modifier = Modifier.padding(5.dp),
+                        onClick = { scope.launch { columnState.scrollToItem(0) } },
                 ) {
                     Icon(
-                        Icons.Filled.ArrowUpward,
-                        contentDescription = stringResource(id = R.string.go_back_to_top),
-                        tint = Color.White
+                            Icons.Filled.ArrowUpward,
+                            contentDescription = stringResource(id = R.string.go_back_to_top),
+                            tint = Color.White
                     )
                 }
             }
         }
 
         pagingUIUIProvider.OnError(
-            pagingItems = pagingItems,
-            scope = scope,
-            noInternetUI = {
-                ErrorMessage(R.string.no_books_loaded_no_connect)
-            },
-            errorUI = {
-                ErrorWithRetry(R.string.no_books_loaded) {
-                    retry()
+                pagingItems = pagingItems,
+                scope = scope,
+                noInternetUI = {
+                    ErrorMessage(R.string.no_books_loaded_no_connect)
+                },
+                errorUI = {
+                    ErrorWithRetry(R.string.no_books_loaded) {
+                        retry()
+                    }
                 }
-            }
         )
 
 
         val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
 
         SwipeRefresh(
-            state = swipeToRefreshState, onRefresh = {
-                swipeToRefreshState.isRefreshing = true
-                retry()
-                swipeToRefreshState.isRefreshing = false
-            },
-            modifier = Modifier
-                .fillMaxSize()
+                state = swipeToRefreshState, onRefresh = {
+            swipeToRefreshState.isRefreshing = true
+            retry()
+            swipeToRefreshState.isRefreshing = false
+        },
+                modifier = Modifier
+                        .fillMaxSize()
         ) {
 
             LazyColumn(
-                state = columnState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 56.dp, top = 8.dp),
-                contentPadding = listInsets
+                    state = columnState,
+                    modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 56.dp, top = 8.dp),
+                    contentPadding = listInsets
             ) {
                 items(pagingItems, key = { it.id }) { item ->
                     item ?: return@items
-                    Book(item) {
-                        val bookID = item.id
+                    Book(item, onCopiedToClipBoard = { toaster.shortToast(it) }) {
+                        val bookID = item.id.lowercase()
                         latestBooksVM.navigate(BookDetailsDestination.createBookDetailsRoute(bookID))
                     }
                 }
