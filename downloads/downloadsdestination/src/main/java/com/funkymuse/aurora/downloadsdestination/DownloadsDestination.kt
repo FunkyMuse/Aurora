@@ -20,6 +20,7 @@ object DownloadsDestination : NavigationDestination {
         navArgument(BOOK_ID_PARAM) {
             type = NavType.StringType
             nullable = true
+            defaultValue = null
         }
     )
     override val deepLinks: List<NavDeepLink> = listOf(navDeepLink {
