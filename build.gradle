@@ -21,7 +21,7 @@ buildscript {
         coreKTX = "1.7.0-beta01"
         crashy = "1.2.0"
         coil = "1.4.0"
-        work_version = "2.7.0-rc01"
+        work_version = "2.7.0"
         hilt_work = "1.0.0"
 
         //compilation
