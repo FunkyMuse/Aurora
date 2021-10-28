@@ -3,7 +3,7 @@ package com.funkymuse.aurora.bookdetailsdata
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crazylegend.retrofit.retrofitStateInitialLoading
+import com.crazylegend.retrofit.retrofitResult.RetrofitResult
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_ID_PARAM
 import com.funkymuse.aurora.bookdownloader.BookDownloadScheduler
 import com.funkymuse.aurora.dispatchers.IoDispatcher
@@ -40,7 +40,7 @@ class BookDetailsViewModel @Inject constructor(
         get() = savedStateHandle.get<String>(BOOK_ID_PARAM)?.lowercase()
                 ?: throw IllegalStateException("Parameter book ID must not be null!")
 
-    private val bookData = retrofitStateInitialLoading<List<DetailedBookModel>>()
+    private val bookData = MutableStateFlow<RetrofitResult<List<DetailedBookModel>>>(RetrofitResult.Loading)
     val book = bookData.asStateFlow()
 
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)

@@ -1,7 +1,7 @@
 package com.funkymuse.aurora.navigator
 
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
-import androidx.navigation.compose.NamedNavArgument
 
 /**
  * Created by funkymuse on 6/25/21 to long live and prosper !

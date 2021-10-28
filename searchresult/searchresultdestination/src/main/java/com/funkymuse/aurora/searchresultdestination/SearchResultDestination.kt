@@ -1,8 +1,8 @@
 package com.funkymuse.aurora.searchresultdestination
 
 import androidx.navigation.NavType
-import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.navArgument
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.navArgument
 import com.funkymuse.aurora.navigator.NavigationDestination
 
 /**

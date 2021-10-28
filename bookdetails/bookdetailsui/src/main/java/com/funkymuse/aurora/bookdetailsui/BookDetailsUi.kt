@@ -27,9 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.crazylegend.intent.openWebPage
-import com.crazylegend.retrofit.retrofitResult.RetrofitResult
-import com.crazylegend.retrofit.retrofitResult.handle
-import com.crazylegend.retrofit.retryOnConnectedToInternet
+import com.crazylegend.retrofit.retrofitResult.*
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
@@ -68,7 +66,6 @@ fun DetailedBook() {
     val onBackClicked = {
         bookDetailsViewModel.navigateUp()
     }
-    val scope = rememberCoroutineScope()
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
     val localContext = context
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
@@ -109,21 +106,16 @@ fun DetailedBook() {
             favoritesClick(favoritesBook, detailedBook, bookDetailsViewModel)
         }
     ) {
-        book.handle(
-            loading = {
-                LoadingBubbles()
-            },
-            emptyData = {
+        book
+            .onLoading { LoadingBubbles() }
+            .onApiError { _, _ ->
                 ErrorWithRetry(R.string.no_book_loaded) {
                     retry()
                 }
-            },
-            callError = { throwable ->
+            }
+            .onError { throwable ->
                 if (throwable is NoConnectionException) {
-                    retryOnConnectedToInternet(
-                        internetDetectorViewModel,
-                        scope
-                    ) {
+                    if (internetDetectorViewModel.collectAsState(initial = false).value) {
                         retry()
                     }
                     ErrorMessage(R.string.no_book_loaded_no_connect)
@@ -132,40 +124,32 @@ fun DetailedBook() {
                         retry()
                     }
                 }
-            },
-            apiError = { _, _ ->
-                ErrorWithRetry(R.string.no_book_loaded) {
-                    retry()
-                }
-            },
-            success = {
-                detailedBook = firstOrNull()
+            }
+            .onSuccess { bookList ->
+                detailedBook = bookList.firstOrNull()
                 if (detailedBook == null) {
                     onBackClicked()
-                    return@handle
+                    return@onSuccess
                 }
                 detailedBook?.apply {
-                    DetailedBook(this) {
+                    DetailedBook(this) { bookId ->
                         if (!localContext.hasVPN() && isVPNWarningEnabled) {
                             bookDetailsViewModel.showNotOnVPN(
-                                it,
+                                bookId,
                                 extension.toString(),
                                 title.toString()
                             )
                         } else {
                             bookDetailsViewModel.downloadBook(
-                                it,
+                                bookId,
                                 extension.toString(),
                                 title.toString()
                             )
                         }
                     }
                 }
-
             }
-        )
     }
-
 }
 
 @Composable
@@ -187,14 +171,14 @@ private fun favoritesClick(
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
                 FavoriteBook(
-                        id = bookModel.md5?.lowercase() ?: bookDetailsViewModel.id.lowercase(),
-                        title = bookModel.title,
-                        realImage = bookModel.coverurl,
-                        author = bookModel.author,
-                        extension = bookModel.extension?.uppercase(),
-                        pages = bookModel.pagesInFile,
-                        favoriteSize = bookModel.fileSize,
-                        year = bookModel.year
+                    id = bookModel.md5?.lowercase() ?: bookDetailsViewModel.id.lowercase(),
+                    title = bookModel.title,
+                    realImage = bookModel.coverurl,
+                    author = bookModel.author,
+                    extension = bookModel.extension?.uppercase(),
+                    pages = bookModel.pagesInFile,
+                    favoriteSize = bookModel.fileSize,
+                    year = bookModel.year
                 )
             )
         }
@@ -247,15 +231,15 @@ fun DetailedBook(
 
     Column(
         modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
+            .fillMaxSize()
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         val alignment = Modifier.align(Alignment.Start)
         val imageModifier = Modifier
-                .size(width = 200.dp, height = 240.dp)
-                .padding(top = 16.dp)
+            .size(width = 200.dp, height = 240.dp)
+            .padding(top = 16.dp)
 
         when (painter.state) {
             is ImagePainter.State.Loading -> {
@@ -271,11 +255,10 @@ fun DetailedBook(
             }
         }
 
-
         Text(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
             text = book.author ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.SemiBold,
@@ -285,8 +268,8 @@ fun DetailedBook(
 
         Text(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                .fillMaxWidth()
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             text = book.title ?: stringResource(id = R.string.not_available),
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
@@ -461,15 +444,15 @@ fun TopAppBarBookDetails(
         Box(modifier = Modifier.fillMaxSize()) {
             BackButton(
                 modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(8.dp), onClick = onBackClicked
+                    .align(Alignment.CenterStart)
+                    .padding(8.dp), onClick = onBackClicked
             )
 
             if (showFavoritesButton) {
                 AddToFavorites(
-                        Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(8.dp), isInFavorites, onFavoritesClicked
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(8.dp), isInFavorites, onFavoritesClicked
                 )
             }
         }
@@ -505,9 +488,9 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
         elevation = 2.dp,
         shape = Shapes.medium,
         modifier = modifier
-                .padding(start = 22.dp)
-                .offset(y = 16.dp)
-                .zIndex(2f),
+            .padding(start = 22.dp)
+            .offset(y = 16.dp)
+            .zIndex(2f),
         backgroundColor = MaterialTheme.colors.primaryVariant
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -523,15 +506,15 @@ fun TitleCardWithContent(modifier: Modifier = Modifier, title: Int, text: String
     }
     Card(
         modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         shape = Shapes.large
     ) {
         Column {
             Text(
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 16.dp),
                 text = text,
                 fontSize = 18.sp
             )

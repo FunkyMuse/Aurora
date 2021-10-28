@@ -11,6 +11,7 @@ applyHiltDeps(this)
 
 
 dependencies {
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
     api "com.github.FunkyMuse.KAHelpers:retrofit:$KAHelpers"
     api project(path: ':serverconstants')
 }

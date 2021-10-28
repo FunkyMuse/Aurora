@@ -2,8 +2,8 @@ package com.funkymuse.aurora.downloadsdestination
 
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavType
-import androidx.navigation.compose.NamedNavArgument
-import androidx.navigation.compose.navArgument
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.funkymuse.aurora.navigator.NavigationDestination
 

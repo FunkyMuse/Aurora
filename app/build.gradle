@@ -80,7 +80,6 @@ dependencies {
     implementation project(path: ':downloads:downloadsui')
     implementation project(path: ':downloads:downloadsdestination')
 
-
     //settings
     implementation project(path: ':settings:settingsui')
     implementation project(path: ':settings:settingsdata')
@@ -99,7 +98,7 @@ dependencies {
     implementation project(path: ':donations:explanation:donationsexplanationui')
 
     //material
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0-alpha05'
 
     //runCodeEveryXLaunch
     implementation project(path: ':common:runCodeEveryXLaunch')
