@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        compose_version = '1.1.0-beta01'
+        compose_version = '1.1.0-beta02'
         kotlin_version = '1.6.0'
         room = "2.4.0-beta01"
-        KAHelpers = '3.1.4'
+        KAHelpers = '3.1.5'
         moshi = "1.12.0"
         daggerVersion = '2.40.1'
         hiltJetpackVersion = '1.0.0'
@@ -13,7 +13,7 @@ buildscript {
         composed = '0.0.14'
         paging_compose = '1.0.0-alpha14'
         paging_runtime = '3.0.1'
-        navigation = '2.4.0-beta01'
+        navigation = '2.4.0-beta02'
         activity = "1.4.0"
         navigation_compose = "1.0.0-alpha03"
         jsoup = "1.14.3"
