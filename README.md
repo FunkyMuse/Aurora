@@ -37,7 +37,7 @@ Publishing a copy of this application on the Play Store will only get your accou
 
 ## Built With 🛠
 
-Some of the popular libraries and MVVM clean architecture used with Room database as a source
+Some of the popular libraries and MVI clean architecture used with Room database as a source
 
 * [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
 
@@ -59,7 +59,7 @@ Some of the popular libraries and MVVM clean architecture used with Room databas
 * Architecture
     * Clean Architecture
     * Multi module
-    * MVVM
+    * MVI
 
 
 * Tests
