@@ -43,7 +43,7 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:intent:$KAHelpers"
 
     implementation "com.github.FunkyMuse:Composed:$composed"
-    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
 
 
     implementation "com.google.accompanist:accompanist-insets:$accompanist"

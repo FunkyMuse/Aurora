@@ -129,7 +129,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
 
     //hilt jetpack
-    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
     kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
 
     //test

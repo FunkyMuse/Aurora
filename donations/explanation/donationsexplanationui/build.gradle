@@ -5,6 +5,6 @@ dependencies {
     implementation project(path: ':components:confirmationdialog')
     implementation project(path: ':navigator')
     implementation project(path: ':donations:donationsdestination')
-    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
 
 }

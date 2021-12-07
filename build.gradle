@@ -3,7 +3,7 @@ buildscript {
         compose_version = '1.1.0-beta02'
         kotlin_version = '1.5.31'
         room = "2.4.0-rc01"
-        KAHelpers = '3.1.5'
+        KAHelpers = '3.1.9'
         moshi = "1.12.0"
         daggerVersion = '2.40.5'
         hiltJetpackVersion = '1.0.0'
@@ -12,10 +12,10 @@ buildscript {
         lifecycle = '2.4.0'
         composed = '0.0.14'
         paging_compose = '1.0.0-alpha14'
-        paging_runtime = '3.0.1'
+        paging_runtime = '3.1.0'
         navigation = '2.4.0-beta02'
         activity = "1.4.0"
-        navigation_compose = "1.0.0-alpha03"
+        hilt_navigation_compose = "1.0.0-beta01"
         jsoup = "1.14.3"
         data_store = "1.0.0"
         coreKTX = "1.7.0"

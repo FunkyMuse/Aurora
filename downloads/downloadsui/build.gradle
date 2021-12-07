@@ -17,7 +17,7 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
-    implementation "androidx.hilt:hilt-navigation-compose:$navigation_compose"
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
 
     implementation "com.github.FunkyMuse:Composed:$composed"
 
