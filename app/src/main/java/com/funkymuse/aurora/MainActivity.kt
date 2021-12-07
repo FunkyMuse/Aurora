@@ -17,13 +17,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import coil.compose.LocalImageLoader
-import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.SearchRoute
 import com.funkymuse.aurora.composeextensions.AssistedHiltInjectables
 import com.funkymuse.aurora.composeextensions.assistedInjectable
-import com.funkymuse.aurora.crashesdestination.CrashesDestination
-import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.donationsexplanationdestination.DONATE_PREFS_KEY
 import com.funkymuse.aurora.donationsexplanationdestination.DONATE_RESET_KEY
 import com.funkymuse.aurora.donationsexplanationdestination.DonationsExplanationDestination
@@ -36,7 +33,6 @@ import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.navigator.NavigatorEvent
 import com.funkymuse.aurora.onetimepreferences.OneTimePreferencesViewModel
 import com.funkymuse.aurora.runcodeeveryxlaunch.RunCodePreferencesViewModel
-import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -82,13 +78,6 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
     }
 }
 
-private val hideBottomNavFromDestinationRoutes = listOf(
-    CrashesDestination.route(),
-    BookDetailsDestination.route(),
-    SearchResultDestination.route(),
-    DonateDestination.route()
-)
-
 @Composable
 fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
     val navController = rememberNavController()
@@ -106,7 +95,7 @@ fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
 
     Scaffold(
         bottomBar = {
-            AuroraBottomNavigation(navController, hideBottomNavFromDestinationRoutes)
+            AuroraBottomNavigation(navController)
         }
     ) {
         NavHost(

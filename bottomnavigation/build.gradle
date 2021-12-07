@@ -4,6 +4,7 @@ dependencies {
     implementation project(path: ':style:shape')
     implementation project(path: ':resources:strings')
     implementation project(path: ':downloads:downloadsdestination')
+    implementation project(path: ':navigator')
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"

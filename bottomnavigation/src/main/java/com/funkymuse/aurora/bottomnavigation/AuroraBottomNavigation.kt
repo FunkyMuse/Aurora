@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.funkymuse.aurora.navigator.hideBottomNavigation
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.google.accompanist.insets.navigationBarsPadding
 
@@ -28,8 +29,7 @@ import com.google.accompanist.insets.navigationBarsPadding
  */
 @Composable
 fun AuroraBottomNavigation(
-    navController: NavHostController,
-    hideBottomNavOnDestinations: List<String> = emptyList()
+    navController: NavHostController
 ) {
 
     var hideBottomNav by rememberSaveable { mutableStateOf(false) }
@@ -47,7 +47,7 @@ fun AuroraBottomNavigation(
             .clip(BottomSheetShapes.large)
             .navigationBarsPadding()
     ) {
-        hideBottomNav = currentRoute in hideBottomNavOnDestinations
+        hideBottomNav = navBackStackEntry?.destination.hideBottomNavigation
         bottomNavigationEntries.forEach { bottomEntry ->
             BottomNavigationItem(
                 selected = currentRoute == bottomEntry.screen.route,
