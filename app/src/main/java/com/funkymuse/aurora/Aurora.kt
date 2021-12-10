@@ -9,7 +9,6 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.funkymuse.aurora.appscope.ApplicationScope
 import com.funkymuse.aurora.settingsdata.DefaultPreferences
-import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
@@ -40,7 +39,6 @@ class Aurora : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         applyDarkTheme()
-        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
     private fun applyDarkTheme() {
