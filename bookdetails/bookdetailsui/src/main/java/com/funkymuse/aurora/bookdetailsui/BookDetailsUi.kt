@@ -27,7 +27,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.crazylegend.intent.openWebPage
-import com.crazylegend.retrofit.retrofitResult.*
+import com.crazylegend.retrofit.apiresult.ApiResult
+import com.crazylegend.retrofit.apiresult.onApiError
+import com.crazylegend.retrofit.apiresult.onError
+import com.crazylegend.retrofit.apiresult.onLoading
+import com.crazylegend.retrofit.apiresult.onSuccess
 import com.crazylegend.retrofit.throwables.NoConnectionException
 import com.crazylegend.string.clearHtmlTags
 import com.crazylegend.string.isNotNullOrEmpty
@@ -66,7 +70,7 @@ fun DetailedBook() {
     val onBackClicked = {
         bookDetailsViewModel.navigateUp()
     }
-    val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = RetrofitResult.Loading)
+    val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = ApiResult.Loading)
     val localContext = context
     val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
@@ -97,7 +101,7 @@ fun DetailedBook() {
         bookDetailsViewModel.retry()
     }
     ScaffoldWithBackAndFavorites(
-        book is RetrofitResult.Success,
+        book is ApiResult.Success,
         favoritesBook,
         onBackClicked = {
             onBackClicked()
@@ -171,7 +175,8 @@ private fun favoritesClick(
         detailedBook?.let { bookModel ->
             bookDetailsViewModel.addToFavorites(
                 FavoriteBook(
-                    id = bookModel.md5?.lowercase() ?: bookDetailsViewModel.id.lowercase(),
+                    id = bookModel.md5?.lowercase()?.trim() ?: bookDetailsViewModel.id.lowercase()
+                        .trim(),
                     title = bookModel.title,
                     realImage = bookModel.coverurl,
                     author = bookModel.author,

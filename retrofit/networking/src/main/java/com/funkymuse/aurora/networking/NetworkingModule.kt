@@ -1,6 +1,6 @@
 package com.funkymuse.aurora.networking
 
-import com.crazylegend.retrofit.adapter.RetrofitResultAdapterFactory
+import com.crazylegend.retrofit.adapter.ApiResultAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +40,7 @@ object NetworkingModule {
 
     @Provides
     @Singleton
-    fun retrofitResultAdapter(): RetrofitResultAdapterFactory = RetrofitResultAdapterFactory()
+    fun retrofitResultAdapter(): ApiResultAdapterFactory = ApiResultAdapterFactory()
 
     @Provides
     @Singleton
@@ -56,8 +56,8 @@ object NetworkingModule {
     @Provides
     @Singleton
     fun retrofitBuilder(
-            retrofitResultAdapterFactory: RetrofitResultAdapterFactory,
-            moshiConverterFactory: MoshiConverterFactory
+        retrofitResultAdapterFactory: ApiResultAdapterFactory,
+        moshiConverterFactory: MoshiConverterFactory
     ): Retrofit.Builder = Retrofit.Builder()
             .addCallAdapterFactory(retrofitResultAdapterFactory)
             .addConverterFactory(moshiConverterFactory)

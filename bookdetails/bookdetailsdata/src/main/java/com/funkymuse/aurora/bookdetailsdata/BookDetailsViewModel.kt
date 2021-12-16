@@ -3,7 +3,7 @@ package com.funkymuse.aurora.bookdetailsdata
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crazylegend.retrofit.retrofitResult.RetrofitResult
+import com.crazylegend.retrofit.apiresult.ApiResult
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination.BOOK_ID_PARAM
 import com.funkymuse.aurora.bookdownloader.BookDownloadScheduler
 import com.funkymuse.aurora.dispatchers.IoDispatcher
@@ -18,7 +18,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,7 +44,7 @@ class BookDetailsViewModel @Inject constructor(
         get() = savedStateHandle.get<String>(BOOK_ID_PARAM)?.lowercase()
                 ?: throw IllegalStateException("Parameter book ID must not be null!")
 
-    private val bookData = MutableStateFlow<RetrofitResult<List<DetailedBookModel>>>(RetrofitResult.Loading)
+    private val bookData = MutableStateFlow<ApiResult<List<DetailedBookModel>>>(ApiResult.Loading)
     val book = bookData.asStateFlow()
 
     private val favoriteBookData: MutableStateFlow<FavoriteBook?> = MutableStateFlow(null)

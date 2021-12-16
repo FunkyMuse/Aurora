@@ -1,10 +1,10 @@
 buildscript {
     ext {
-        compose_version = '1.1.0-beta02'
-        kotlin_version = '1.5.31'
-        room = "2.4.0-rc01"
-        KAHelpers = '3.1.9'
-        moshi = "1.12.0"
+        compose_version = '1.1.0-rc01'
+        kotlin_version = '1.6.0'
+        room = "2.4.0"
+        KAHelpers = '3.2.1'
+        moshi = "1.13.0"
         daggerVersion = '2.40.5'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
@@ -13,9 +13,9 @@ buildscript {
         composed = '0.0.14'
         paging_compose = '1.0.0-alpha14'
         paging_runtime = '3.1.0'
-        navigation = '2.4.0-beta02'
+        navigation = '2.4.0-rc01'
         activity = "1.4.0"
-        hilt_navigation_compose = "1.0.0-beta01"
+        hilt_navigation_compose = "1.0.0-rc01"
         jsoup = "1.14.3"
         data_store = "1.0.0"
         coreKTX = "1.7.0"

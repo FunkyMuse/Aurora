@@ -1,6 +1,6 @@
 package com.funkymuse.aurora.libgenapi
 
-import com.crazylegend.retrofit.retrofitResult.RetrofitResult
+import com.crazylegend.retrofit.apiresult.ApiResult
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY
 import com.funkymuse.aurora.serverconstants.FIELDS_QUERY_CONST
 import com.funkymuse.aurora.serverconstants.IDS_QUERY_CONST
@@ -17,7 +17,7 @@ interface LibgenAPI {
 
     @GET(JSON_PHP_PAGE_CONST)
     suspend fun getDetailedBook(
-            @Query(IDS_QUERY_CONST) id: String,
-            @Query(FIELDS_QUERY_CONST) fields: String = FIELDS_QUERY
-    ): RetrofitResult<List<DetailedBookModel>>
+        @Query(IDS_QUERY_CONST) id: String,
+        @Query(FIELDS_QUERY_CONST) fields: String = FIELDS_QUERY
+    ): ApiResult<List<DetailedBookModel>>
 }
