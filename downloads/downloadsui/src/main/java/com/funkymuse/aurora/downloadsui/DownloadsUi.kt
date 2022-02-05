@@ -38,6 +38,7 @@ import com.funkymuse.aurora.downloadsdata.DownloadsViewModel
 import com.funkymuse.aurora.downloadsdata.FileModel
 import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.toaster.ToasterViewModel
+import com.funkymuse.composed.core.collectAndRemember
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.style.shape.Shapes
@@ -61,13 +62,13 @@ const val DEFAULT_MIME_TYPE = "application/pdf"
 fun Downloads() {
     val downloadsViewModel = hiltViewModel<DownloadsViewModel>()
     val toasterViewModel = hiltViewModel<ToasterViewModel>()
-    val downloadsModel = downloadsViewModel.files.collectAsState(DownloadsModel.Loading).value
+    val downloadsModel by downloadsViewModel.files.collectAndRemember(DownloadsModel.Loading)
     val progressVisibility by derivedStateOf { downloadsModel is DownloadsModel.Loading }
     val scope = rememberCoroutineScope()
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val localContext = context
-    val highlightBook = downloadsViewModel.highlightDownloadedBook.collectAsState(initial = null)
+    val highlightBook by downloadsViewModel.highlightDownloadedBook.collectAsState(initial = null)
 
     val retry = {
         downloadsViewModel.retry()
@@ -156,7 +157,7 @@ fun Downloads() {
             modifier = Modifier.fillMaxSize()
         ) {
             if (downloadsModel is DownloadsModel.Success) {
-                val list = downloadsModel.filesModel
+                val list = (downloadsModel as DownloadsModel.Success).filesModel
                 LazyColumn(
                     state = columnState,
                     modifier = Modifier
@@ -170,7 +171,7 @@ fun Downloads() {
                     items(list, itemContent = { item ->
                         DownloadedBookItem(
                             item,
-                            highlightBook.value == item.bookId,
+                            highlightBook == item.bookId,
                             onBookClicked = onBookClicked,
                             onLongBookClick = {
                                 longClickedModel = it

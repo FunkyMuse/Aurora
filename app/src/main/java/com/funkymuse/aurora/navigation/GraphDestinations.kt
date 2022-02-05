@@ -1,10 +1,12 @@
 package com.funkymuse.aurora.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.dialog
+import com.google.accompanist.navigation.animation.composable
 import com.funkymuse.aurora.bookdetailsdestination.BookDetailsDestination
 import com.funkymuse.aurora.bookdetailsui.DetailedBook
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
@@ -33,7 +35,8 @@ private val composableDestinations: Map<NavigationDestination, @Composable () ->
 )
 
 
-fun NavGraphBuilder.addComposableDestinations() {
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.addComposableDestinations(navController: NavHostController) {
     composableDestinations.forEach { entry ->
         val destination = entry.key
         composable(destination.route(), destination.arguments, destination.deepLinks) {
@@ -48,7 +51,7 @@ private val dialogDestinations: Map<NavigationDestination, @Composable () -> Uni
     DonationsExplanationDestination to { DonationsExplanation() },
 )
 
-fun NavGraphBuilder.addDialogDestinations() {
+fun NavGraphBuilder.addDialogDestinations(navController: NavHostController) {
     dialogDestinations.forEach { entry ->
         val destination = entry.key
         dialog(destination.route(), destination.arguments, destination.deepLinks) {

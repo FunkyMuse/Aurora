@@ -5,6 +5,7 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.funkymuse.style.color.*
 import com.funkymuse.style.shape.Shapes
 import com.funkymuse.style.typography.Typography
@@ -36,7 +37,7 @@ onSurface = Color.Black,
 
 @Composable
 fun AuroraTheme(darkThemeFlow: Flow<Boolean>, defaultValue: Boolean, content: @Composable () -> Unit) {
-    val isSystemInDark = darkThemeFlow.collectAsState(initial = defaultValue).value
+    val isSystemInDark by darkThemeFlow.collectAsState(initial = defaultValue)
 
     val colors = if (isSystemInDark) {
         DarkColorPalette

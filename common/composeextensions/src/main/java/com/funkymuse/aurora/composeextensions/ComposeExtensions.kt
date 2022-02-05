@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.composeextensions
 
+import android.content.Context
 import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -44,9 +45,12 @@ inline fun <reified T : ViewModel> assistedViewModel(
 
 
 @Composable
-inline fun <reified T : ViewModel> assistedInjectable(crossinline produce: AssistedHiltInjectables.(handle : SavedStateHandle) -> T): T =
+inline fun <reified T : ViewModel> assistedInjectable(
+    context : Context = LocalContext.current,
+    crossinline produce: AssistedHiltInjectables.(handle: SavedStateHandle) -> T
+): T =
     assistedViewModel(
         viewModelProducer = {
-            (LocalContext.current as AssistedHiltInjectables).produce(it)
+            (context as AssistedHiltInjectables).produce(it)
         }
     )

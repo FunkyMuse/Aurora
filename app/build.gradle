@@ -56,6 +56,7 @@ dependencies {
 
     //style
     implementation project(path: ':style:theme')
+    implementation project(path: ':style:shape')
 
     implementation project(path: ':resources:colors')
 
@@ -98,7 +99,7 @@ dependencies {
     implementation project(path: ':donations:explanation:donationsexplanationui')
 
     //material
-    implementation 'com.google.android.material:material:1.6.0-alpha01'
+    implementation 'com.google.android.material:material:1.6.0-alpha02'
 
     //runCodeEveryXLaunch
     implementation project(path: ':common:runCodeEveryXLaunch')
@@ -111,6 +112,7 @@ dependencies {
 
     //helpers
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
+    implementation "com.github.FunkyMuse:Composed:$composed"
     implementation "androidx.core:core-ktx:$coreKTX"
 
     //crashy
@@ -127,6 +129,8 @@ dependencies {
 
     //accompanist
     implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
+    implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
 
     //hilt jetpack
     implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
