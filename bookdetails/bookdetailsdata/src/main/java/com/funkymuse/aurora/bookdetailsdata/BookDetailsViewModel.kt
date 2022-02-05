@@ -18,11 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -51,7 +47,7 @@ class BookDetailsViewModel @Inject constructor(
     val favoriteBook = favoriteBookData.asStateFlow()
 
     private val extractLinkEvent: Channel<ScraperResult> = Channel(Channel.BUFFERED)
-    val extractLink = extractLinkEvent.receiveAsFlow()
+    val extractLink = extractLinkEvent.receiveAsFlow().stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ScraperResult.Idle)
 
     private val showVPNWarningEvent : Channel<VPNWarningModel> = Channel(Channel.BUFFERED)
     val showVPNWarning = showVPNWarningEvent.receiveAsFlow()

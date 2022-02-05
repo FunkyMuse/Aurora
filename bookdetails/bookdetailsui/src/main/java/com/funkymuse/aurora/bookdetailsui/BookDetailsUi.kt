@@ -51,6 +51,7 @@ import com.funkymuse.aurora.scrapermodel.ScraperResult
 import com.funkymuse.aurora.serverconstants.*
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
+import com.funkymuse.composed.core.collectAndRemember
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.shape.Shapes
@@ -72,13 +73,14 @@ fun DetailedBook() {
     }
     val book by stateWhenStarted(flow = bookDetailsViewModel.book, initial = ApiResult.Loading)
     val localContext = context
-    val favoritesBook by stateWhenStarted(bookDetailsViewModel.favoriteBook, null)
+    val favoritesBook by bookDetailsViewModel.favoriteBook.collectAndRemember(initial = null)
     var detailedBook by remember { mutableStateOf<DetailedBookModel?>(null) }
-    val isVPNWarningEnabled = settingsViewModel.vpnWarning.collectAsState().value
+    val isVPNWarningEnabled by settingsViewModel.vpnWarning.collectAndRemember(false)
 
-    val showLoadingDialog =
-        bookDetailsViewModel.extractLink.collectAsState(initial = ScraperResult.Idle).value is ScraperResult.Loading
-    if (showLoadingDialog) {
+
+    val showLoadingDialog by
+        bookDetailsViewModel.extractLink.collectAndRemember(initial = ScraperResult.Idle)
+    if (showLoadingDialog is ScraperResult.Loading) {
         LoadingDialog(R.string.preparing)
     }
 

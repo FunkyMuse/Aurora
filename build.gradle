@@ -1,21 +1,21 @@
 buildscript {
     ext {
-        compose_version = '1.1.0-rc01'
-        kotlin_version = '1.6.0'
+        compose_version = '1.2.0-alpha02'
+        kotlin_version = '1.6.10'
         room = "2.4.1"
-        KAHelpers = '3.2.1'
+        KAHelpers = '3.2.2'
         moshi = "1.13.0"
         daggerVersion = '2.40.5'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
-        accompanist = "0.20.3"
+        accompanist = "0.24.1-alpha"
         lifecycle = '2.4.0'
-        composed = '0.0.14'
+        composed = '0.0.16'
         paging_compose = '1.0.0-alpha14'
         paging_runtime = '3.1.0'
-        navigation = '2.4.0-rc01'
+        navigation = '2.5.0-alpha01'
         activity = "1.4.0"
-        hilt_navigation_compose = "1.0.0-rc01"
+        hilt_navigation_compose = "1.0.0"
         jsoup = "1.14.3"
         data_store = "1.0.0"
         coreKTX = "1.7.0"
@@ -39,7 +39,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0'
+        classpath 'com.android.tools.build:gradle:7.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$daggerVersion"
 

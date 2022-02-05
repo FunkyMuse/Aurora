@@ -8,5 +8,7 @@ dependencies {
 
     api "androidx.navigation:navigation-compose:$navigation"
     implementation "androidx.compose.runtime:runtime:$compose_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
+    implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
 
 }

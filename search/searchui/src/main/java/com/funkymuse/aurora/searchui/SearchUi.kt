@@ -44,120 +44,118 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 fun Search() {
     val navigatorViewModel: AuroraNavigatorViewModel = hiltViewModel()
-    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val scope = rememberCoroutineScope()
 
     var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
     var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
     val searchViewModel = hiltViewModel<SearchViewModel>()
 
 
-    val zIndex = if (state.targetValue == ModalBottomSheetValue.Hidden) {
-        0f
-    } else {
-        2f
-    }
+    /* ModalBottomSheetLayout(
+             modifier = Modifier
+                     .navigationBarsPadding()
+                     .zIndex(zIndex),
+             sheetState = state,
+             sheetShape = BottomSheetShapes.large,
+             sheetContent = {
+                 LazyColumn {
+                     item {
+                         Text(
+                                 text = stringResource(R.string.search_in_fields), modifier = Modifier
+                                 .fillMaxWidth()
+                                 .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                         )
+                     }
 
-    ModalBottomSheetLayout(
+                     itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
+                         RadioButtonWithText(
+                                 text = item.title,
+                                 isChecked = searchInFieldsCheckedPosition == index,
+                                 onRadioButtonClicked = {
+                                     searchInFieldsCheckedPosition = index
+                                 })
+                     }
+
+                     item {
+                         Text(
+                                 text = stringResource(R.string.mask_word), modifier = Modifier
+                                 .fillMaxWidth()
+                                 .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                         )
+                     }
+
+                     item {
+                         RadioButtonWithText(
+                                 text = R.string.search_with_mask_word,
+                                 isChecked = searchWithMaskWord,
+                                 onRadioButtonClicked = {
+                                     searchWithMaskWord = !searchWithMaskWord
+                                 })
+                     }
+
+                     item {
+                         Spacer(
+                                 modifier = Modifier
+                                         .navigationBarsPadding()
+                                         .padding(bottom = 46.dp)
+                         )
+                     }
+                 }
+             }
+     ) {*/
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                    .navigationBarsPadding()
-                    .zIndex(zIndex),
-            sheetState = state,
-            sheetShape = BottomSheetShapes.large,
-            sheetContent = {
-                LazyColumn {
-                    item {
-                        Text(
-                                text = stringResource(R.string.search_in_fields), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                        )
-                    }
-
-                    itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
-                        RadioButtonWithText(
-                                text = item.title,
-                                isChecked = searchInFieldsCheckedPosition == index,
-                                onRadioButtonClicked = {
-                                    searchInFieldsCheckedPosition = index
-                                })
-                    }
-
-                    item {
-                        Text(
-                                text = stringResource(R.string.mask_word), modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                        )
-                    }
-
-                    item {
-                        RadioButtonWithText(
-                                text = R.string.search_with_mask_word,
-                                isChecked = searchWithMaskWord,
-                                onRadioButtonClicked = {
-                                    searchWithMaskWord = !searchWithMaskWord
-                                })
-                    }
-
-                    item {
-                        Spacer(
-                                modifier = Modifier
-                                        .navigationBarsPadding()
-                                        .padding(bottom = 46.dp)
-                        )
-                    }
-                }
-            }
-    ) {
-
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)) {
-                SearchInput() {
-                    navigatorViewModel.navigate(SearchResultDestination.createSearchRoute(it.trim(), searchInFieldsCheckedPosition, searchWithMaskWord))
-                }
-                SearchInputExplained()
-            }
-
-            Box(
-                    modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 74.dp)
-            ) {
-                FloatingActionButton(
-                        onClick = { scope.launch { state.show() } },
-                ) {
-                    Icon(
-                            Icons.Filled.FilterList,
-                            contentDescription = stringResource(id = R.string.filter),
-                            tint = Color.White
+                .fillMaxWidth()
+                .align(Alignment.Center)
+        ) {
+            SearchInput() { text ->
+                navigatorViewModel.navigate(
+                    SearchResultDestination.createSearchRoute(
+                        text.trim(),
+                        searchInFieldsCheckedPosition,
+                        searchWithMaskWord
                     )
-                }
+                )
+            }
+            SearchInputExplained()
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 12.dp)
+        ) {
+            FloatingActionButton(
+                onClick = { },
+            ) {
+                Icon(
+                    Icons.Filled.FilterList,
+                    contentDescription = stringResource(id = R.string.filter),
+                    tint = Color.White
+                )
             }
         }
     }
-
 }
 
 
 @Composable
 fun SearchInputExplained() {
     Text(
-            text = stringResource(id = R.string.search_text), fontSize = 12.sp,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 36.dp, end = 24.dp)
-                    .animateContentSize()
+        text = stringResource(id = R.string.search_text), fontSize = 12.sp,
+        textAlign = TextAlign.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 36.dp, end = 24.dp)
+            .animateContentSize()
     )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchInput(
-        onInputText: (inputText: String) -> Unit = {}
+    onInputText: (inputText: String) -> Unit = {}
 ) {
     val viewModel = hiltViewModel<ToasterViewModel>()
 
@@ -165,24 +163,24 @@ fun SearchInput(
     var inputText by rememberSaveable { mutableStateOf("") }
     val invalidInput = inputText.isBlank() || inputText.length < 3
     OutlinedTextField(
-            modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp),
-            isError = invalidInput,
-            label = { Text(text = stringResource(id = R.string.search)) },
-            value = inputText,
-            onValueChange = { inputText = it },
-            keyboardOptions = KeyboardOptions(
-                    KeyboardCapitalization.Words, autoCorrect = false,
-                    keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(onSearch = {
-                if (invalidInput) {
-                    viewModel.shortToast(R.string.empty_or_short_input)
-                    return@KeyboardActions
-                }
-                keyboardController?.hide()
-                onInputText(inputText)
-            })
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp),
+        isError = invalidInput,
+        label = { Text(text = stringResource(id = R.string.search)) },
+        value = inputText,
+        onValueChange = { inputText = it },
+        keyboardOptions = KeyboardOptions(
+            KeyboardCapitalization.Words, autoCorrect = false,
+            keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(onSearch = {
+            if (invalidInput) {
+                viewModel.shortToast(R.string.empty_or_short_input)
+                return@KeyboardActions
+            }
+            keyboardController?.hide()
+            onInputText(inputText)
+        })
     )
 }

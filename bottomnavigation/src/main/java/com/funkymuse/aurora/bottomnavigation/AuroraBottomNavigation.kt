@@ -8,11 +8,8 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -32,9 +29,9 @@ fun AuroraBottomNavigation(
     navController: NavHostController
 ) {
 
-    var hideBottomNav by rememberSaveable { mutableStateOf(false) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val hideBottomNav by derivedStateOf { navBackStackEntry.hideBottomNavigation }
 
     val size = if (hideBottomNav) {
         Modifier.size(animateDpAsState(targetValue = 0.dp, animationSpec = tween()).value)
@@ -47,7 +44,6 @@ fun AuroraBottomNavigation(
             .clip(BottomSheetShapes.large)
             .navigationBarsPadding()
     ) {
-        hideBottomNav = navBackStackEntry?.destination.hideBottomNavigation
         bottomNavigationEntries.forEach { bottomEntry ->
             BottomNavigationItem(
                 selected = currentRoute == bottomEntry.screen.route,

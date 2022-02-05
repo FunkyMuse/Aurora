@@ -9,6 +9,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -168,7 +169,7 @@ fun VPNWarning(
     booleanFlow: StateFlow<Boolean>,
     booleanAction: (Boolean) -> Unit
 ) {
-    val condition = booleanFlow.collectAsState().value
+    val condition by booleanFlow.collectAsState()
     Switch(R.string.do_not_show_warning_vpn, booleanAction, condition)
 }
 
