@@ -54,12 +54,16 @@ include ':latestbooks:latestbooksdata'
 include ':search:searchui'
 include ':search:searchdata'
 
+include ':search:searchfilter:searchfilterui'
+include ':search:searchfilter:searchfilterdestination'
+
 include ':toaster'
 include ':coroutines'
 
 include ':searchresult:searchresultui'
 include ':searchresult:searchresultdata'
 include ':searchresult:searchresultdestination'
+
 
 include ':settings:settingsui'
 include ':settings:settingsdata'
@@ -89,3 +93,4 @@ include ':donations:explanation:donationsexplanationdestination'
 include ':donations:explanation:donationsexplanationui'
 include ':common:onetimepreferences'
 include ':common:composeextensions'
+

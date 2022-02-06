@@ -16,6 +16,10 @@ internal class AuroraNavigatorImpl @Inject constructor() : AuroraNavigator {
     override val destinations = navigationEvents.receiveAsFlow()
 
     override fun navigateUp(): Boolean = navigationEvents.trySend(NavigatorEvent.NavigateUp).isSuccess
+    override fun popBackStack() {
+        navigationEvents.trySend(NavigatorEvent.PopBackStack)
+    }
+
     override fun navigate(route: String, builder: NavOptionsBuilder.() -> Unit): Boolean = navigationEvents.trySend(NavigatorEvent.Directions(route, builder)).isSuccess
 
 }

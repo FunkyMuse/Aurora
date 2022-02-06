@@ -6,8 +6,8 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
-                        "room.schemaLocation":"$projectDir/schemas".toString(),
-                        "room.incremental":"true"]
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"]
             }
         }
     }
@@ -62,10 +62,15 @@ dependencies {
 
     //search
     implementation project(path: ':search:searchui')
+    implementation project(path: ':search:searchdata')
 
     //search result
     implementation project(path: ':searchresult:searchresultui')
     implementation project(path: ':searchresult:searchresultdestination')
+
+    //search filter
+    implementation project(path: ':search:searchfilter:searchfilterui')
+    implementation project(path: ':search:searchfilter:searchfilterdestination')
 
     //favorites
     implementation project(path: ':favoritebook:favoritebookui')
@@ -114,6 +119,7 @@ dependencies {
     implementation "com.github.FunkyMuse.KAHelpers:coroutines:$KAHelpers"
     implementation "com.github.FunkyMuse:Composed:$composed"
     implementation "androidx.core:core-ktx:$coreKTX"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
     //crashy
     implementation "com.github.FunkyMuse:Crashy:$crashy"

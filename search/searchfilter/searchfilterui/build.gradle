@@ -1,0 +1,13 @@
+applyComposeUIDeps(this)
+
+dependencies {
+    implementation project(path: ':resources:strings')
+    implementation project(path: ':components:radiobuttoncomponent')
+    implementation "com.google.accompanist:accompanist-insets:$accompanist"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation project(path: ':search:searchdata')
+    implementation "androidx.hilt:hilt-navigation-compose:$hilt_navigation_compose"
+    implementation "com.github.FunkyMuse.Composed:navigation:$composed"
+    implementation project(path: ':search:searchfilter:searchfilterdestination')
+    implementation project(path: ':navigator')
+}

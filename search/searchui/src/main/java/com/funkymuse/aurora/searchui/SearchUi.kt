@@ -1,5 +1,6 @@
 package com.funkymuse.aurora.searchui
 
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +32,7 @@ import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.searchdata.SearchViewModel
 import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 import com.funkymuse.aurora.toaster.ToasterViewModel
+import com.funkymuse.searchfilterdestination.SearchFilterDestination
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
@@ -39,69 +41,10 @@ import kotlinx.coroutines.launch
  * Created by FunkyMuse on 25/02/21 to long live and prosper !
  */
 
-
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
-fun Search() {
+fun Search(searchViewModel: SearchViewModel = hiltViewModel()) {
     val navigatorViewModel: AuroraNavigatorViewModel = hiltViewModel()
-
-    var searchInFieldsCheckedPosition by rememberSaveable { mutableStateOf(0) }
-    var searchWithMaskWord by rememberSaveable { mutableStateOf(false) }
-    val searchViewModel = hiltViewModel<SearchViewModel>()
-
-
-    /* ModalBottomSheetLayout(
-             modifier = Modifier
-                     .navigationBarsPadding()
-                     .zIndex(zIndex),
-             sheetState = state,
-             sheetShape = BottomSheetShapes.large,
-             sheetContent = {
-                 LazyColumn {
-                     item {
-                         Text(
-                                 text = stringResource(R.string.search_in_fields), modifier = Modifier
-                                 .fillMaxWidth()
-                                 .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                         )
-                     }
-
-                     itemsIndexed(searchViewModel.searchInFieldEntries) { index, item ->
-                         RadioButtonWithText(
-                                 text = item.title,
-                                 isChecked = searchInFieldsCheckedPosition == index,
-                                 onRadioButtonClicked = {
-                                     searchInFieldsCheckedPosition = index
-                                 })
-                     }
-
-                     item {
-                         Text(
-                                 text = stringResource(R.string.mask_word), modifier = Modifier
-                                 .fillMaxWidth()
-                                 .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                         )
-                     }
-
-                     item {
-                         RadioButtonWithText(
-                                 text = R.string.search_with_mask_word,
-                                 isChecked = searchWithMaskWord,
-                                 onRadioButtonClicked = {
-                                     searchWithMaskWord = !searchWithMaskWord
-                                 })
-                     }
-
-                     item {
-                         Spacer(
-                                 modifier = Modifier
-                                         .navigationBarsPadding()
-                                         .padding(bottom = 46.dp)
-                         )
-                     }
-                 }
-             }
-     ) {*/
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -113,8 +56,8 @@ fun Search() {
                 navigatorViewModel.navigate(
                     SearchResultDestination.createSearchRoute(
                         text.trim(),
-                        searchInFieldsCheckedPosition,
-                        searchWithMaskWord
+                        searchViewModel.searchInFieldsCheckedPosition,
+                        searchViewModel.searchWithMaskWord
                     )
                 )
             }
@@ -127,7 +70,14 @@ fun Search() {
                 .padding(bottom = 12.dp)
         ) {
             FloatingActionButton(
-                onClick = { },
+                onClick = {
+                    navigatorViewModel.navigate(
+                        SearchFilterDestination.createRoute(
+                            searchViewModel.searchInFieldsCheckedPosition,
+                            searchViewModel.searchWithMaskWord
+                        )
+                    )
+                },
             ) {
                 Icon(
                     Icons.Filled.FilterList,

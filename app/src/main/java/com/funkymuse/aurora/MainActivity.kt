@@ -9,9 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
@@ -43,6 +41,8 @@ import com.funkymuse.style.theme.AuroraTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.accompanist.navigation.material.BottomSheetNavigator
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,22 +89,31 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
 
 @OptIn(
     ExperimentalAnimationApi::class,
-    com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi::class
+    ExperimentalMaterialNavigationApi::class,
+    ExperimentalMaterialApi::class
 )
 @Composable
 fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
-    val bottomSheetNavigator = rememberBottomSheetNavigator()
+    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, SwipeableDefaults.AnimationSpec)
+    val bottomSheetNavigator = rememberBottomSheetNavigatorFix(sheetState)
     val navController = rememberAnimatedNavController()
     navController.navigatorProvider += bottomSheetNavigator
 
     LaunchedEffect(navController) {
         auroraNavigator.destinations.collect {
             when (val event = it) {
-                is NavigatorEvent.NavigateUp -> navController.navigateUp()
+                is NavigatorEvent.NavigateUp -> {
+                    sheetState.hide()
+                    navController.navigateUp()
+                }
                 is NavigatorEvent.Directions -> navController.navigate(
                     event.destination,
                     event.builder
                 )
+                NavigatorEvent.PopBackStack -> {
+                    sheetState.hide()
+                    navController.popBackStack()
+                }
             }
         }
     }
@@ -174,3 +183,15 @@ fun ResetUserDonationsInfo() {
 }
 
 
+@OptIn(
+    ExperimentalMaterialNavigationApi::class,
+    ExperimentalMaterialApi::class
+)
+@Composable
+fun rememberBottomSheetNavigatorFix(
+    sheetState: ModalBottomSheetState
+): BottomSheetNavigator {
+    return remember(sheetState) {
+        BottomSheetNavigator(sheetState = sheetState)
+    }
+}

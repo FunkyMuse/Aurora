@@ -10,7 +10,7 @@ buildscript {
         retrofit = "2.9.0"
         accompanist = "0.24.1-alpha"
         lifecycle = '2.4.0'
-        composed = '0.0.16'
+        composed = '0.0.17'
         paging_compose = '1.0.0-alpha14'
         paging_runtime = '3.1.0'
         navigation = '2.5.0-alpha01'
@@ -25,7 +25,7 @@ buildscript {
         hilt_work = "1.0.0"
 
         //compilation
-        compileVersion = 31
+        compileVersion = 32
         minVersion = 24
 
         //updatable
