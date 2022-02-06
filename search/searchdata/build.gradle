@@ -3,9 +3,11 @@ plugins {
 }
 
 applyHiltDeps(this)
+applyComposeUIDeps(this)
 dependencies {
     implementation project(path: ':resources:strings')
-
     implementation project(path: ':serverconstants')
+    implementation project(path: ':search:searchfilter:searchfilterdestination')
+    implementation project(path: ':navigator')
 
 }

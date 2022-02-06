@@ -14,6 +14,7 @@ dependencies {
 
     implementation project(path: ':components:radiobuttoncomponent')
 
+    implementation project(path: ':search:searchfilter:searchfilterdestination')
 
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
