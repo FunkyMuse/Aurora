@@ -2,7 +2,7 @@ buildscript {
     ext {
         compose_version = '1.2.0-alpha02'
         kotlin_version = '1.6.10'
-        room = "2.4.1"
+        room = "2.4.2"
         KAHelpers = '3.2.2'
         moshi = "1.13.0"
         daggerVersion = '2.41'
