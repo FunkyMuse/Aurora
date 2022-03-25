@@ -8,7 +8,7 @@ buildscript {
         daggerVersion = '2.41'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
-        accompanist = "0.24.4-alpha"
+        accompanist = "0.24.5-alpha"
         lifecycle = '2.4.0'
         composed = '0.0.17'
         paging_compose = '1.0.0-alpha14'
