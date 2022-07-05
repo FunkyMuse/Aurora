@@ -16,7 +16,7 @@ buildscript {
         navigation = '2.5.0-alpha01'
         activity = "1.4.0"
         hilt_navigation_compose = "1.0.0"
-        jsoup = "1.15.1"
+        jsoup = "1.15.2"
         data_store = "1.0.0"
         coreKTX = "1.7.0"
         crashy = "1.2.0"
