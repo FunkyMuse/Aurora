@@ -9,6 +9,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import javax.inject.Inject
+import kotlin.collections.filter
 
 /**
  * Created by funkymuse on 8/2/21 to long live and prosper !
@@ -79,9 +80,8 @@ class BookScraper @Inject constructor() {
 
     private fun processDocument(document: Document): List<Book> {
         return document.select("table").asSequence().drop(2).map {
-
-            val elementList = tryOrNull { it.select("tr").filter { it.children().size >= 2 } }
-                ?.map { it.select("td") }?.flatten()
+            val elementList = tryOrNull { (it.select("tr")).asSequence().filter { it.children().size >= 2 } }
+                ?.map { it.select("td") }?.flatten()?.toList()
 
             val res = if (!elementList.isNullOrEmpty()) {
                 elementList.mapNotNull {

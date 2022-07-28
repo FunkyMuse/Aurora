@@ -1,6 +1,9 @@
 package com.funkymuse.aurora.crashesui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,8 +25,6 @@ import com.funkymuse.aurora.extensions.openWebPage
 import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
 import com.funkymuse.aurora.toaster.ToasterViewModel
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 /**
  * Created by funkymuse on 6/29/21 to long live and prosper !
@@ -46,12 +47,10 @@ fun Crashes() {
         navigator.navigateUp()
         return
     }
-    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars, additionalBottom = 16.dp)
-
 
     ScaffoldWithBack(onBackClicked = { navigator.navigateUp() }) {
         LazyColumn(
-                contentPadding = listInsets
+                contentPadding = WindowInsets.navigationBars.asPaddingValues()
         ) {
             itemsIndexed(crashes) { index, item ->
                 CrashItem(index + 1, item, showToast)
@@ -68,10 +67,10 @@ fun CrashItem(index: Int, item: String, showToast: () -> Unit) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 18.dp)
-            .padding(top = 18.dp)
-            .wrapContentHeight(), onClick = {
+        .fillMaxWidth()
+        .padding(horizontal = 18.dp)
+        .padding(top = 18.dp)
+        .wrapContentHeight(), onClick = {
         clipboardManager.apply {
             clipboardManager.setText(AnnotatedString(text = item))
             showToast()

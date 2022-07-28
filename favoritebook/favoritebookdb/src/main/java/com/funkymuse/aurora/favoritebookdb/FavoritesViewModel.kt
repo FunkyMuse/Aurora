@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.map
 
 /**
  * Created by funkymuse, date 3/5/21
@@ -26,6 +27,9 @@ class FavoritesViewModel @Inject constructor(
             pagingDataProvider.providePagingData(viewModelScope, ioDispatcher) { favoritesDAO.getAllFavorites() }
 
     val count = favoritesDAO.favoriteItemsCount()
+        .map {
+            it == 0
+        }
 
     fun removeFromFavorites(id: String) {
         viewModelScope.launch(ioDispatcher) { favoritesDAO.deleteFromFavoritesByID(id) }

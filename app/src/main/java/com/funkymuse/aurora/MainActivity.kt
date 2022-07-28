@@ -9,14 +9,23 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.SwipeableDefaults
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.plusAssign
 import coil.ImageLoader
-import coil.compose.LocalImageLoader
 import com.funkymuse.aurora.bottomnavigation.AuroraBottomNavigation
 import com.funkymuse.aurora.bottomnavigation.SearchRoute
 import com.funkymuse.aurora.composeextensions.AssistedHiltInjectables
@@ -38,15 +47,12 @@ import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.collectAndRemember
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.funkymuse.style.theme.AuroraTheme
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 
@@ -75,12 +81,8 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
                 darkThemeFlow = hiltViewModel<SettingsViewModel>().darkTheme,
                 isDarkThemeEnabled
             ) {
-                ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                    CompositionLocalProvider(LocalImageLoader provides imageLoader) {
-                        Surface(color = MaterialTheme.colors.background) {
-                            AuroraScaffold(auroraNavigator)
-                        }
-                    }
+                Surface(color = MaterialTheme.colors.background) {
+                    AuroraScaffold(auroraNavigator)
                 }
             }
         }

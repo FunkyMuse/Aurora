@@ -3,12 +3,20 @@ package com.funkymuse.aurora.settingsui
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.funkymuse.aurora.crashesdestination.CrashesDestination
 import com.funkymuse.aurora.donationsdestination.DonateDestination
 import com.funkymuse.aurora.extensions.openWebPage
@@ -27,20 +37,16 @@ import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.settingsdata.MY_OTHER_APPS
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.composed.core.context
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun Settings() {
     val viewModel: SettingsViewModel = hiltViewModel()
     val navigator: AuroraNavigatorViewModel = hiltViewModel()
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = rememberInsetsPaddingValues(
-            insets = LocalWindowInsets.current.systemBars
-        )
+        contentPadding = WindowInsets.systemBars.asPaddingValues()
+
     ) {
         item { DarkTheme(viewModel.darkTheme) { viewModel.changeTheme(it) } }
         item { VPNWarning(viewModel.vpnWarning) { viewModel.changeVPNWarning(it) } }
@@ -68,8 +74,8 @@ private fun TitleWithSubtitleTextItem(titleText: String, subtitleText: String) {
     ) {
         Column(
             modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
+                .fillMaxWidth()
+                .wrapContentHeight()
         ) {
             Text(
                 text = titleText, modifier =
@@ -79,8 +85,8 @@ private fun TitleWithSubtitleTextItem(titleText: String, subtitleText: String) {
             Text(
                 text = subtitleText,
                 modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .padding(top = 4.dp),
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 4.dp),
                 fontSize = 12.sp, color = Color.Gray
             )
 
@@ -102,10 +108,10 @@ fun VersionNumber() {
 @Composable
 fun CrashesSettings(navigateToCrashes: () -> Unit) {
     SettingsItem(modifier = Modifier
-            .clickable {
-                navigateToCrashes()
-            }
-            .padding(vertical = 8.dp)) {
+        .clickable {
+            navigateToCrashes()
+        }
+        .padding(vertical = 8.dp)) {
         Text(
             text = stringResource(id = R.string.crashes), modifier =
             Modifier.padding(horizontal = 8.dp)
@@ -155,21 +161,23 @@ fun SettingsItem(modifier: Modifier = Modifier, item: @Composable (BoxScope) -> 
     }
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun DarkTheme(
     darkThemeFlow: StateFlow<Boolean>,
     changeTheme: (theme: Boolean) -> Unit
 ) {
-    val darkTheme = darkThemeFlow.collectAsState().value
+    val darkTheme by darkThemeFlow.collectAsStateWithLifecycle()
     Switch(R.string.dark_theme, changeTheme, darkTheme)
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun VPNWarning(
     booleanFlow: StateFlow<Boolean>,
     booleanAction: (Boolean) -> Unit
 ) {
-    val condition by booleanFlow.collectAsState()
+    val condition by booleanFlow.collectAsStateWithLifecycle()
     Switch(R.string.do_not_show_warning_vpn, booleanAction, condition)
 }
 

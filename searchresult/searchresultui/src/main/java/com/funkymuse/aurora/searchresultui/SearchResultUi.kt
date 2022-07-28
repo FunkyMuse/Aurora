@@ -42,7 +42,6 @@ import com.funkymuse.composed.core.rememberIntSaveableDefaultZero
 import com.funkymuse.style.color.PrimaryVariant
 import com.funkymuse.style.shape.BottomSheetShapes
 import com.funkymuse.style.shape.Shapes
-import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
@@ -131,7 +130,7 @@ fun SearchResult() {
             val columnState = rememberLazyListState()
 
             val lastVisibleIndex by columnState.lastVisibleIndexState()
-            AnimatedVisibility(visible = lastVisibleIndex != null && lastVisibleIndex?:0 > 20,
+            AnimatedVisibility(visible = lastVisibleIndex != null && (lastVisibleIndex ?: 0) > 20,
                     modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(bottom = 22.dp, end = 8.dp)
@@ -168,10 +167,7 @@ fun SearchResult() {
                         modifier = Modifier
                                 .fillMaxSize()
                                 .padding(top = 8.dp),
-                        contentPadding = rememberInsetsPaddingValues(
-                                insets = LocalWindowInsets.current.navigationBars,
-                                additionalBottom = 84.dp
-                        )
+                        contentPadding = WindowInsets.statusBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom).asPaddingValues()
                 ) {
                     items(pagingItems, key = {it.id}) { item ->
                         item ?: return@items

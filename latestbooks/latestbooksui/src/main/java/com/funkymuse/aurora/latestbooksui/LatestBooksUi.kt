@@ -28,7 +28,6 @@ import com.funkymuse.aurora.paging.appendState
 import com.funkymuse.aurora.toaster.ToasterViewModel
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.composed.core.rememberBooleanDefaultFalse
-import com.google.accompanist.insets.*
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -85,10 +84,8 @@ fun LatestBooks(
 
         AnimatedVisibility(visible = isButtonVisible,
                 modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .navigationBarsPadding(start = false, end = false)
-                        .padding(bottom = 64.dp)
-                        .zIndex(2f)) {
+                    .align(Alignment.BottomCenter)
+                    .zIndex(2f)) {
 
             Box {
                 FloatingActionButton(
@@ -118,8 +115,6 @@ fun LatestBooks(
         )
 
 
-        val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.systemBars)
-
         SwipeRefresh(
                 state = swipeToRefreshState, onRefresh = {
             swipeToRefreshState.isRefreshing = true
@@ -134,8 +129,8 @@ fun LatestBooks(
                     state = columnState,
                     modifier = Modifier
                             .fillMaxSize()
-                            .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = listInsets
+                            .padding(top = 8.dp),
+                    contentPadding = WindowInsets.systemBars.asPaddingValues()
             ) {
                 items(pagingItems, key = { it.id }) { item ->
                     item ?: return@items

@@ -2,6 +2,7 @@ package com.funkymuse.aurora.bottomnavigation
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.BottomNavigation
@@ -19,7 +20,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.funkymuse.aurora.navigator.hideBottomNavigation
 import com.funkymuse.style.shape.BottomSheetShapes
-import com.google.accompanist.insets.navigationBarsPadding
 
 /**
  * Created by funkymuse on 6/27/21 to long live and prosper !

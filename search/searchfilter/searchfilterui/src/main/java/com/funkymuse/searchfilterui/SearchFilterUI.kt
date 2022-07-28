@@ -2,6 +2,7 @@ package com.funkymuse.searchfilterui
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -13,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.funkymuse.aurora.radiobutton.RadioButtonWithText
 import com.funkymuse.aurora.searchdata.SearchViewModel
-import com.google.accompanist.insets.navigationBarsPadding
 
 
 @Composable

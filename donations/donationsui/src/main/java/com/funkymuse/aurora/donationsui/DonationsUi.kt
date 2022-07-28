@@ -5,7 +5,10 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -25,8 +28,6 @@ import com.funkymuse.aurora.donationsdata.DonationModel
 import com.funkymuse.aurora.donationsdata.DonationsViewModel
 import com.funkymuse.aurora.navigator.AuroraNavigatorViewModel
 import com.funkymuse.aurora.scaffolds.ScaffoldWithBack
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 
 /**
  * Created by funkymuse on 8/15/21 to long live and prosper !
@@ -68,11 +69,9 @@ fun Donations() {
         oneTimePreferencesViewModelFactory.create(USER_DONATED_KEY)
     })
 
-    val listInsets = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars, additionalBottom = 16.dp)
-
     ScaffoldWithBack(onBackClicked = { navigator.navigateUp() }) {
         LazyColumn(
-                contentPadding = listInsets
+                contentPadding = WindowInsets.navigationBars.asPaddingValues()
         ) {
             items(adapterList) { item ->
                 DonationItem(donationResId = item.title, drawableRes = item.drawable) {
@@ -93,25 +92,25 @@ fun DonationItem(
 ) {
     Card(
         modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp)
-                .padding(top = 18.dp)
-                .wrapContentHeight()
-                .clickable { onItemClick() }
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp)
+            .padding(top = 18.dp)
+            .wrapContentHeight()
+            .clickable { onItemClick() }
     ) {
         Row {
             Image(
                 modifier = Modifier
-                        .align(CenterVertically)
-                        .padding(start = 16.dp),
+                    .align(CenterVertically)
+                    .padding(start = 16.dp),
                 painter = painterResource(id = drawableRes),
                 contentDescription = null
             )
             Text(
                 text = stringResource(id = donationResId),
                 modifier = Modifier
-                        .align(CenterVertically)
-                        .padding(16.dp)
+                    .align(CenterVertically)
+                    .padding(16.dp)
             )
         }
     }

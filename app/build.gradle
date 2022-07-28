@@ -43,7 +43,6 @@ android {
 hilt { enableAggregatingTask = true }
 enableBuildConfig(this)
 applyRoomDeps(this)
-applyDaggerDeps(this)
 applyHiltDeps(this)
 applyMoshiDeps(this)
 applyComposeUIDeps(this)
@@ -134,7 +133,6 @@ dependencies {
     implementation project(path: ':bottomnavigation')
 
     //accompanist
-    implementation "com.google.accompanist:accompanist-insets:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist"
 

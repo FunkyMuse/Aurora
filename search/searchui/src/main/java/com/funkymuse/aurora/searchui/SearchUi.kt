@@ -34,7 +34,6 @@ import com.funkymuse.aurora.searchresultdestination.SearchResultDestination
 import com.funkymuse.aurora.toaster.ToasterViewModel
 import com.funkymuse.searchfilterdestination.SearchFilterDestination
 import com.funkymuse.style.shape.BottomSheetShapes
-import com.google.accompanist.insets.navigationBarsPadding
 import kotlinx.coroutines.launch
 
 /**

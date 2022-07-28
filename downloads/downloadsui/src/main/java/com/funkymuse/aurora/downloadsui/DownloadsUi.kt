@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.funkymuse.aurora.confirmationdialog.ConfirmationDialog
 import com.funkymuse.aurora.downloadsdata.CreateFileContract
 import com.funkymuse.aurora.downloadsdata.DownloadsModel
@@ -42,10 +44,6 @@ import com.funkymuse.composed.core.collectAndRemember
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.lazylist.lastVisibleIndexState
 import com.funkymuse.style.shape.Shapes
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.systemBarsPadding
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.launch
@@ -57,7 +55,7 @@ import java.io.File
 
 const val DEFAULT_MIME_TYPE = "application/pdf"
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun Downloads() {
     val downloadsViewModel = hiltViewModel<DownloadsViewModel>()
@@ -68,7 +66,7 @@ fun Downloads() {
     val columnState = rememberLazyListState()
     val swipeToRefreshState = rememberSwipeRefreshState(isRefreshing = false)
     val localContext = context
-    val highlightBook by downloadsViewModel.highlightDownloadedBook.collectAsState(initial = null)
+    val highlightBook by downloadsViewModel.highlightDownloadedBook.collectAsStateWithLifecycle(null)
 
     val retry = {
         downloadsViewModel.retry()
@@ -118,7 +116,8 @@ fun Downloads() {
                 .wrapContentSize()
                 .systemBarsPadding()
                 .padding(top = 8.dp)
-                .zIndex(2f)) {
+                .zIndex(2f)
+        ) {
             CircularProgressIndicator()
         }
 
@@ -127,12 +126,14 @@ fun Downloads() {
 
         val isButtonVisible = lastVisibleIndexState?.let { it > 20 } ?: false
 
-        AnimatedVisibility(visible = isButtonVisible,
+        AnimatedVisibility(
+            visible = isButtonVisible,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .navigationBarsPadding(start = false, end = false)
+                .navigationBarsPadding()
                 .padding(bottom = 64.dp)
-                .zIndex(2f)) {
+                .zIndex(2f)
+        ) {
 
             Box {
                 FloatingActionButton(
@@ -163,10 +164,7 @@ fun Downloads() {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = 56.dp, top = 8.dp),
-                    contentPadding = rememberInsetsPaddingValues(
-                        insets = LocalWindowInsets.current.systemBars,
-                        additionalBottom = 36.dp
-                    )
+                    contentPadding = WindowInsets.statusBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top).asPaddingValues()
                 ) {
                     items(list, itemContent = { item ->
                         DownloadedBookItem(

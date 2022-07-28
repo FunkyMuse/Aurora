@@ -1,18 +1,42 @@
 package com.funkymuse.aurora.bookdetailsui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -24,8 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.ImagePainter
-import coil.compose.rememberImagePainter
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.crazylegend.intent.openWebPage
 import com.crazylegend.retrofit.apiresult.ApiResult
 import com.crazylegend.retrofit.apiresult.onApiError
@@ -44,25 +71,27 @@ import com.funkymuse.aurora.errorcomponent.ErrorMessage
 import com.funkymuse.aurora.errorcomponent.ErrorWithRetry
 import com.funkymuse.aurora.favoritebookmodel.FavoriteBook
 import com.funkymuse.aurora.internetdetector.InternetDetectorViewModel
-import com.funkymuse.aurora.loadingcomponent.CardShimmer
 import com.funkymuse.aurora.loadingcomponent.LoadingBubbles
 import com.funkymuse.aurora.loadingcomponent.LoadingDialog
 import com.funkymuse.aurora.scrapermodel.ScraperResult
-import com.funkymuse.aurora.serverconstants.*
+import com.funkymuse.aurora.serverconstants.LIBGEN_COVER_IMAGE_URL
+import com.funkymuse.aurora.serverconstants.LIBGEN_LC
+import com.funkymuse.aurora.serverconstants.LIBRARY_LOL
+import com.funkymuse.aurora.serverconstants.mirrorsUrls
+import com.funkymuse.aurora.serverconstants.torrentDownloadURL
 import com.funkymuse.aurora.settingsdata.SettingsViewModel
 import com.funkymuse.bookdetails.bookdetailsmodel.DetailedBookModel
 import com.funkymuse.composed.core.collectAndRemember
 import com.funkymuse.composed.core.context
 import com.funkymuse.composed.core.stateWhenStarted
 import com.funkymuse.style.shape.Shapes
-import com.google.accompanist.insets.statusBarsPadding
-import java.util.*
 
 /**
  * Created by FunkyMuse, date 2/27/21
  */
 
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun DetailedBook() {
     val bookDetailsViewModel: BookDetailsViewModel = hiltViewModel()
@@ -79,21 +108,21 @@ fun DetailedBook() {
 
 
     val showLoadingDialog by
-        bookDetailsViewModel.extractLink.collectAndRemember(initial = ScraperResult.Idle)
+    bookDetailsViewModel.extractLink.collectAndRemember(initial = ScraperResult.Idle)
     if (showLoadingDialog is ScraperResult.Loading) {
         LoadingDialog(R.string.preparing)
     }
 
-    val vpnWarningModel =
-        bookDetailsViewModel.showVPNWarning.collectAsState(initial = VPNWarningModel.Idle).value
+    val vpnWarningModel by bookDetailsViewModel.showVPNWarning.collectAsStateWithLifecycle(VPNWarningModel.Idle)
     if (vpnWarningModel is VPNWarningModel.DownloadBook) {
         ShowNotOnVpnDialog(onDismiss = {
             bookDetailsViewModel.dismissVPNWarning()
         }, onConfirm = {
+            val model = vpnWarningModel as VPNWarningModel.DownloadBook
             bookDetailsViewModel.downloadBook(
-                vpnWarningModel.id,
-                vpnWarningModel.extension,
-                vpnWarningModel.title
+                model.id,
+                model.extension,
+                model.title
             )
         })
     }
@@ -121,7 +150,7 @@ fun DetailedBook() {
             }
             .onError { throwable ->
                 if (throwable is NoConnectionException) {
-                    if (internetDetectorViewModel.collectAsState(initial = false).value) {
+                    if (internetDetectorViewModel.collectAsStateWithLifecycle( false).value) {
                         retry()
                     }
                     ErrorMessage(R.string.no_book_loaded_no_connect)
@@ -228,7 +257,7 @@ fun DetailedBook(
     val scrollState = rememberScrollState()
     val imageUrl = LIBGEN_COVER_IMAGE_URL + book.coverurl
     val localContext = context
-    val painter = rememberImagePainter(data = imageUrl)
+    val painter = rememberAsyncImagePainter(imageUrl)
 
     val dlMirrors = book.md5?.let { mirrorsUrls(it) }?.associateWith {
         val hasDirectDownload = it.contains(LIBGEN_LC, true) || it.contains(LIBRARY_LOL, true)
@@ -246,21 +275,17 @@ fun DetailedBook(
         val alignment = Modifier.align(Alignment.Start)
         val imageModifier = Modifier
             .size(width = 200.dp, height = 240.dp)
-            .padding(top = 16.dp)
+            .padding(top = 18.dp)
 
-        when (painter.state) {
-            is ImagePainter.State.Loading -> {
-                CardShimmer(imageHeight = 240.dp, imageWidth = 200.dp)
-            }
-            is ImagePainter.State.Success, is ImagePainter.State.Error, ImagePainter.State.Empty -> {
-                Card(shape = Shapes.large, modifier = imageModifier) {
-                    Image(
-                        painter = painter,
-                        contentDescription = stringResource(id = R.string.book_details)
-                    )
-                }
-            }
-        }
+        SubcomposeAsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = null,
+            modifier = imageModifier
+                .clip(RectangleShape),
+        )
 
         Text(
             modifier = Modifier
