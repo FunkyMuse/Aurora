@@ -52,6 +52,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -92,12 +93,10 @@ class MainActivity : ComponentActivity(), AssistedHiltInjectables {
 @OptIn(
     ExperimentalAnimationApi::class,
     ExperimentalMaterialNavigationApi::class,
-    ExperimentalMaterialApi::class
 )
 @Composable
 fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
-    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden, SwipeableDefaults.AnimationSpec)
-    val bottomSheetNavigator = rememberBottomSheetNavigatorFix(sheetState)
+    val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberAnimatedNavController()
     navController.navigatorProvider += bottomSheetNavigator
 
@@ -105,7 +104,6 @@ fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
         auroraNavigator.destinations.collect {
             when (val event = it) {
                 is NavigatorEvent.NavigateUp -> {
-                    sheetState.hide()
                     navController.navigateUp()
                 }
                 is NavigatorEvent.Directions -> navController.navigate(
@@ -113,7 +111,6 @@ fun AuroraScaffold(auroraNavigator: AuroraNavigator) {
                     event.builder
                 )
                 NavigatorEvent.PopBackStack -> {
-                    sheetState.hide()
                     navController.popBackStack()
                 }
             }
@@ -181,19 +178,5 @@ fun ResetUserDonationsInfo() {
     val runCode by runCodePreferenceRemindUserDonated.runCode.collectAndRemember(false)
     if (runCode) {
         oneTimePreferencesViewModel.setEventIsNotFired()
-    }
-}
-
-
-@OptIn(
-    ExperimentalMaterialNavigationApi::class,
-    ExperimentalMaterialApi::class
-)
-@Composable
-fun rememberBottomSheetNavigatorFix(
-    sheetState: ModalBottomSheetState
-): BottomSheetNavigator {
-    return remember(sheetState) {
-        BottomSheetNavigator(sheetState = sheetState)
     }
 }
