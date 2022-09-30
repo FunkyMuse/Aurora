@@ -5,7 +5,7 @@ buildscript {
         compose_tooling = '1.2.0'
         customView = '1.2.0-alpha02'
         customViewPooling = '1.0.0'
-        kotlin_version = '1.7.10'
+        kotlin_version = '1.7.20'
         room = "2.4.3"
         KAHelpers = '3.2.2'
         moshi = "1.14.0"
