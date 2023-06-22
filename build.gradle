@@ -6,7 +6,7 @@ buildscript {
         customView = '1.2.0-alpha02'
         customViewPooling = '1.0.0'
         kotlin_version = '1.8.22'
-        room = "2.5.1"
+        room = "2.5.2"
         KAHelpers = '3.2.2'
         moshi = "1.15.0"
         daggerVersion = '2.46.1'
