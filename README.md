@@ -5,8 +5,6 @@
 [![GitHub release (including pre-releases)](https://img.shields.io/github/v/release/FunkyMuse/Aurora?include_prereleases)](https://github.com/FunkyMuse/Aurora/releases/latest)
 ![GitHub Repo Size](https://img.shields.io/github/repo-size/FunkyMuse/Aurora)
 
-### If my noble work has helped you, consider becoming a [![Sponsor me](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/FunkyMuse/).
-
 This is a non-official [Library Genesis](https://libgen.rs/) mobile client.
 
 The project is completely independent and Open Source. 
