@@ -9,7 +9,7 @@ buildscript {
         room = "2.5.2"
         KAHelpers = '3.2.2'
         moshi = "1.15.0"
-        daggerVersion = '2.48'
+        daggerVersion = '2.48.1'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
         accompanist = "0.30.1"
