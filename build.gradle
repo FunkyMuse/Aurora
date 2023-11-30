@@ -1,7 +1,7 @@
 buildscript {
     ext {
         compose_version = '1.3.0-alpha02'
-        compose_compiler_version = '1.5.4'
+        compose_compiler_version = '1.5.5'
         compose_tooling = '1.2.0'
         customView = '1.2.0-alpha02'
         customViewPooling = '1.0.0'
