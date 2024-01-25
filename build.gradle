@@ -19,7 +19,7 @@ buildscript {
         paging_runtime = '3.2.0-alpha01'
         navigation = '2.5.1'
         activity = "1.5.1"
-        hilt_navigation_compose = "1.0.0"
+        hilt_navigation_compose = "1.1.0"
         jsoup = "1.17.2"
         data_store = "1.0.0"
         coreKTX = "1.12.0"
