@@ -22,7 +22,7 @@ buildscript {
         hilt_navigation_compose = "1.0.0"
         jsoup = "1.17.2"
         data_store = "1.0.0"
-        coreKTX = "1.7.0"
+        coreKTX = "1.12.0"
         crashy = "1.2.0"
         coil = "2.5.0"
         work_version = "2.9.0"
