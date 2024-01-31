@@ -8,7 +8,7 @@ buildscript {
         kotlin_version = '1.9.22'
         room = "2.6.1"
         KAHelpers = '3.2.2'
-        moshi = "1.15.0"
+        moshi = "1.15.1"
         daggerVersion = '2.50'
         hiltJetpackVersion = '1.0.0'
         retrofit = "2.9.0"
