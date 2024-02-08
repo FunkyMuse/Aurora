@@ -17,7 +17,7 @@ buildscript {
         composed = '0.0.17'
         paging_compose = '3.3.0-alpha02'
         paging_runtime = '3.2.0-alpha01'
-        navigation = '2.7.6'
+        navigation = '2.7.7'
         activity = "1.8.2"
         hilt_navigation_compose = "1.1.0"
         jsoup = "1.17.2"
