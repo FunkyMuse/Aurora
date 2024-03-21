@@ -15,7 +15,7 @@ buildscript {
         accompanist = "0.30.1"
         lifecycle = '2.8.0-alpha01'
         composed = '0.0.17'
-        paging_compose = '3.3.0-alpha03'
+        paging_compose = '3.3.0-alpha05'
         paging_runtime = '3.2.0-alpha01'
         navigation = '2.7.7'
         activity = "1.8.2"
